@@ -1,0 +1,431 @@
+<script type="text/javascript">
+
+    $(document).ready(function() { 
+	
+	var secret = "<%= user.secret %>"
+	var uid = "<%= user._id %>"
+
+	var remoteobjects = {}
+	var object_subscriptions = {}
+
+	$("#bla").html("js ok")
+	$("#message").hide()
+
+
+	$('.editable').click(function(event) {
+	    var node = $(event.currentTarget)
+	    var data = node.html()
+	    if (data.search('<input') != -1) { return }
+
+	    var input = $("<input class='editable' size='" + (data.length + 1) + "' type='text' value='" + data + "'>")
+
+	    function done() {
+		input.trigger('edited',[node,input.val(),data])
+		node.html(input.val())
+	    }
+
+	    input.blur(done)
+
+	    input.keypress(function(event) {
+		if (event.which == 13) { done() }
+	    })
+
+	    node.html(input)
+	    input.focus()
+	    input.trigger('editstart',[node,data])
+	});
+
+
+	$("#edit_username").bind('edited',function(e,node,data,olddata) {
+	    node.html(data)
+	    console.log(olddata) 
+	})
+
+
+	$("#edit_mybitcoin_amount").bind('editstart',function(e,node,data) {
+	    $("#mybitcoin_link").html("")	    
+	})
+
+	$("#edit_withdrawal_amount").bind('edited',function(e,node,data) {
+	    var amount = parseFloat(data)
+	    if (!amount) {
+		message( "invalid amount")
+		return
+	    }
+	})
+
+	$("#user_withdrawal_address").bind('edited',function(e,node,data) {
+	    
+	    if (data.length != 34) {
+		message( "invalid address")
+		return
+	    }
+	})
+
+
+
+
+	function message(string) {
+	    var message = $("#message")
+	    message.html(string)
+	    message.fadeIn(500)
+	    setTimeout(function() { message.fadeOut(500) },1000)
+	}
+	
+
+	
+	$("#edit_mybitcoin_amount").bind('edited',function(e,node,data,olddata) {
+
+	    var amount = parseFloat(data)
+		console.log("amount",amount)
+
+	    if (!amount) {
+		message("invalid amount")
+		//$("#mybitcoin_link").html( "invalid amount :(")
+		return
+	    }
+	    
+	    $("#mybitcoin_link").html("communicating with mybitcoin...")
+	    $.post("/ajax/mybitcoinlink",{ secret: secret, amount: amount }, function (data) {
+		data = $.parseJSON(data)
+		if (data.responsecode == 0) {
+		    $("#mybitcoin_link").html ("<a href='https://www.mybitcoin.com/sci/paypage.php?t=" + data.message + "'>pay</a>" )
+		} else {
+		    $("#mybitcoin_link").html( data.message)
+		}
+	    })
+	})
+	
+
+	var socket = io.connect('http://lgate-public:45284');
+	socket.emit('hello', { uid: uid });
+	socket.on('connection', function () {
+	    console.log('websocket connected. authorizing')
+	    
+	});
+
+    
+	$("#btn_deposit_generate").click(function() {
+	    $.post("/ajax/deposit",{ secret: secret }, function (data) { 
+		data = $.parseJSON(data)
+		if (data.responsecode == 1) { alert("too many addresses already active" ) }
+	    })
+	})
+
+    
+	$("#logout").click(function() {
+	    $.post("/ajax/logout",{ secret: secret }, function (data) { 
+		data = $.parseJSON(data)
+	    })
+	})
+
+	socket.on('cash', function(data) {
+	    console.log("GOT CASH",data)
+	    $(".user_cash").html('<span style="background: red;">' + data.cash + '</span>')
+	    setTimeout(function() {
+		$(".user_cash").html(data.cash)
+	    },1000)
+	})
+
+
+	socket.on('objectsync', function(data) {
+	    console.log("new object stream received",data)
+	    
+	    for (var objectname in data) {
+		updateobject(objectname,data[objectname])
+	    }
+	
+	})
+
+
+	function syncobject(objectname) {
+	    socket.emit('objectsync', { objectname: remoteobjects[objectname] });
+	}
+	
+
+	function equal(object1, object2) {
+	    if (!object2) { return false }
+
+	    if (typeof(object1) != 'object') {
+		return (object1 == object2)
+	    }
+
+	    for (var property in object1) { 
+
+		if (object1[property] != object2[property]) { return false }
+	    }
+
+	    return true   
+	}
+
+	    /*$(".user_cash").html('<span style="background: red;">' + data.cash + '</span>')
+	    setTimeout(function() {
+		$(".user_cash").html(data.cash)
+	    },1000)
+	    */
+
+	function updateobject(objectname,object) {
+	    if (!remoteobjects[objectname]) {
+		remoteobjects[objectname] = {}
+	    }
+
+	    console.log("updating local object '" + objectname + "'" )
+
+	    for (var property in object) {
+		if (!equal(object[property],remoteobjects[objectname][property])) {
+		    remoteobjects[objectname][property] = object[property]
+//		    console.log(property + " changed", remoteobjects[objectname][property])
+		    objectchange_trigger(objectname,property,object)
+		}
+	    }
+	}
+
+	function objectchange_trigger(objectname,property,object) {
+	    if (object_subscriptions[objectname]) {
+		if  (object_subscriptions[objectname][property] ) {
+		    var subscriptions = object_subscriptions[objectname][property]
+		    subscriptions.forEach(function (callback) {
+			callback(object,property,objectname)
+		    })
+		}
+
+		if ( object_subscriptions[objectname]["*"] ) {
+		    var subscriptions = object_subscriptions[objectname]["*"]
+		    subscriptions.forEach(function (callback) {
+			callback(object,property,objectname)
+		    })
+		}
+	    }
+	}
+	
+	function objectchange(objectname,property,callback) {
+	    if (!object_subscriptions[objectname]) { object_subscriptions[objectname] = {} }
+	    if (!object_subscriptions[objectname][property]) { object_subscriptions[objectname][property] = [] }
+	    object_subscriptions[objectname][property].push(callback)	    
+	}
+	
+
+
+	objectchange("user","*",function(user,property) {
+	    $("#sync_user_" + property).html(user[property])
+	    $(".sync_user_" + property).html(user[property])
+	})
+
+
+	objectchange("user","address_deposit",function(user) {
+	    
+	    if (user.address_deposit.length == 0) { $("#address_deposit").html("no addresses"); $("#paybelow").hide(); return }
+
+	    var list = $("<span></span>")
+	    user.address_deposit.forEach(function(address) { list.append($("<b>" + address + "<b><br>"))})
+	    
+	    $("#paybelow").show()
+	    
+	    if (user.address_deposit.length == 3) {
+		$("#btn_deposit_generate").hide()
+	    } else {
+		$("#btn_deposit_generate").show()
+	    }
+
+	    $("#address_deposit").html(list)
+	    console.log(list)
+	})
+
+	objectchange("user","cash",function(user) {
+	    
+	})
+
+
+	objectchange("user","address_withdrawal",function(user) {
+	    if (user.address_withdrawal) { $("#user_address_withdrawal").html(user.address_withdrawal); return }
+	})
+
+
+	
+	var tabs = [ $('#tab_home'), $('#tab_balance'),$('#tab_settings'), $('#tab_chat'), $('#tab_faq'), $('#tab_debugger') ]
+	tabs.forEach(function(tab) {tab.hide() })
+	var selectedtab = undefined
+
+	function selecttab(tabid) {
+	    if (selectedtab != undefined) {
+		tabs[selectedtab].trigger('tabhide')
+		tabs[selectedtab].hide()
+		if (tabid == selectedtab) { selectedtab = undefined; return }
+	    }
+	    tabs[tabid].trigger('tabshow')
+	    tabs[tabid].show()
+	    selectedtab = tabid
+	}
+
+	$('#tab_balance').bind('tabshow', function() { $('#small_balance').hide() } )
+	$('#tab_balance').bind('tabhide', function() { $('#small_balance').show() } )
+
+	$('#btnhome').click( function() { selecttab(0) })
+	$('#btnballance').click( function() { selecttab(1) })
+	$('#btnsettings').click( function() { selecttab(2) })
+	$('#btnchat').click( function() { selecttab(3) })	
+	$('#btnfaq').click( function() { selecttab(4) })	
+	$('#btndebugger').click( function() { selecttab(5) })	
+	
+    })
+
+
+</script>
+
+
+<div class='blackbox'>
+  <span>Logged in as <span id='sync_user_name' class='editable'><%= user.name %></span></span>
+  <span class='btn' id="btnhome" >Home</span>
+  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= user.cash %></span>&nbsp;</span></span>
+  <span class='btn' id="btnchat" >Chat</span>
+  <span class='btn' id="btnsettings" >Settings</span>
+  <span class='float-right'>
+    <span class='btn' id="btndebugger">Debugger</span>
+    <span class='btn' id="btncontact">Contact</span>
+    <span class='btn' id="btnfaq">Faq</span>
+    <span class='btn' id="btnlogout">Logout</span>
+    <span id="span_users"></span>
+  </span>
+</div>
+
+<div class='tabcontent' id='tab_home'>
+<div class='subtab'> 
+    <center>
+    <h3>Home</h3>
+    </center>
+</div>
+</div>
+
+
+<div class='tabcontent' id='tab_chat'>
+<div class='subtab'> 
+    <center>
+    <h3>Chat</h3>
+    this chat is also reacheable via irc (irc.freenode.net #bancrotus)
+    </center>
+</div>
+</div>
+
+<div class='tabcontent' id='tab_settings'>
+<div class='subtab'> 
+<center>
+    <h3>Settings</h3>
+    <br>
+    
+<table>
+    <tr>
+    <td>username</td><td width="50px"></td><td><b><span class='editable'><%= user.name %></span></b>
+    </tr>
+    <tr>
+    <td>password</td><td width="50px"></td><td><b><span class='editable'><%= user.email %></span></b></td>
+    </tr>
+    <tr>
+    <td>email</td><td width="50px"></td><td><b><span class='editable'><%= user.email %></span></b></td>
+    </tr>
+
+    </table>
+</center>
+</div>
+</div>
+
+<div class='tabcontent' id='tab_balance'>
+
+<div class='subtab'> 
+<center>
+    <font color="green"><h2><span class='sync_user_cash'>?</span></h2></font> <img width="50px" src="/img/bitcoin2.png">
+</center>
+</div>
+
+<div class='subtab'> 
+<center>
+    <h3>Direct Transfer</h3>
+    <span id='paybelow'>pay to addresses below:<br><br></span>
+    <span id='address_deposit'></span>
+
+ <br> 
+<br>
+    <span class='btn blackborder' id="btn_deposit_generate">generate</span>
+</center>
+</div>
+
+<div class='subtab'> 
+<center>
+    <h3>Mybitcoin.com Transfer (fast)</h3>
+    I'd like to deposit <b><span id='edit_mybitcoin_amount' class='editable'>[ amount ]</span></b> BTC with mybitcoin.com
+<div id="mybitcoin_link"></div>
+</center>
+</div>
+
+
+<div class='subtab'> 
+<center>
+    <h3>Withdrawal</h3>
+    I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='edit_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='editable'>[ address ]</span></b><br>
+</center>
+</div>
+
+<div class='subtab'> 
+<center>
+    <h3>Transaction History</h3>
+    <table cellpadding="10">
+      <thead>
+	<tr>
+	  <th>time</th>
+	  <th>platform</th>
+	  <th>from</th>
+	  <th>type</th>
+	  <th>amount</th>
+	</tr>
+      </thead>
+      <tbody>
+    <% for (var entry in user.transaction_history) { %>
+	<tr>
+	  <td align="center"><%= user.transaction_history[entry].time %></td>
+	  <td align="center"><%= user.transaction_history[entry].platform %></td>
+	  <td align="center"><% if (!user.transaction_history[entry].from) { %> unknown <% } else { %> <%= user.transaction_history[entry].from %> <% } %>   </td>
+	  <td align="center"><% if (user.transaction_history[entry].type == '+') { %> <b><font color="green">+</font></b> <% } else { %>  <b><font color="red">-</font></b> <% } %>   </td>
+	  <td align="center"><%= user.transaction_history[entry].amount %></td>
+	</tr>
+    <% } %>
+      </tbody>
+    </table>
+
+
+</center>
+</div>
+<br><br>
+
+</div>
+
+<div class='tabcontent' id='tab_faq'>
+<div class='subtab'> 
+    <center><h3> faq </h3></center>
+</div>
+</div>
+
+
+<div class='tabcontent' id='tab_debugger'>
+  
+  <div class='blackbox'>debugger</div>
+  <div id="bla">
+    need javascript.
+  </div>
+  <br>
+
+  <button id="deposit">deposit directly</button><button id="mybitcoin">mybitcoin</button><button id="socketio">socketio</button>
+
+  <div class='blackbox'>user</div>
+  <% for (var entry in user) { %>
+  <%= entry %>: <b><span id="user_<%= entry %>"><%= user[entry] %></span></b><br>
+  <% } %>
+
+
+  <div class='blackbox'>headers</div>
+  <% for (var header in headers) { %>
+  <%= header %>: <b><%= headers[header] %></b><br>
+  <% } %>
+
+</div>
+
+
+<div class='message' id='message'>message</div>

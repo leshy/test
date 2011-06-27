@@ -1,0 +1,78 @@
+<script type="text/javascript">
+    $(document).ready(function() { 
+	
+	var secret = "<%= user.secret %>"
+	var uid = "<%= user._id %>"
+
+	$("#bla").html("js ok")
+
+
+	var socket = io.connect('http://lgate-public:45284');
+	socket.emit('hello', { uid: uid });
+	socket.on('connection', function () {
+	    console.log('websocket connected. authorizing')
+	    
+	});
+
+
+	$("#deposit").click(function() {
+	    $.post("/ajax/deposit",{ secret: secret }, function (data) { 
+		data = $.parseJSON(data)
+		console.log("GOT",data)
+		if (data.responsecode == 0) { var text = "pay to" }
+		if (data.responsecode == 1) { var text = "too many addresses already active. use the old one:" }
+
+		$("#bla").html(text + " " + data.message) } )
+	})
+
+	$("#mybitcoin").click(function() {
+	     $("#bla").html("communicating with mybitcoin...")
+	    $.post("/ajax/pay",{ uid: uid }, function (data) {
+		data = $.parseJSON(data)
+		console.log("GOT",data)
+		if (data.responsecode == 0) {
+		    $("#bla").html ("<a href='https://www.mybitcoin.com/sci/paypage.php?t=" + data.message + "'>pay</a>" )
+		} else {
+		    $("#bla").html( data.message)
+		}
+	    })
+		  
+	})
+
+
+	socket.on('cash', function(data) {
+	    console.log("GOT CASH",data)
+	    $("#user_cash").html('<span style="background: red;">' + data.cash + '</span>')
+	    setTimeout(function() {
+		$("#user_cash").html(data.cash)
+	    },1000)
+	})
+
+
+	$("#socketio").click(function() {
+	    socket.emit('cashme',{uid:uid})
+	})
+    })
+
+
+</script>
+
+<h3><%= title %></h3>
+<div id="bla">
+need javascript.
+</div>
+<br>
+
+<button id="deposit">deposit directly</button><button id="mybitcoin">mybitcoin</button><button id="socketio">socketio</button>
+
+<h3>user</h3>
+<% for (var entry in user) { %>
+<%= entry %>: <b><span id="user_<%= entry %>"><%= user[entry] %></div></b><br>
+<% } %>
+
+
+<h3>headers</h3>
+<% for (var header in headers) { %>
+<%= header %>: <b><%= headers[header] %></b><br>
+<% } %>
+

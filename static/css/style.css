@@ -1,0 +1,103 @@
+
+.blackbox {
+    background: black;
+    color: white;
+    text-decoration: none;
+    padding: 7px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+
+} 
+
+
+
+.tabcontent {
+    background: white;
+    color: black;
+    text-decoration: none;
+    padding: 0px;
+    margin-top:5px;
+} 
+
+.subtab {
+  border: 1px solid black;
+  background: #eee;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 20px;
+  margin-top: 25px
+
+}
+
+.float-right {
+    float: right;
+}
+
+.btn { 
+  background-color: #555555; 
+  color: white;
+  border: 1px solid #888888;
+  margin-right: 1.5px;
+  margin-left: 1.5px;
+  padding-right: 5px;
+  padding-left: 5px;
+  cursor:pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+
+.blackborder { 
+  border: 1px solid #000000;}
+
+.box {
+  background-color: #555555; 
+  border: 1px solid #888888;
+  margin-right: 3px;
+  padding-right: 5px;
+  padding-left: 5px;
+  cursor:pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+
+.btn:hover {
+    cursor:pointer;
+    background-color: #777777;
+    margin-bottom: -5px;
+    padding-bottom: -5px;
+}
+
+.cash {
+    color: #00FF00; 
+    font-size: 1.1em;
+    font-weight: "bold";
+}
+
+.editable input {
+    border: 0px;
+    background: #555555;
+    color: white;
+}
+
+
+
+.message {
+  border: 0px;
+  position: fixed;
+  top: 40%;
+  left:45%;
+  background: #ddd;
+  opacity: 0.9;
+  font-size: 1.5em;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  padding: 20px;
+
+}
