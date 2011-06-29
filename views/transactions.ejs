@@ -1,0 +1,25 @@
+    <h3>Transaction History</h3>
+    <table cellpadding="10">
+      <thead>
+	<tr>
+	  <th>time</th>
+	  <th>transaction id</th>
+	  <th>from/to</th>
+	  <th></th>
+	  <th>amount</th>
+	</tr>
+      </thead>
+      <tbody>
+    <% for (var entry in user.transaction_history) { %>
+	<tr>
+	  <td align="center"><%= user.transaction_history[entry].time %></td>
+	  <td align="center"><%= user.transaction_history[entry].transactionid %></td>
+	  <td align="center"><%= user.transaction_history[entry].other_party %></td>
+	  <td align="center"><% if (user.transaction_history[entry].type == '+') { %> <b><font color="green">+</font></b> <% } else { %>  <b><font color="red">-</font></b> <% } %>   </td>
+	  <td align="center"><%= user.transaction_history[entry].amount %></td>
+	</tr>
+    <% } %>
+      </tbody>
+    </table>
+
+

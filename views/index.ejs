@@ -1,12 +1,14 @@
 <script type="text/javascript">
 
     $(document).ready(function() { 
+
 	
 	var secret = "<%= user.secret %>"
 	var uid = "<%= user._id %>"
 
 	var remoteobjects = {}
 	var object_subscriptions = {}
+	
 
 	$("#bla").html("js ok")
 	$("#message").hide()
@@ -17,7 +19,7 @@
 	    var data = node.html()
 	    if (data.search('<input') != -1) { return }
 
-	    var input = $("<input class='editable' size='" + (data.length + 1) + "' type='text' value='" + data + "'>")
+	    var input = $("<input size='" + (data.length + 1) + "' type='text' value='" + data + "'>")
 
 	    function done() {
 		input.trigger('edited',[node,input.val(),data])
@@ -36,9 +38,8 @@
 	});
 
 
-	$("#edit_username").bind('edited',function(e,node,data,olddata) {
-	    node.html(data)
-	    console.log(olddata) 
+	$(".sync_user_name").bind('edited',function(e,node,data,olddata) {
+	    syncproperty("user","name",data)
 	})
 
 
@@ -46,7 +47,7 @@
 	    $("#mybitcoin_link").html("")	    
 	})
 
-	$("#edit_withdrawal_amount").bind('edited',function(e,node,data) {
+	$("#user_withdrawal_amount").bind('edited',function(e,node,data) {
 	    var amount = parseFloat(data)
 	    if (!amount) {
 		message( "invalid amount")
@@ -54,15 +55,107 @@
 	    }
 	})
 
-	$("#user_withdrawal_address").bind('edited',function(e,node,data) {
-	    
+	$("#user_withdrawal_address").bind('edited',function(e,node,data) {	    
 	    if (data.length != 34) {
 		message( "invalid address")
 		return
+	    } else {
+		syncproperty("user","address_withdrawal",data)
 	    }
 	})
 
 
+	function preinitminefield() {
+	$( "#minefieldslider" ).slider({
+			value:14,
+			min: 3,
+			max: 24,
+			step: 1,
+			slide: function( event, ui ) {
+			    var chance = 100 - (ui.value / (25 / 100))
+			    var win = (90 / chance)
+			    win = Math.round(parseFloat(win) * 100) / 100
+			    displayminefield(generateminefield(ui.value))
+
+			    $( "#minefieldchance" ).html( ui.value + " mines, win amount x" + win );
+			}
+		});
+
+	    $( "#minefield_ammount_radio" ).buttonset();
+	}
+
+	preinitminefield()
+
+	function initminefield() {
+	    socket.emit('initminefield',{ mines: 3 })
+	}
+
+	function generateminefield(minenum) {
+	    console.log("generating minefield of size",minenum)
+	    function randomboolean() {
+		return (Math.random() > 0.5)
+	    }
+
+	    function randomrange(num) {
+		return Math.floor(Math.random() * num)
+ 	    }
+
+	    function rarray(len,rndfn) {
+		var a = []
+		for (var i = 0 ; i <len;i++) { a.push(rndfn())}
+		return a
+	    }
+	    function r2darray(len,rndfn) {
+		return rarray(len,function() { return rarray(len,rndfn) })
+	    }
+
+	    var cnt = -1
+	    function counter() { cnt++; return cnt }
+	    
+	    var empty = rarray(25,counter)
+	    var mines = rarray(25,function() { return false } )
+
+	    
+	    for (var i = 0; i < minenum; i++) { 
+		var num = randomrange(empty.length)
+		mines[empty[num]] = true
+		empty.splice(num,1)
+
+	    }
+
+	    return r2darray(5,function() { var a = mines.pop(); return a } )
+
+	}
+
+
+	function displayminefield(minefield) {
+	    var code = "<table>"
+	    minefield.forEach(function(row) { 
+		code += "<tr>"
+		row.forEach (function (entry) {
+		    code +="<td>"
+
+		    if (entry == true) { 
+		    code +="<span class='mine mine_yes'>"
+		    }
+		    if (entry == false) { 
+		    code +="<span class='mine mine_no'>"
+		    }
+		    if (entry == undefined) { 
+		    code +="<span class='mine mine_undefined'>"
+		    }
+
+
+		    code +="</span>"
+		    code +="</td>"
+		})
+		code += "</tr>"
+	    })
+	    code += "</table>"
+	    $("#minefield").html(code)
+	}
+
+	displayminefield(generateminefield(12))
 
 
 	function message(string) {
@@ -71,8 +164,52 @@
 	    message.fadeIn(500)
 	    setTimeout(function() { message.fadeOut(500) },1000)
 	}
-	
 
+	function reload_transaction_history() {
+	    var code = "<table cellspacing=0 cellpadding=13 class='transactionhistory'>"
+	    code += "<thead>"
+	    code += "<tr>"
+	    code += "<th>time</th>"
+	    code += "<th>from/to</th>"
+	    code += "<th></th>"
+	    code += "<th>amount</th>"
+	    code += "<th>balance</th>"
+	    code += "</tr>"
+	    code += "</thead>"
+
+
+	    var darkflip = true
+
+	    remoteobjects.user.transaction_history.forEach(function(row) {
+		var time = new Date(parseInt(row.time))
+		console.log(parseInt(row.time))
+		var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
+		
+		if (darkflip) {
+		    code += "<tr bgcolor='#ddd'>"
+		    darkflip = false
+		} else {
+		    code += "<tr>"
+		    darkflip = true
+		}
+
+		code +="<td class='transactionhistory'>" +  now  + "</td>"
+		code +="<td class='transactionhistory'>" +  row.other_party + "</td>"
+		if (row.deposit) {
+		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
+		} else {
+		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
+		}
+		code +="<td class='transactionhistory'>" +  row.amount + "</td>"
+		code +="<td class='transactionhistory'>" +  row.balance + "</td>"
+		code += "</tr>"
+	    })
+
+	    code += "</table>"
+
+
+	    $("#transaction_history").html(code)
+	}
 	
 	$("#edit_mybitcoin_amount").bind('edited',function(e,node,data,olddata) {
 
@@ -101,14 +238,18 @@
 	socket.emit('hello', { uid: uid });
 	socket.on('connection', function () {
 	    console.log('websocket connected. authorizing')
-	    
 	});
 
+
+	$("#btnwithdraw").click(function() { 
+	    console.log("CALLING SENDMONEY")
+	    socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
+	})
     
 	$("#btn_deposit_generate").click(function() {
 	    $.post("/ajax/deposit",{ secret: secret }, function (data) { 
 		data = $.parseJSON(data)
-		if (data.responsecode == 1) { alert("too many addresses already active" ) }
+		if (data.responsecode == 1) { message("address limit reached") }
 	    })
 	})
 
@@ -119,37 +260,53 @@
 	    })
 	})
 
-	socket.on('cash', function(data) {
-	    console.log("GOT CASH",data)
-	    $(".user_cash").html('<span style="background: red;">' + data.cash + '</span>')
-	    setTimeout(function() {
-		$(".user_cash").html(data.cash)
-	    },1000)
+
+
+	socket.on('msg', function(data) {
+	    console.log("GOT MESSAGE",data)
+	    message(data.message)
 	})
 
+
+
+	socket.on('minefield', function(data) {
+	    $("minefieldhash").html(data.hash)
+	})
 
 	socket.on('objectsync', function(data) {
 	    console.log("new object stream received",data)
 	    
 	    for (var objectname in data) {
-		updateobject(objectname,data[objectname])
+		updateobject(objectname,jQuery.parseJSON(data[objectname]))
 	    }
-	
 	})
 
 
+	function syncproperty(objectname,property,value) {
+	    remoteobjects[objectname][property] = value
+	    syncobject(objectname)
+	    remoteobjects[objectname][property] = null
+	}
+
 	function syncobject(objectname) {
-	    socket.emit('objectsync', { objectname: remoteobjects[objectname] });
+	    console.log('syncing',objectname,remoteobjects[objectname])
+	    var data = {}
+	    data[objectname ] = remoteobjects[objectname]
+	    data.secret = secret
+	    socket.emit('objectsync', data );
 	}
 	
 
 	function equal(object1, object2) {
 	    if (!object2) { return false }
 
-	    if (typeof(object1) != 'object') {
+	    if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
 		return (object1 == object2)
 	    }
 
+	    
+	    if (object1.length != object2.length) { return false }
+	    
 	    for (var property in object1) { 
 
 		if (object1[property] != object2[property]) { return false }
@@ -205,15 +362,21 @@
 	}
 	
 
-
 	objectchange("user","*",function(user,property) {
-	    $("#sync_user_" + property).html(user[property])
-	    $(".sync_user_" + property).html(user[property])
+	    if ((user[property] != undefined) && (user[property] != null)) {
+		$("#sync_user_" + property).html(user[property])
+		$(".sync_user_" + property).html(user[property])
+	    }
+	    //console.log(property,$(".sync_user_" + property))
 	})
 
 
+	objectchange("user","transaction_history",function(user) {
+	    reload_transaction_history()
+	})
+
 	objectchange("user","address_deposit",function(user) {
-	    
+	    console.log("ADDRESS DEPOSIT CHANGED")
 	    if (user.address_deposit.length == 0) { $("#address_deposit").html("no addresses"); $("#paybelow").hide(); return }
 
 	    var list = $("<span></span>")
@@ -228,7 +391,7 @@
 	    }
 
 	    $("#address_deposit").html(list)
-	    console.log(list)
+	    //console.log(list)
 	})
 
 	objectchange("user","cash",function(user) {
@@ -237,12 +400,12 @@
 
 
 	objectchange("user","address_withdrawal",function(user) {
-	    if (user.address_withdrawal) { $("#user_address_withdrawal").html(user.address_withdrawal); return }
+	    if (user.address_withdrawal && user.address_withdrawal != "null") { $("#user_address_withdrawal").html(user.address_withdrawal); return }
 	})
 
 
 	
-	var tabs = [ $('#tab_home'), $('#tab_balance'),$('#tab_settings'), $('#tab_chat'), $('#tab_faq'), $('#tab_debugger') ]
+	var tabs = [ $('#tab_minefield'), $('#tab_balance'),$('#tab_settings'), $('#tab_chat'), $('#tab_faq'), $('#tab_debugger') ]
 	tabs.forEach(function(tab) {tab.hide() })
 	var selectedtab = undefined
 
@@ -260,7 +423,7 @@
 	$('#tab_balance').bind('tabshow', function() { $('#small_balance').hide() } )
 	$('#tab_balance').bind('tabhide', function() { $('#small_balance').show() } )
 
-	$('#btnhome').click( function() { selecttab(0) })
+	$('#btnminefield').click( function() { selecttab(0) })
 	$('#btnballance').click( function() { selecttab(1) })
 	$('#btnsettings').click( function() { selecttab(2) })
 	$('#btnchat').click( function() { selecttab(3) })	
@@ -274,11 +437,11 @@
 
 
 <div class='blackbox'>
-  <span>Logged in as <span id='sync_user_name' class='editable'><%= user.name %></span></span>
-  <span class='btn' id="btnhome" >Home</span>
+    <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
+  <span class='btn' id="btnminefield" >MineField</span>
   <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= user.cash %></span>&nbsp;</span></span>
-  <span class='btn' id="btnchat" >Chat</span>
-  <span class='btn' id="btnsettings" >Settings</span>
+<!--  <span class='btn' id="btnchat" >Chat</span> -->
+<!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>
     <span class='btn' id="btndebugger">Debugger</span>
     <span class='btn' id="btncontact">Contact</span>
@@ -288,12 +451,42 @@
   </span>
 </div>
 
-<div class='tabcontent' id='tab_home'>
+<div class='tabcontent' id='tab_minefield'>
 <div class='subtab'> 
     <center>
-    <h3>Home</h3>
-    </center>
+    <h3>MineField</h3>
+    <div id="minefield_ammount_radio">
+    <input type="radio" id="radio1" name="radio" checked="checked" /><label for="radio1">free</label>
+    <input type="radio" id="radio2" name="radio" /><label for="radio2">0.01</label>
+    <input type="radio" id="radio3" name="radio" /><label for="radio3">0.05</label>
+    <input type="radio" id="radio4" name="radio" /><label for="radio4">0.1</label>
+    <input type="radio" id="radio5" name="radio" /><label for="radio5">0.25</label>
+    <input type="radio" id="radio6" name="radio" /><label for="radio6">0.5</label>
+    <input type="radio" id="radio7" name="radio" /><label for="radio7">1.0</label>
+    <input type="radio" id="radio8" name="radio" /><label for="radio8">2.0</label>
+    </div>
+
+    <br>
+    
+    <div id="minefield"></div>
+
+    <br>
+
+    <div style="width: 600px;" id="minefieldslider"></div>
+    <br>
+    <div id="minefieldchance">14 mines, win amount x2.05</div>
+    <br>
+
+    <table id='minefield'>
+    </table>
+
+    <br>
+
+    <span id='minefieldhash'>Proof hash nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7</span>
+
+</center>
 </div>
+
 </div>
 
 
@@ -301,7 +494,7 @@
 <div class='subtab'> 
     <center>
     <h3>Chat</h3>
-    this chat is also reacheable via irc (irc.freenode.net #bancrotus)
+    this chat is currently reacheable only via irc (<a href='irc://irc.freenode.net/bancrotus'>irc.freenode.net #bancrotus</a>)
     </center>
 </div>
 </div>
@@ -314,16 +507,12 @@
     
 <table>
     <tr>
-    <td>username</td><td width="50px"></td><td><b><span class='editable'><%= user.name %></span></b>
+    <td>username</td><td width="50px"></td><td><b><span class='editable sync_user_name'>?</span></b>
     </tr>
     <tr>
-    <td>password</td><td width="50px"></td><td><b><span class='editable'><%= user.email %></span></b></td>
+    <td>user id</td><td width="50px"></td><td><b><span class='sync_user__id'>?</span></b>
     </tr>
-    <tr>
-    <td>email</td><td width="50px"></td><td><b><span class='editable'><%= user.email %></span></b></td>
-    </tr>
-
-    </table>
+</table>
 </center>
 </div>
 </div>
@@ -350,7 +539,7 @@
 
 <div class='subtab'> 
 <center>
-    <h3>Mybitcoin.com Transfer (fast)</h3>
+    <h3>Mybitcoin.com Transfer</h3>
     I'd like to deposit <b><span id='edit_mybitcoin_amount' class='editable'>[ amount ]</span></b> BTC with mybitcoin.com
 <div id="mybitcoin_link"></div>
 </center>
@@ -360,37 +549,13 @@
 <div class='subtab'> 
 <center>
     <h3>Withdrawal</h3>
-    I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='edit_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='editable'>[ address ]</span></b><br>
+    I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='user_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='sync_user_address_withdrawal editable'>[ address ]</span></b><br>
 </center>
 </div>
-
 <div class='subtab'> 
 <center>
     <h3>Transaction History</h3>
-    <table cellpadding="10">
-      <thead>
-	<tr>
-	  <th>time</th>
-	  <th>platform</th>
-	  <th>from</th>
-	  <th>type</th>
-	  <th>amount</th>
-	</tr>
-      </thead>
-      <tbody>
-    <% for (var entry in user.transaction_history) { %>
-	<tr>
-	  <td align="center"><%= user.transaction_history[entry].time %></td>
-	  <td align="center"><%= user.transaction_history[entry].platform %></td>
-	  <td align="center"><% if (!user.transaction_history[entry].from) { %> unknown <% } else { %> <%= user.transaction_history[entry].from %> <% } %>   </td>
-	  <td align="center"><% if (user.transaction_history[entry].type == '+') { %> <b><font color="green">+</font></b> <% } else { %>  <b><font color="red">-</font></b> <% } %>   </td>
-	  <td align="center"><%= user.transaction_history[entry].amount %></td>
-	</tr>
-    <% } %>
-      </tbody>
-    </table>
-
-
+    <span id="transaction_history">no transactions</span>
 </center>
 </div>
 <br><br>

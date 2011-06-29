@@ -27,7 +27,9 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
   padding: 20px;
-  margin-top: 25px
+  margin-top: 25px;
+  margin-left: 5px;
+  margin-right: 5px;
 
 }
 
@@ -73,6 +75,12 @@
     padding-bottom: -5px;
 }
 
+
+
+.editable {
+    font-weight: "bold";
+}
+
 .cash {
     color: #00FF00; 
     font-size: 1.1em;
@@ -99,5 +107,87 @@
   -moz-border-radius: 10px;
   border-radius: 10px;
   padding: 20px;
+
+}
+
+.vmiddle {
+    vertical-align: middle;
+}
+
+.btnlarge { 
+  display: block;
+  background-color: #555555; 
+  color: white;
+  border: 1px solid #888888;
+  margin: 1.5px;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  cursor:pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+
+
+.mine { 
+  display: block;
+  background-color: #555555; 
+  color: white;
+  border: 2px solid black;
+  margin: 1.5px;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  cursor:pointer;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.mine_undefined { 
+  background-color: #555555; 
+}
+
+.mine_yes { 
+  background-color: #bb5555; 
+}
+
+.mine_no { 
+  background-color: #55bb55; 
+}
+
+.mine_no_img { 
+  background-image:url(/img/grass.png);
+  background-size: 200%;
+}
+
+
+.btnlarge:hover {
+    cursor:pointer;
+    background-color: #777777;
+}
+
+.transactionhistory td {
+    text-align: center;
+    align: center;
+    padding: 10px;
+}
+
+.plus {
+    text-color: green;
+    text-size: 2em;
+    text-decoration: bold;
+}
+
+
+
+.minus {
+    text-color: red;
+    text-size: 2em;
+    text-decoration: bold;
 
 }

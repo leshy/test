@@ -77,6 +77,18 @@ var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
 
 // functions
 
+function copyProps (object, props) {
+    var outobject = {}
+    props.forEach(function(propname) { 
+	outobject[propname] = object[propname]
+    })
+    return outobject
+}
+
+function roundMoney(money) {
+    return Math.floor(parseFloat(money) * 1000) / 1000
+}
+
 function jsonmsg(message,responsecode) {
     return JSON.stringify({'message': message, 'responsecode': responsecode})
 }
@@ -85,6 +97,19 @@ function JSONtoAmount(value) {
     return amount = Math.round(1e8 * value);
 }
 
+
+function sendMoney (address,amount,callback,callbackerr) {
+    amount = roundMoney(amount)
+    btc.sendToAddress ( address,amount, "bla1","bla2", function(err,paymentid) { 
+	if (paymentid) {
+	    console.log("PAYMENT SUCCESS " + amount + " BTC to" + address + " success - transaction id " + paymentid)
+	    callback(paymentid)
+	} else {
+	    console.log("ERROR",err)
+	    if (callbackerr) { callbackerr(err.message) }
+	}
+    })
+}
 
 function spawnUser(req,callback) {
     console.log('creating new user')
@@ -101,7 +126,10 @@ function RemoveFunctions(object) {
 }
 
 function ArrayRemove (array,entry){
-    array.splice(array.indexOf(entry),1);
+    var index = array.indexOf(entry)
+    if (index == -1) { return array }
+    
+    array.splice(index,1);
     return array;
 }
 
@@ -215,10 +243,6 @@ function User(user) {
     if (!this.name) { this.name = "user-" + this._id }
 }
 
-function SocketBroadcast(name,data) {
-
-
-}
 
 
 User.prototype.save = function(callback) {
@@ -229,17 +253,80 @@ User.prototype.save = function(callback) {
     })
 }
 
+User.prototype.message = function(message) {
+    var self = this
+    self.sockets(function(socket) { socket.emit('msg',{message: message}) })
+}
+
+
+User.prototype.shipout = function() {
+    var self = this
+    var outobject = copyProps(self, [ 'name','address_deposit','address_withdrawal', 'cash' ])
+    
+    outobject.transaction_history = []
+    for (var i = 0; i < 10; i++) {
+	if (self.transaction_history[i]) {
+	    outobject.transaction_history.push(self.transaction_history[i])
+	} else {
+	    break
+	}
+    }
+
+    return JSON.stringify(outobject)
+
+}
+
 User.prototype.sync = function() {
-    self = this
-    self.sockets(function(socket) { socket.emit('objectsync',{ user: RemoveFunctions(self) } ) })
+    var self = this
+    self.sockets(function(socket) { socket.emit('objectsync',{ user: self.shipout() } ) })
 }
 
 
 User.prototype.sockets = function(callback) {
-    self = this
+    var self = this
     if (sockets[self._id]) { sockets[self._id].forEach(function(socket) { callback(socket) }) }
 }
 
+
+User.prototype.receiveMoney = function(id,time,from,amount) {
+    self = this
+    amount = parseFloat(amount)
+    self.cash = self.cash + amount
+
+    self.cash = roundMoney(self.cash)    
+    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
+
+    self.save()
+    self.sync()
+    self.message("payment received")
+    console.log("PAYMENT RECEIVED for user " + self._id  + " from " + from + " " + amount + " BCC users cash is now " + self.cash + " BTC")
+}
+
+User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
+    self = this
+    console.log("PAYMENT ATTEMPT of",amount,"and user has",self.cash,"userid",self._id)
+    amount = roundMoney(amount)
+    if ((self.cash - amount) >= 0) {
+	var oldcash = self.cash
+	self.cash -= amount
+	self.cash = Math.round(self.cash * 1000) / 1000
+	self.save()
+	sendMoney(address,amount,
+		  function(transactionid) { 
+		      if (callback) {callback(transactionid)}
+		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
+		      self.sync()
+		      self.save()
+		  },
+		  function(err) {
+		      self.cash = oldcash
+		      self.save()
+		      if (callbackerr) {callbackerr(err)}
+		  })
+    } else {
+	callbackerr ('Not enough money on account')
+    }
+}
 
 User.prototype.getDepositAddress = function(callback,callbackerr) {
     var self = this
@@ -342,6 +429,14 @@ function getUserByReq(req,callback,callbackerr) {
 
 }
 
+app.post('/ajax/transactions', function(req, res){
+    getUserByReq(req,
+		 function(user) {
+		     res.render('transactions',{title:settings.appname,user: RemoveFunctions(user)})
+		 })
+})
+
+
 app.post('/ajax/deposit', function(req, res){
     getUserByReq(req,
 		 function(user) { 
@@ -368,21 +463,12 @@ app.get('/paytest',function(req,res,next) {
 
 })
 
+
 app.post('/receipt',function(req,res,next) {
     var receipt = mybitcoinparse(req.body.input)
     
     getUserById(receipt['SCI Baggage Field'], function(user) {
-	
-	var amount = parseFloat(receipt['SCI Amount'])
-//	console.log("BTC ADDED TO ACCOUNT string:",receipt['SCI Amount'], " float:",parseFloat(receipt['SCI Amount']))
-	user.cash += amount
-	user.cash = Math.round(user.cash * 1000) / 1000
-	console.log("MYBITCOIN PAYMENT for user " + user._id  + " from " + receipt['SCI Payer'] + " " + amount + " BCC users cash is now " + user.cash + " BTC")
-	user.transaction_history.unshift({ time: new Date().getTime(), type: "+", platform: "Mybitcoin.com", from: receipt['SCI Payer'], amount: amount, balance: user.cash })
-	
-	user.sync()
-	user.save()
-	user.sockets(function(socket) { socket.emit('cash',{cash: user.cash}) })
+	user.receiveMoney(receipt['SCI Transaction Number'],new Date().getTime(), "Mybitcoin.com", receipt['SCI Amount'])	
     })
 
     res.send("ok")
@@ -545,13 +631,43 @@ io.sockets.on('connection', function (socket) {
 
     })
     
-    socket.on('cashme',function (data) {
-	console.log("user",data.uid,"requesting cashme")
-	getUserById(data.uid,function(user) {
-	    user.sockets(function(socket) { socket.emit('cash',{cash: 3000.00}) } )
+    socket.on('objectsync',function (data) {
+	getUserBySecret(data.secret, function(user) {
+	    console.log("user " + user._id + " attempting to sync an object")
+	    console.log(sys.inspect(data))
+	    if (data.user) {
+		console.log("name: " + escape(data.user.name) )
+		user.name = escape(data.user.name)
+		user.address_withdrawal = escape(data.user.address_withdrawal)
+		if (data.user.password) {
+		    user.password = data.user.password
+		}
+
+		user.save()
+		user.sync()
+	    }
 	})
     })
-    
+
+
+    socket.on('call',function (data) {
+	getUserBySecret(data.secret, function(user) {
+	    console.log("funcall for user",user._id,data.fun,sys.inspect(data.args))
+	    
+	    if (data.fun = 'sendMoney') {
+		data.args.push(function(transactionid) {
+		    user.message(transactionid)
+		})
+		data.args.push(function(err) {
+		    user.message(err)
+		})
+		user.sendMoney.apply(user,data.args)
+	    }
+
+
+	})
+    })
+
 })
 
 
@@ -572,17 +688,10 @@ function parseAddressData(address) {
 
 		getUserByAddress(addressentry.address, function(user) {
 		    if (user) {
-			user.cash += newcash
-			user.cash = Math.round(user.cash * 1000) / 1000
-			
-			console.log("PAYMENT for user " + user._id  + " from " + address.address + " " + newcash + " BCC users cash is now " + user.cash + " BTC")
-
 			user.address_deposit = ArrayRemove(user.address_deposit,address.address)
 			user.address_deposit_used.push(address.address)
-			user.transaction_history.unshift({ time: new Date().getTime(), type: "+", platform: "Bitcoin p2p", from: undefined, amount: newcash, balance: user.cash })
-			user.sync()
 			user.save()
-			user.sockets(function(socket) { socket.emit('cash',{cash: user.cash}) })
+			user.receiveMoney("?",new Date().getTime(),"Bitcoin P2P",newcash)
 		    } else {
 			console.log("PAYMENT ERROR " + address.address + " is not associated to a user")
 		    }
@@ -595,10 +704,14 @@ function parseAddressData(address) {
 
 function checkFinances() {
   //  console.log('finances tick...')
-   btc.listReceivedByAddress (0,false,function(err, addresses) {
+   btc.listReceivedByAddress (1,false,function(err, addresses) {
+//       console.log(sys.inspect(addresses))
+       if (!addresses) { console.log("problem with bitcoind communication");  }
+       else {
        addresses.forEach(function(address) {
 	   parseAddressData(address)
        })
+       }
     })
 setTimeout(checkFinances,5000)
 }
