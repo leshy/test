@@ -79,10 +79,13 @@
 
 			    $( "#minefieldchance" ).html( ui.value + " mines, win amount x" + win );
 			}
+
+	    
 		});
 
 	    $( "#minefield_ammount_radio" ).buttonset();
 	}
+
 
 	preinitminefield()
 
@@ -166,47 +169,51 @@
 	}
 
 	function reload_transaction_history() {
-	    var code = "<table cellspacing=0 cellpadding=13 class='transactionhistory'>"
-	    code += "<thead>"
-	    code += "<tr>"
-	    code += "<th>time</th>"
-	    code += "<th>from/to</th>"
-	    code += "<th></th>"
-	    code += "<th>amount</th>"
-	    code += "<th>balance</th>"
-	    code += "</tr>"
-	    code += "</thead>"
-
-
-	    var darkflip = true
-
-	    remoteobjects.user.transaction_history.forEach(function(row) {
-		var time = new Date(parseInt(row.time))
-		console.log(parseInt(row.time))
-		var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
+	    if (remoteobjects.user.transaction_history.length == 0) { 
+		var code = "no transactions"
+	    } else {
 		
-		if (darkflip) {
-		    code += "<tr bgcolor='#ddd'>"
-		    darkflip = false
-		} else {
-		    code += "<tr>"
-		    darkflip = true
-		}
-
-		code +="<td class='transactionhistory'>" +  now  + "</td>"
-		code +="<td class='transactionhistory'>" +  row.other_party + "</td>"
-		if (row.deposit) {
-		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
-		} else {
-		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
-		}
-		code +="<td class='transactionhistory'>" +  row.amount + "</td>"
-		code +="<td class='transactionhistory'>" +  row.balance + "</td>"
+		var code = "<table cellspacing=0 cellpadding=13 class='transactionhistory'>"
+		code += "<thead>"
+		code += "<tr>"
+		code += "<th>time</th>"
+		code += "<th>from/to</th>"
+		code += "<th></th>"
+		code += "<th>amount</th>"
+		code += "<th>balance</th>"
 		code += "</tr>"
-	    })
+		code += "</thead>"
 
-	    code += "</table>"
 
+		var darkflip = true
+
+		remoteobjects.user.transaction_history.forEach(function(row) {
+		    var time = new Date(parseInt(row.time))
+		    console.log(parseInt(row.time))
+		    var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
+		    
+		    if (darkflip) {
+			code += "<tr bgcolor='#ddd'>"
+			darkflip = false
+		    } else {
+			code += "<tr>"
+			darkflip = true
+		    }
+
+		    code +="<td class='transactionhistory'>" +  now  + "</td>"
+		    code +="<td class='transactionhistory'>" +  row.other_party + "</td>"
+		    if (row.deposit) {
+			code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
+		    } else {
+			code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
+		    }
+		    code +="<td class='transactionhistory'>" +  row.amount + "</td>"
+		    code +="<td class='transactionhistory'>" +  row.balance + "</td>"
+		    code += "</tr>"
+		})
+
+		code += "</table>"
+	    }
 
 	    $("#transaction_history").html(code)
 	}
@@ -235,9 +242,9 @@
 	
 
 	var socket = io.connect('http://lgate-public:45284');
-	socket.emit('hello', { uid: uid });
 	socket.on('connection', function () {
 	    console.log('websocket connected. authorizing')
+	    socket.emit('hello', { uid: uid, secret: secret });
 	});
 
 
@@ -291,7 +298,7 @@
 	function syncobject(objectname) {
 	    console.log('syncing',objectname,remoteobjects[objectname])
 	    var data = {}
-	    data[objectname ] = remoteobjects[objectname]
+	    data[objectname] = remoteobjects[objectname]
 	    data.secret = secret
 	    socket.emit('objectsync', data );
 	}
@@ -430,13 +437,14 @@
 	$('#btnfaq').click( function() { selecttab(4) })	
 	$('#btndebugger').click( function() { selecttab(5) })	
 	
+	$('#btnminefield').click()
     })
 
 
 </script>
 
 
-<div class='blackbox'>
+<div class='header'>
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
   <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= user.cash %></span>&nbsp;</span></span>
@@ -444,7 +452,7 @@
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>
     <span class='btn' id="btndebugger">Debugger</span>
-    <span class='btn' id="btncontact">Contact</span>
+    <span class='btn' id="btncontact"><a href="http://bitcoinlab.org"><font color="white">Contact</font></a></span>
     <span class='btn' id="btnfaq">Faq</span>
     <span class='btn' id="btnlogout">Logout</span>
     <span id="span_users"></span>
@@ -539,8 +547,8 @@
 
 <div class='subtab'> 
 <center>
-    <h3>Mybitcoin.com Transfer</h3>
-    I'd like to deposit <b><span id='edit_mybitcoin_amount' class='editable'>[ amount ]</span></b> BTC with mybitcoin.com
+    <h3><a href="https://www.mybitcoin.com">Mybitcoin.com</a> Transfer (faster)</h3>
+    I'd like to deposit <b><span id='edit_mybitcoin_amount' class='editable'>[ amount ]</span></b> BTC with <a href="https://www.mybitcoin.com">mybitcoin.com</a>
 <div id="mybitcoin_link"></div>
 </center>
 </div>
@@ -556,10 +564,9 @@
 <center>
     <h3>Transaction History</h3>
     <span id="transaction_history">no transactions</span>
+    <br><br>
 </center>
 </div>
-<br><br>
-
 </div>
 
 <div class='tabcontent' id='tab_faq'>
@@ -594,3 +601,9 @@
 
 
 <div class='message' id='message'>message</div>
+
+
+<div class='footer'>
+...
+</div>
+

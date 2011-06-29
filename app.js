@@ -5,7 +5,7 @@ var settings = {}
 settings.dbhost = "localhost"
 settings.dbport = 27017
 settings.dbname = "bitcoin1"
-settings.appname = "bitcoin1"
+settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 
 // require
@@ -234,6 +234,35 @@ function spawnUserData(secret,callback,callbackerr) {
 }
 
 
+function GateKeeper() {
+    this.users = {}
+}
+
+GateKeeper.prototype.logon = function(uid,socket) {
+    return true
+}
+
+GateKeeper.prototype.logoff = function(uid,socket) {
+    return true
+}
+
+GateKeeper.prototype.addobject = function(obj,uid) {
+    uid = toString(uid)
+    if (!this.users[uid]) { this.users[uid] = [] }
+
+    this.remoteobjects.push(obj)
+    this.sync(obj)
+}
+
+GateKeeper.prototype.sync = function(obj) {
+    var self = this
+    if (obj.gatekeeper) { obj = obj.gatekeeper() }
+    self.sockets(function(socket) { socket.emit('objectsync',{ user: self.shipout() } ) })
+}
+
+
+
+
 function User(user) {
     //console.log(sys.inspect(user))
     for (entry in user) {
@@ -271,9 +300,7 @@ User.prototype.shipout = function() {
 	    break
 	}
     }
-
     return JSON.stringify(outobject)
-
 }
 
 User.prototype.sync = function() {
@@ -281,16 +308,14 @@ User.prototype.sync = function() {
     self.sockets(function(socket) { socket.emit('objectsync',{ user: self.shipout() } ) })
 }
 
-
 User.prototype.sockets = function(callback) {
     var self = this
     if (sockets[self._id]) { sockets[self._id].forEach(function(socket) { callback(socket) }) }
 }
 
-
 User.prototype.receiveMoney = function(id,time,from,amount) {
     self = this
-    amount = parseFloat(amount)
+    amount = roundMoney(amount)
     self.cash = self.cash + amount
 
     self.cash = roundMoney(self.cash)    
@@ -464,7 +489,7 @@ app.get('/paytest',function(req,res,next) {
 })
 
 
-app.post('/receipt',function(req,res,next) {
+app.post('/dVmJvHTrrGhheSbsRDoR',function(req,res,next) {
     var receipt = mybitcoinparse(req.body.input)
     
     getUserById(receipt['SCI Baggage Field'], function(user) {
@@ -499,7 +524,7 @@ app.post('/ajax/mybitcoinlink', function(req,res,next) {
 
 
 app.get ('/payok',function(req, res, next){
-    res.send("<a href='/'>thanks bro</a>")
+    res.send("<a href='/'>thanks</a>")
 })
 
 
@@ -602,12 +627,12 @@ ircclient.addListener('message', function (from, to, message) {
 
 io.sockets.on('connection', function (socket) {
 
-    socket.emit('news', { hello: 'world' })
     socket.on('hello', function (data) {
 	console.log("user", data.uid, "has connected to websocket");
 	
-	getUserById(data.uid,function(user) { user.sync() })
+	getUserBySecret(data.secret,function(user) { user.sync() })
 	
+
 //	console.log(sys.inspect(sockets))
 	if (sockets[data.uid]) {
 	    sockets[data.uid].push(socket)
@@ -623,7 +648,7 @@ io.sockets.on('connection', function (socket) {
 		delete sockets[data.uid]
 		console.log("user", data.uid, "has logged of completely")
 	    }
-	    
+
 //	console.log(sys.inspect(sockets))
 
 	}); 
@@ -636,7 +661,8 @@ io.sockets.on('connection', function (socket) {
 	    console.log("user " + user._id + " attempting to sync an object")
 	    console.log(sys.inspect(data))
 	    if (data.user) {
-		console.log("name: " + escape(data.user.name) )
+		data.user.name = escape(data.user.name)
+		console.log("name: " +  data.user.name)
 		user.name = escape(data.user.name)
 		user.address_withdrawal = escape(data.user.address_withdrawal)
 		if (data.user.password) {
@@ -715,9 +741,6 @@ function checkFinances() {
     })
 setTimeout(checkFinances,5000)
 }
-
-
-
 
 setTimeout(checkFinances,1000)
 

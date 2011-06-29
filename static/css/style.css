@@ -1,13 +1,36 @@
-
 .blackbox {
     background: black;
     color: white;
     text-decoration: none;
     padding: 7px;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+} 
 
+
+
+.header {
+    background: black;
+    color: white;
+    text-decoration: none;
+    padding: 7px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+} 
+
+
+.footer {
+    background: black;
+    color: white;
+    text-decoration: none;
+    padding: 7px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin-top: 12px;
 } 
 
 
@@ -17,7 +40,7 @@
     color: black;
     text-decoration: none;
     padding: 0px;
-    margin-top:5px;
+
 } 
 
 .subtab {
@@ -27,9 +50,10 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
   padding: 20px;
-  margin-top: 25px;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin-left: 1px;
+  margin-right: 1px;
 
 }
 
@@ -190,4 +214,26 @@
     text-size: 2em;
     text-decoration: bold;
 
+}
+
+h3,h2,h1 {
+    text-shadow: 0 2px 3px #999999;
+    letter-spacing: -1px;
+}
+
+
+
+a:link {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+a:visited {
+    text-decoration: none;
+    color: black;
 }
