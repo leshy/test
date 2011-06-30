@@ -242,9 +242,9 @@
 	
 
 	var socket = io.connect('http://lgate-public:45284');
+	socket.emit('hello', { uid: uid, secret: secret });
 	socket.on('connection', function () {
 	    console.log('websocket connected. authorizing')
-	    socket.emit('hello', { uid: uid, secret: secret });
 	});
 
 
@@ -297,8 +297,8 @@
 
 	function syncobject(objectname) {
 	    console.log('syncing',objectname,remoteobjects[objectname])
-	    var data = {}
-	    data[objectname] = remoteobjects[objectname]
+	    var data = {objects : {}}
+	    data.objects[objectname] = remoteobjects[objectname]
 	    data.secret = secret
 	    socket.emit('objectsync', data );
 	}
@@ -602,8 +602,8 @@
 
 <div class='message' id='message'>message</div>
 
-
+<!--
 <div class='footer'>
 ...
 </div>
-
+-->

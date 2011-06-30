@@ -24,6 +24,10 @@ var tls = require('tls');
 var socketio = require('socket.io')
 var rbytes = require('rbytes');
 var irc = require('irc')
+var gatekeeper = require('./gatekeeper.js')
+
+
+gatekeeper = new gatekeeper.GateKeeper()
 
 // init
 
@@ -253,116 +257,12 @@ function spawnUserData(secret,callback,callbackerr) {
     })
 }
 
-
-function GateKeeper() {
-    this.users = {}
-}
-
-GateKeeper.prototype.logon = function(uid,socket) {
-    var self = this
-    uid = toString(uid)
-    if (!self.users[uid])  { self.users[uid] = {sockets: [], objects: {} } }
-}
-
-GateKeeper.prototype.logoff = function(uid,socket) {
-    var self = this
-    uid = toString(uid)
-    console.log("socket for user " + uid + " disconnected")
-    self.users[uid].sockets = ArrayRemove(self.users[uid].sockets,socket)
-    if (self.users[uid].sockets.length == 0) {
-	console.log("fully logging of user " + uid)
-	delete self.users[uid]
-    }
-}
-
-GateKeeper.prototype.addobject = function(objname,obj,uid) {
-    var self = this
-    uid = toString(uid)
-    self.users[uid].objects[objname] = obj
-    self.subscriptions = {}
-//    self.sync(objname)
-}
-
-GateKeeper.prototype.syncin = function (uid,objects) {
-    var self = this
-    objects.forEach(function(objname) {
-	self.syncin_object(uid,objname,objects[objname])
-    })
-}
-
-GateKeeper.prototype.syncin_object = function (uid,objname,obj) {
-    var self = this
-    if (self[objname + "_in"])  { obj = self[objname + "_in"](obj) }
-    if (obj.ship_in) { obj = obj.ship_in(obj) }
-
-
-    if (!self.users[uid].objects[objname]) { return false }
-    var localobj = self.users[uid].objects[objname]
-    obj.forEach(function(property) {
-	if (!equal(obj[property],localobj[property] )) {
-	    self.syncin_property(uid,objname,obj,property,obj[property],localobj[property])
-	    localobj[property] = obj[property]
-	}
-    })
-}
-
-
-GateKeeper.prototype.syncin_property = function (uid,objname,obj,property,newval,oldval) {
-    var self = this
-    if (self[uid] && self.subscriptions[objname] && self.subscriptions[objname][property]) {
-	self.subscriptions[objname][property].forEach(function (callback) { 
-	    callback(uid,currentval,lastval,property,objname)
-	})
-    }
-}
-
-GateKeeper.prototype.subscribe = function (objectname,property,callback) {
-    var self = this
-    if (!self.subscriptions[objectname]) { self.subscriptions[objectname] = {} }
-    if (!self.subscriptions[objectname][property]) { self.subscriptions[objectname][property] = [] }
-    self.subscriptions[objectname][property].push(callback)
-}
-
-GateKeeper.prototype.sync = function(uid,objname) {
-    var self = this
-    if (!self.users[uid][objname]) { return false }
-
-    if (!self.users[uid].objects[objname]) { console.log("ERROR attempting to sync " + objname + " for user " + uid + " but object with that name not found."); return}
-
-    var syncdata = {}
-    var obj = self.users[uid].objects[objname]
-    if (self[objname + "_out"])  { obj = self[objname + "_out"]() }
-    if (obj.ship_out) { obj = obj.ship_out() }
-    syncdata[objname] = obj
-    
-    self.sockets(uid).forEach(function(socket) {socket.emit('objectsync',syncdata)})
-}
-
-
-GateKeeper.prototype.sockets = function(uid) {
-    if (self.users[uid].sockets) { return self.users[uid].sockets } else { return [] }
-}
-
-
-GateKeeper.prototype.user_in = function (obj) {
-    
-}
-
-
-GateKeeper.prototype.user_out = function (obj) {
-    
-}
-
-
-
-function DbProxy(query) {
-    this.query = query
-}
-
-
+/*
 DbProxy.prototype.ship_out = function() {
     var self = this
-    
+    collection.findOne(query,function(err,data) { 
+	
+    })
 }
 
 
@@ -371,7 +271,7 @@ DbProxy.prototype.ship_in = function(data) {
 
 }
 
-
+*/
 
 
 function User(user) {
@@ -395,8 +295,7 @@ User.prototype.message = function(message) {
     self.sockets(function(socket) { socket.emit('msg',{message: message}) })
 }
 
-
-User.prototype.shipout = function() {
+User.prototype.shipout = function(callback) {
     var self = this
     var outobject = copyProps(self, [ 'name','address_deposit','address_withdrawal', 'cash' ])
     
@@ -408,13 +307,13 @@ User.prototype.shipout = function() {
 	    break
 	}
     }
-    return JSON.stringify(outobject)
+    callback(JSON.stringify(outobject))
 }
 
-User.prototype.sync = function() {
+
+User.prototype.sync = function(socket) {
     var self = this
-    gatekeeper.sync(self._id,"user")
-//    self.sockets(function(socket) { socket.emit('objectsync',{ user: self.shipout() } ) })
+    gatekeeper.sync(self,"user",self,socket)
 }
 
 User.prototype.sockets = function(callback) {
@@ -580,7 +479,7 @@ app.post('/ajax/deposit', function(req, res){
 			     user.sync()
 			 }
 			 return 
-		     })},
+		     })}
 		 function(err) { res.send(jsonmsg("internal problem",1)); return }
 		)
 })
@@ -604,9 +503,7 @@ app.post('/dVmJvHTrrGhheSbsRDoR',function(req,res,next) {
     getUserById(receipt['SCI Baggage Field'], function(user) {
 	user.receiveMoney(receipt['SCI Transaction Number'],new Date().getTime(), "Mybitcoin.com", receipt['SCI Amount'])	
     })
-
     res.send("ok")
-
 })
 
 app.post('/ajax/mybitcoinlink', function(req,res,next) {
@@ -719,7 +616,7 @@ btc.getBalance(function(err, balance) {
 })
 
 
-
+/*
 var ircclient = new irc.Client('irc.freenode.net', 'bankrotus', {
     channels: ['#bankrotus'],
 });
@@ -730,48 +627,39 @@ ircclient.addListener('message', function (from, to, message) {
     if (message.indexOf("!") == 0) { ircclient.say(to, "I'm a bot!") }
 });
 
+*/
 
-//ircclient.say('#bankrotus', "I'm a bot!");
 
 io.sockets.on('connection', function (socket) {
-
+    console.log("CONNECTION ESTABLISHED")
     socket.on('hello', function (data) {
 	console.log("user", data.uid, "has connected to websocket");
 	
 	getUserBySecret(data.secret,function(user) { 
 	
-	    gatekeeper.logon(data.uid,socket)
-	    
+	    gatekeeper.logon(user,socket)
+	    gatekeeper.sync(user,"user",user,socket)
+
+
 	    socket.on('disconnect', function () { 
-		gatekeeper.logoff(data.uid,socket)
+		console.log(sys.inspect(gatekeeper.users))
+		gatekeeper.logoff(user,socket)
+		console.log(sys.inspect(gatekeeper.users))
 	    })
+
+
 	})
-    });
+    })
     
     socket.on('objectsync',function (data) {
-	getUserBySecret(data.secret, function(user) {
-
-	    gatekeeper.syncin(user._id)
-
-	    return
-
-
-	    console.log("user " + user._id + " attempting to sync an object")
-	    console.log(sys.inspect(data))
-
-	    if (data.user) {
-		data.user.name = escape(data.user.name)
-		console.log("name: " +  data.user.name)
-		user.name = escape(data.user.name)
-		user.address_withdrawal = escape(data.user.address_withdrawal)
-		if (data.user.password) {
-		    user.password = data.user.password
-		}
-
-		user.save()
-		user.sync()
-	    }
-	})
+	if (data.objects && data.secret) {
+	    getUserBySecret(data.secret, function(user) {
+		gatekeeper.syncin(user,data.objects)
+		return
+	    })
+	} else {
+	    console.log( "ERROR invalid sync data received" )
+	}
     })
 
 
