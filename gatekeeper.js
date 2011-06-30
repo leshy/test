@@ -15,10 +15,15 @@ function stringuid(uid) {
     return "" + uid
 }
 
+GateKeeper.prototype.privateobjects = function(user) {
+    if (self.users[uid])  { return self.users[uid].privateobjects }
+    console.log("ERROR Attempted to access private objects of unloggedin user")
+}
+
 GateKeeper.prototype.logon = function(user,socket) {
     var self = this
     uid = stringuid(user._id)
-    if (!self.users[uid])  { self.users[uid] = {sockets: [], objects: {} } }
+    if (!self.users[uid])  { self.users[uid] = {sockets: [], objects: {}, private_objects: {} } }
 
     self.users[uid].sockets.push(socket)
     self.initial_sync(user,socket)
@@ -70,14 +75,12 @@ GateKeeper.prototype.syncin_object = function (user,objname,obj) {
 	    var oldval = localobj[property]
 	    localobj[property] = obj[property]
 	    self.emit(obj[property],obj,oldval,user,objname,property)
-
 	}
     })
 
     if (changed) {
 	self.emit(undefined,obj,undefined,user,objname,"changed")
     }
-    
 }
 
 
@@ -121,8 +124,7 @@ GateKeeper.prototype.syncproperty = function(user,objname,property,obj,socket) {
 
     if (self[objname + "_out"])  { obj = self[objname + "_out"]() }
     if (obj.shipout) { obj.shipout(send) } else { send(obj) }
-
-
+    
     function send(obj) {
 	var syncdata = {}
 	syncdata[objname] = {}
@@ -134,7 +136,6 @@ GateKeeper.prototype.syncproperty = function(user,objname,property,obj,socket) {
 	    self.sockets(user).forEach(function(socket) {socket.emit('objectsync',syncdata)})
 	}
     }
-
 }
 
 
@@ -149,8 +150,6 @@ GateKeeper.prototype.sync = function(user,objname,obj,socket) {
 
     if (self[objname + "_out"])  { obj = self[objname + "_out"]() }
     if (obj.shipout) { obj.shipout(send) } else { send(obj) }
-
-
 
     function send(obj) {
 	var syncdata = {}
@@ -188,5 +187,20 @@ GateKeeper.prototype.user_in(obj,user) {
     return
 }
 
+
+Gatekeeper.prototype.remote(user,fun,args,callback) {
+    if (self["remote_" + fun]) {
+	return self["remote_" + fun].apply(user,args,callback)
+    }
+}
+
+
+
+
+
+GateKeeper.prototype.remote_startminefield(user,minenum,callback) {
+    var user = this
+    generateminefield(minenum)
+}
 
 module.exports.GateKeeper = GateKeeper;

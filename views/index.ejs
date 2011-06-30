@@ -1,5 +1,38 @@
 <script type="text/javascript">
 
+
+
+function Question(socket,message,callback) {
+    
+}
+
+function RemoteObject(name,obj) {
+    
+}
+
+
+RemoteObject.prototype.subscribe = function(property,callback) {
+    
+}
+
+RemoteObject.prototype.update = function(values) {
+    
+}
+
+RemoteObject.prototype.set = function(property,value) {
+
+}
+
+RemoteObject.prototype.flush = function() {
+
+}
+
+
+
+
+
+
+
     $(document).ready(function() { 
 
 	
@@ -433,17 +466,14 @@
 	$('#btnminefield').click( function() { selecttab(0) })
 	$('#btnballance').click( function() { selecttab(1) })
 	$('#btnsettings').click( function() { selecttab(2) })
-	$('#btnchat').click( function() { selecttab(3) })	
-	$('#btnfaq').click( function() { selecttab(4) })	
+	$('#btnchat').click( function() { selecttab(3) })
+	$('#btnfaq').click( function() { selecttab(4) })
 	$('#btndebugger').click( function() { selecttab(5) })	
-	
 	$('#btnminefield').click()
     })
 
 
 </script>
-
-
 <div class='header'>
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>

@@ -671,7 +671,8 @@ io.sockets.on('connection', function (socket) {
 		data.args.push(function(err) {
 		    user.message(err)
 		})
-		user.sendMoney.apply(user,data.args)
+
+		user.sendMoney.apply(data.args)
 	    }
 
 

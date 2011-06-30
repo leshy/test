@@ -8,5 +8,6 @@ var o = {_name : "Start name",
 }
 
 //and can be added to extant objects
-o.numwrites getter = function() { return this.writes;}
-o.numwrites setter = function() {throw "no";}
+//o.numwrites getter = function() { return this.writes;}
+//o.numwrites setter = function() {throw "no";}
+
