@@ -24,10 +24,12 @@ var tls = require('tls');
 var socketio = require('socket.io')
 var rbytes = require('rbytes');
 var irc = require('irc')
-var gatekeeper = require('./gatekeeper.js')
+var remoteobject = require('./remoteobject.js')
 
 
-gatekeeper = new gatekeeper.GateKeeper()
+router = new remoteobject.Router()
+
+
 
 // init
 
@@ -80,6 +82,7 @@ db.open( function (err) {
 var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
 
 // functions
+
 
 function equal(object1, object2) {
     if (!object2) { return false }
@@ -151,8 +154,7 @@ function RemoveFunctions(object) {
 
 function ArrayRemove (array,entry){
     var index = array.indexOf(entry)
-    if (index == -1) { return array }
-    
+    if (index == -1) { return array }    
     array.splice(index,1);
     return array;
 }
@@ -274,13 +276,75 @@ DbProxy.prototype.ship_in = function(data) {
 */
 
 
+
+
+function MineField(size) {
+    var self = this
+    self.size = size
+    self.minefield = self.generateminefield(size)
+    self.Remoteobject('minefield',user)
+}
+
+MineField.prototype = new remoteobject.RemoteObject()
+
+MineField.prototype.step = function(coords) {
+    if (this.minefield[coords[0]][coords[1]] == 2) { return 2 } else { return 1 }
+}
+
+Minefield.prototype.payout = function(callback) {
+    self.parent.cash += 1; // ? ne zelim usera u memoriji..
+    getUserById(self.userid,function(user) { user.cash += 1 })
+//    if (callback) { callback() }
+}
+
+
+Minefield.prototype.filter_in = { step: true,
+				  payout: true
+				}
+
+Minefield.prototype.filter_out = { minefield : function(minefield) { return minefield.map( function (entry) { if (entry < 2) { return 0 } else { return entry }})},
+				   hash : true,
+				   size : true,
+				   step: 'function',
+				   payout: 'function'
+				 }
+
+user.prototype.newminefield = function(size) {
+    user.shareobject('minefield',new MineField(size))
+}
+
+
+
+
+
+
 function User(user) {
     //console.log(sys.inspect(user))
+    var self = this
     for (entry in user) {
-	this[entry] = user[entry]
+	self[entry] = user[entry]
     }
-    if (!this.name) { this.name = "user-" + this._id }
+    if (!self.name) { self.name = "user-" + this._id }
+    this.RemoteObject('user',this)
 }
+
+User.prototype = new remoteobject.RemoteObject()
+
+User.prototype.shareobject = function(name,object) {
+    object.parent = this
+}
+
+
+User.prototype.sockets = function() {
+    return router.users[this._id]
+}
+
+
+User.prototype.emit(tag,data) {
+    var self = this
+    self.sockets().forEach(function(socket) { socket.emit(tag,data)})
+}
+
 
 User.prototype.save = function(callback) {
     var self = this
@@ -294,6 +358,8 @@ User.prototype.message = function(message) {
     var self = this
     self.sockets(function(socket) { socket.emit('msg',{message: message}) })
 }
+
+
 
 User.prototype.shipout = function(callback) {
     var self = this
@@ -632,18 +698,14 @@ ircclient.addListener('message', function (from, to, message) {
 
 io.sockets.on('connection', function (socket) {
     console.log("CONNECTION ESTABLISHED")
-    socket.on('hello', function (data) {
-	console.log("user", data.uid, "has connected to websocket");
-	
+    socket.on('hello', function (data) {	
 	getUserBySecret(data.secret,function(user) { 
-	
-	    gatekeeper.logon(user,socket)
-	    gatekeeper.sync(user,"user",user,socket)
+	    router.login(user,socket)
+
+	    user.sync()
 
 	    socket.on('disconnect', function () { 
-		console.log(sys.inspect(gatekeeper.users))
-		gatekeeper.logoff(user,socket)
-		console.log(sys.inspect(gatekeeper.users))
+		router.logoff(user,socket)
 	    })
 	})
     })
@@ -651,8 +713,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('objectsync',function (data) {
 	if (data.objects && data.secret) {
 	    getUserBySecret(data.secret, function(user) {
-		gatekeeper.syncin(user,data.objects)
-		return
+		data.objects.forEach(function(objectname) {
+		    router.resolveobject(socket,user,objectname).update(data[objectname])
+		})
 	    })
 	} else {
 	    console.log( "ERROR invalid sync data received" )

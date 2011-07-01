@@ -1,35 +1,45 @@
 <script type="text/javascript">
 
+RemoteObject.prototype.update = function(obj) {
+    var self = this
+    for (var property in obj) {
 
+	closure(property,obj[property])
 
-function Question(socket,message,callback) {
-    
+	function closure(property,value) {
+	    if (value = "function") {
+		self[property] = function() { console.log ("calling remote function " + property) }
+		return
+	    }
+
+	    if (!self["_" + property]) { 
+		self.__defineSetter__(property, function (value) { console.log(name,"SENDING",property,value)  })
+		self.__defineGetter__(property, function () { console.log("getting", property); return self["_" + property] })
+	    } else {
+		if (self["_" + property] == value ) { return }
+	    }
+	    
+	    var oldvalue = self["_" + property]
+	    self["_" + property] = value
+	    
+	    if (self.subscriptions[property]) {self.subscriptions[property].forEach( function(callback) { callback(value,oldvalue,property) })}
+	    if (self.subscriptions["*"]) {self.subscriptions["*"].forEach( function(callback) { callback(value,oldvalue,property) })}
+	}
+    }
 }
 
-function RemoteObject(name,obj) {
-    
-}
 
 
 RemoteObject.prototype.subscribe = function(property,callback) {
-    
-}
-
-RemoteObject.prototype.update = function(values) {
-    
-}
-
-RemoteObject.prototype.set = function(property,value) {
-
-}
-
-RemoteObject.prototype.flush = function() {
-
+    var self = this
+    if (!self.subscriptions[property]) { self.subscriptions[property] = [] }
+    self.subscriptions[property].push(callback)
 }
 
 
 
 
+// a = new RemoteObject("testobj",{name: 333, bla: "ivan", testf: "function" })
 
 
 
