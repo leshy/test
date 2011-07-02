@@ -62,7 +62,7 @@ app.configure(function(){
 
 db.open( function (err) {
     if (err) {
-	console.log("mongodb connection failed: " + err.stack );	
+	console.log("mongodb connection failed: " + err.stack );
 	return
     }
     console.log("Connected to mongodb server at " + settings.dbhost + ":" + settings.dbport );
@@ -306,12 +306,16 @@ MineField.prototype.filter_in = { step: true,
 				  payout: true
 				}
 
+
+
+
 MineField.prototype.filter_out = { minefield : function(minefield) { return minefield.map( function (entry) { if (entry < 2) { return 0 } else { return entry }})},
 				   hash : true,
 				   size : true,
 				   step: 'function',
 				   payout: 'function'
 				 }
+
 
 
 
@@ -325,7 +329,8 @@ function User(user) {
     }
     if (!self.name) { self.name = "user-" + this._id }
 
-    this.init(router,'user')
+    self.init(router,'user')
+    self.subscribe('*',function() { self.save() })
 }
 
 User.prototype = new remoteobject.RemoteObject()
@@ -344,8 +349,20 @@ User.prototype.filter_in = { name: function(name) { return escape(name) },
 User.prototype.filter_out = { name: true,
 			      cash: true,
 			      address_deposit: true ,
-			      newminefield: 'function'
+			      newminefield: 'function',
+			      GetDepositAddress: 'function'
 			    }
+
+User.prototype.filter_save = { name: true,
+			       creationdate: true,
+			       lastaccess: true,
+			       secret: true,
+			       address_deposit_used: true,
+			       address_deposit: true,
+			       transaction_history: true,
+			       address_withdrawal: true,
+			       cash: true
+			     }
 
 
 User.prototype.shareobject = function(object) {
@@ -360,9 +377,12 @@ User.prototype.sockets = function() {
 
 User.prototype.save = function(callback) {
     var self = this
-    settings.collection_users.update({'_id' : self._id}, self, function (err,r) {
-	if (err) { console.log(sys.inspect(err)) }
-	if(callback) { callback() }
+    console.log('saving user object')
+    var data = self.getSaveData()
+    console.log("SAVING DATA: " ,data)
+    settings.collection_users.update({'_id' : self._id}, data, function (err,r) {
+	if (err) { console.log("ERROR", sys.inspect(err)); return }
+	if(callback) { console.log("SAVED."); callback() }
     })
 }
 
@@ -433,6 +453,8 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 	callbackerr ('Not enough money on account')
     }
 }
+
+
 
 User.prototype.getDepositAddress = function(callback,callbackerr) {
     var self = this
@@ -542,20 +564,6 @@ app.post('/ajax/transactions', function(req, res){
 		 })
 })
 
-
-app.post('/ajax/deposit', function(req, res){
-    getUserByReq(req,
-		 function(user) { 
-		     user.getDepositAddress(function(address) { 
-			 if (address) { res.send(jsonmsg(address,0)) } else {
-			     res.send(jsonmsg(user.address_deposit[2],1))
-			     user.sync()
-			 }
-			 return 
-		     })},
-		 function(err) { res.send(jsonmsg("internal problem",1)); return }
-		)
-})
 
 app.get('/balance', function(req,res,next) {
     mybitcoin('auto-getbalance', function(data) {
@@ -711,24 +719,28 @@ io.sockets.on('connection', function (socket) {
 	    user.addowner(socket)
 	    user.sync()
 
+
 	    socket.on('disconnect', function () { 
-		router.logoff(user,socket)
+		router.logout(user,socket)
 	    })
 	})
     })
     
+
     socket.on('objectsync',function (data) {
 	if (data.objects && data.secret) {
 	    getUserBySecret(data.secret, function(user) {
-		data.objects.forEach(function(objectname) {
-		    router.resolveobject(socket,user,objectname).update(data[objectname])
-		})
+		for ( var objectname in data.objects) {
+		    var obj = router.resolveobject(socket,user,objectname)
+		    console.log("resolved object",obj.objectname,"updating...")
+		    console.log(data.objects[objectname])
+		    obj.update(data.objects[objectname])
+		}
 	    })
 	} else {
 	    console.log( "ERROR invalid sync data received" )
 	}
     })
-
 
     socket.on('call',function (data) {
 	getUserBySecret(data.secret, function(user) {

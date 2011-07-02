@@ -1,42 +1,14 @@
 <script type="text/javascript">
-    function RemoteObject() {}
-
-RemoteObject.prototype.update = function(obj) {
-    var self = this
-    for (var property in obj) {
-
-	closure(property,obj[property])
-
-	function closure(property,value) {
-	    if (value = "function") {
-		self[property] = function() { console.log ("calling remote function " + property) }
-		return
-	    }
-
-	    if (!self["_" + property]) { 
-		self.__defineSetter__(property, function (value) { console.log(name,"SENDING",property,value)  })
-		self.__defineGetter__(property, function () { console.log("getting", property); return self["_" + property] })
-	    } else {
-		if (self["_" + property] == value ) { return }
-	    }
-	    
-	    var oldvalue = self["_" + property]
-	    self["_" + property] = value
-	    
-	    if (self.subscriptions[property]) {self.subscriptions[property].forEach( function(callback) { callback(value,oldvalue,property) })}
-	    if (self.subscriptions["*"]) {self.subscriptions["*"].forEach( function(callback) { callback(value,oldvalue,property) })}
-	}
-    }
-}
 
 
 
+/*
 RemoteObject.prototype.subscribe = function(property,callback) {
     var self = this
     if (!self.subscriptions[property]) { self.subscriptions[property] = [] }
     self.subscriptions[property].push(callback)
 }
-
+*/
 
 
 
@@ -44,444 +16,486 @@ RemoteObject.prototype.subscribe = function(property,callback) {
 
 
 
-    $(document).ready(function() { 
+$(document).ready(function() { 
 
-	
-	var secret = "<%= user.secret %>"
-	var uid = "<%= user._id %>"
-
-	var remoteobjects = {}
-	var object_subscriptions = {}
-	
-
-	$("#bla").html("js ok")
-	$("#message").hide()
+    function Router() { 
+	this.subscriptions = {}
+	this.remoteobjects = {}
+    }
 
 
-	$('.editable').click(function(event) {
-	    var node = $(event.currentTarget)
-	    var data = node.html()
-	    if (data.search('<input') != -1) { return }
-
-	    var input = $("<input size='" + (data.length + 1) + "' type='text' value='" + data + "'>")
-
-	    function done() {
-		input.trigger('edited',[node,input.val(),data])
-		node.html(input.val())
-	    }
-
-	    input.blur(done)
-
-	    input.keypress(function(event) {
-		if (event.which == 13) { done() }
-	    })
-
-	    node.html(input)
-	    input.focus()
-	    input.trigger('editstart',[node,data])
-	});
+    Router.prototype.subscribe = function(object,property,callback) {
+	var self = this
+	if (!self.subscriptions[object]) { self.subscriptions[object] = {} }
+	if (!self.subscriptions[object][property]) { self.subscriptions[object][property] = [] }
+	self.subscriptions[object][property].push(callback)
+    }
 
 
-	$(".sync_user_name").bind('edited',function(e,node,data,olddata) {
-	    syncproperty("user","name",data)
+    Router.prototype.event = function(object,property,value,oldvalue) {
+	var self = this
+	var objectname = object.objectname
+
+	if (self.subscriptions[objectname]['*']) { 
+	self.subscriptions[objectname]['*'].forEach( function(callback) {
+	    callback(value,oldvalue,property,object)
 	})
 
-
-	$("#edit_mybitcoin_amount").bind('editstart',function(e,node,data) {
-	    $("#mybitcoin_link").html("")	    
-	})
-
-	$("#user_withdrawal_amount").bind('edited',function(e,node,data) {
-	    var amount = parseFloat(data)
-	    if (!amount) {
-		message( "invalid amount")
-		return
-	    }
-	})
-
-	$("#user_withdrawal_address").bind('edited',function(e,node,data) {	    
-	    if (data.length != 34) {
-		message( "invalid address")
-		return
-	    } else {
-		syncproperty("user","address_withdrawal",data)
-	    }
-	})
-
-
-	function preinitminefield() {
-	$( "#minefieldslider" ).slider({
-			value:14,
-			min: 3,
-			max: 24,
-			step: 1,
-			slide: function( event, ui ) {
-			    var chance = 100 - (ui.value / (25 / 100))
-			    var win = (90 / chance)
-			    win = Math.round(parseFloat(win) * 100) / 100
-			    displayminefield(generateminefield(ui.value))
-
-			    $( "#minefieldchance" ).html( ui.value + " mines, win amount x" + win );
-			}
-
-	    
-		});
-
-	    $( "#minefield_ammount_radio" ).buttonset();
 	}
+	if (!self.subscriptions[objectname]) { return }
+	if (!self.subscriptions[objectname][property]) { return }
+	self.subscriptions[objectname][property].forEach( function(callback) {
+	    callback(value,oldvalue,object,property)
+	})	
+    }
 
 
-	preinitminefield()
+    router = new Router()
+    user = undefined //placeholder
 
-	function initminefield() {
-	    socket.emit('initminefield',{ mines: 3 })
-	}
-
-	function generateminefield(minenum) {
-	    console.log("generating minefield of size",minenum)
-	    function randomboolean() {
-		return (Math.random() > 0.5)
-	    }
-
-	    function randomrange(num) {
-		return Math.floor(Math.random() * num)
- 	    }
-
-	    function rarray(len,rndfn) {
-		var a = []
-		for (var i = 0 ; i <len;i++) { a.push(rndfn())}
-		return a
-	    }
-	    function r2darray(len,rndfn) {
-		return rarray(len,function() { return rarray(len,rndfn) })
-	    }
-
-	    var cnt = -1
-	    function counter() { cnt++; return cnt }
-	    
-	    var empty = rarray(25,counter)
-	    var mines = rarray(25,function() { return false } )
-
-	    
-	    for (var i = 0; i < minenum; i++) { 
-		var num = randomrange(empty.length)
-		mines[empty[num]] = true
-		empty.splice(num,1)
-
-	    }
-
-	    return r2darray(5,function() { var a = mines.pop(); return a } )
-
-	}
+    function RemoteObject(name,obj) {
+	this.objectname = name
+	if (name == 'user') { user = this }
+	router.remoteobjects[name] = this
+	this.update(obj)
+    }
 
 
-	function displayminefield(minefield) {
-	    var code = "<table>"
-	    minefield.forEach(function(row) { 
-		code += "<tr>"
-		row.forEach (function (entry) {
-		    code +="<td>"
+    RemoteObject.prototype.update = function(obj) {
+	var self = this
+	console.log("router",router)
+	console.log("update",obj)
+	for (var property in obj) {
+	    console.log(property)
+	    closure(property,obj[property])
 
-		    if (entry == true) { 
-		    code +="<span class='mine mine_yes'>"
-		    }
-		    if (entry == false) { 
-		    code +="<span class='mine mine_no'>"
-		    }
-		    if (entry == undefined) { 
-		    code +="<span class='mine mine_undefined'>"
-		    }
-
-
-		    code +="</span>"
-		    code +="</td>"
-		})
-		code += "</tr>"
-	    })
-	    code += "</table>"
-	    $("#minefield").html(code)
-	}
-
-	displayminefield(generateminefield(12))
-
-
-	function message(string) {
-	    var message = $("#message")
-	    message.html(string)
-	    message.fadeIn(500)
-	    setTimeout(function() { message.fadeOut(500) },1000)
-	}
-
-	function reload_transaction_history() {
-	    if (remoteobjects.user.transaction_history.length == 0) { 
-		var code = "no transactions"
-	    } else {
-		
-		var code = "<table cellspacing=0 cellpadding=13 class='transactionhistory'>"
-		code += "<thead>"
-		code += "<tr>"
-		code += "<th>time</th>"
-		code += "<th>from/to</th>"
-		code += "<th></th>"
-		code += "<th>amount</th>"
-		code += "<th>balance</th>"
-		code += "</tr>"
-		code += "</thead>"
-
-
-		var darkflip = true
-
-		remoteobjects.user.transaction_history.forEach(function(row) {
-		    var time = new Date(parseInt(row.time))
-		    console.log(parseInt(row.time))
-		    var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
+	    function closure(property,value) {
+		if (value == "function") {
+		    self[property] = function() { console.log ("calling remote function " + property) }
 		    
-		    if (darkflip) {
-			code += "<tr bgcolor='#ddd'>"
-			darkflip = false
-		    } else {
-			code += "<tr>"
-			darkflip = true
-		    }
-
-		    code +="<td class='transactionhistory'>" +  now  + "</td>"
-		    code +="<td class='transactionhistory'>" +  row.other_party + "</td>"
-		    if (row.deposit) {
-			code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
-		    } else {
-			code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
-		    }
-		    code +="<td class='transactionhistory'>" +  row.amount + "</td>"
-		    code +="<td class='transactionhistory'>" +  row.balance + "</td>"
-		    code += "</tr>"
-		})
-
-		code += "</table>"
-	    }
-
-	    $("#transaction_history").html(code)
-	}
-	
-	$("#edit_mybitcoin_amount").bind('edited',function(e,node,data,olddata) {
-
-	    var amount = parseFloat(data)
-		console.log("amount",amount)
-
-	    if (!amount) {
-		message("invalid amount")
-		//$("#mybitcoin_link").html( "invalid amount :(")
-		return
-	    }
-	    
-	    $("#mybitcoin_link").html("communicating with mybitcoin...")
-	    $.post("/ajax/mybitcoinlink",{ secret: secret, amount: amount }, function (data) {
-		data = $.parseJSON(data)
-		if (data.responsecode == 0) {
-		    $("#mybitcoin_link").html ("<a href='https://www.mybitcoin.com/sci/paypage.php?t=" + data.message + "'>pay</a>" )
-		} else {
-		    $("#mybitcoin_link").html( data.message)
+		    return
 		}
-	    })
-	})
-	
 
-	var socket = io.connect('http://lgate-public:45284');
-	socket.emit('hello', { uid: uid, secret: secret });
-	socket.on('connection', function () {
-	    console.log('websocket connected. authorizing')
+		if (!self["_" + property]) { 
+		    self.__defineSetter__(property, function (value) { 
+			var data = {objects: {}, secret: secret}
+			data.objects[this.objectname] = {}
+			data.objects[this.objectname][property] = value
+			console.log("emiting objectsync")
+			socket.emit ('objectsync',data)
+		    })
+		    self.__defineGetter__(property, function () { return self["_" + property] })
+		} else {
+		    if (self["_" + property] == value ) { return }
+		}
+		
+		var oldvalue = self["_" + property]
+		self["_" + property] = value
+
+		if (oldvalue != value) {
+		    router.event(self,property,value,oldvalue)
+		    //if (self.subscriptions[property]) {self.subscriptions[property].forEach( function(callback) { callback(value,oldvalue,property) })}
+		    //if (self.subscriptions["*"]) {self.subscriptions["*"].forEach( function(callback) { callback(value,oldvalue,property) })}
+		}
+	    }
+	}
+    }
+
+
+    
+    var secret = "<%= user.secret %>"
+    var uid = "<%= user._id %>"
+
+    var remoteobjects = {}
+    var object_subscriptions = {}
+    
+
+    $("#bla").html("js ok")
+    $("#message").hide()
+
+
+    $('.editable').click(function(event) {
+	var node = $(event.currentTarget)
+	var data = node.html()
+	if (data.search('<input') != -1) { return }
+
+	var input = $("<input size='" + (data.length + 1) + "' type='text' value='" + data + "'>")
+
+	function done() {
+	    input.trigger('edited',[node,input.val(),data])
+	    node.html(input.val())
+	}
+
+	input.blur(done)
+
+	input.keypress(function(event) {
+	    if (event.which == 13) { done() }
+	})
+
+	node.html(input)
+	input.focus()
+	input.trigger('editstart',[node,data])
+    });
+
+
+    $(".sync_user_name").bind('edited',function(e,node,data,olddata) {
+	user.name = data
+	//syncproperty("user","name",data)
+    })
+
+
+    $("#edit_mybitcoin_amount").bind('editstart',function(e,node,data) {
+	$("#mybitcoin_link").html("")	    
+    })
+
+    $("#user_withdrawal_amount").bind('edited',function(e,node,data) {
+	var amount = parseFloat(data)
+	if (!amount) {
+	    message( "invalid amount")
+	    return
+	}
+    })
+
+    $("#user_withdrawal_address").bind('edited',function(e,node,data) {	    
+	if (data.length != 34) {
+	    message( "invalid address")
+	    return
+	} else {
+	    syncproperty("user","address_withdrawal",data)
+	}
+    })
+
+
+    function preinitminefield() {
+	$( "#minefieldslider" ).slider({
+	    value:14,
+	    min: 3,
+	    max: 24,
+	    step: 1,
+	    slide: function( event, ui ) {
+		var chance = 100 - (ui.value / (25 / 100))
+		var win = (90 / chance)
+		win = Math.round(parseFloat(win) * 100) / 100
+		displayminefield(generateminefield(ui.value))
+
+		$( "#minefieldchance" ).html( ui.value + " mines, win amount x" + win );
+	    }
+
+	    
 	});
 
+	$( "#minefield_ammount_radio" ).buttonset();
+    }
 
-	$("#btnwithdraw").click(function() { 
-	    console.log("CALLING SENDMONEY")
-	    socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
-	})
-    
-	$("#btn_deposit_generate").click(function() {
-	    $.post("/ajax/deposit",{ secret: secret }, function (data) { 
-		data = $.parseJSON(data)
-		if (data.responsecode == 1) { message("address limit reached") }
+
+    preinitminefield()
+
+    function initminefield() {
+	socket.emit('initminefield',{ mines: 3 })
+    }
+
+    function generateminefield(minenum) {
+	console.log("generating minefield of size",minenum)
+	function randomboolean() {
+	    return (Math.random() > 0.5)
+	}
+
+	function randomrange(num) {
+	    return Math.floor(Math.random() * num)
+ 	}
+
+	function rarray(len,rndfn) {
+	    var a = []
+	    for (var i = 0 ; i <len;i++) { a.push(rndfn())}
+	    return a
+	}
+	function r2darray(len,rndfn) {
+	    return rarray(len,function() { return rarray(len,rndfn) })
+	}
+
+	var cnt = -1
+	function counter() { cnt++; return cnt }
+	
+	var empty = rarray(25,counter)
+	var mines = rarray(25,function() { return false } )
+
+	
+	for (var i = 0; i < minenum; i++) { 
+	    var num = randomrange(empty.length)
+	    mines[empty[num]] = true
+	    empty.splice(num,1)
+
+	}
+
+	return r2darray(5,function() { var a = mines.pop(); return a } )
+
+    }
+
+
+    function displayminefield(minefield) {
+	var code = "<table>"
+	minefield.forEach(function(row) { 
+	    code += "<tr>"
+	    row.forEach (function (entry) {
+		code +="<td>"
+
+		if (entry == true) { 
+		    code +="<span class='mine mine_yes'>"
+		}
+		if (entry == false) { 
+		    code +="<span class='mine mine_no'>"
+		}
+		if (entry == undefined) { 
+		    code +="<span class='mine mine_undefined'>"
+		}
+
+
+		code +="</span>"
+		code +="</td>"
 	    })
+	    code += "</tr>"
 	})
+	code += "</table>"
+	$("#minefield").html(code)
+    }
 
-    
-	$("#logout").click(function() {
-	    $.post("/ajax/logout",{ secret: secret }, function (data) { 
-		data = $.parseJSON(data)
+    displayminefield(generateminefield(12))
+
+
+    function message(string) {
+	var message = $("#message")
+	message.html(string)
+	message.fadeIn(500)
+	setTimeout(function() { message.fadeOut(500) },1000)
+    }
+
+    function reload_transaction_history() {
+	if (remoteobjects.user.transaction_history.length == 0) { 
+	    var code = "no transactions"
+	} else {
+	    
+	    var code = "<table cellspacing=0 cellpadding=13 class='transactionhistory'>"
+	    code += "<thead>"
+	    code += "<tr>"
+	    code += "<th>time</th>"
+	    code += "<th>from/to</th>"
+	    code += "<th></th>"
+	    code += "<th>amount</th>"
+	    code += "<th>balance</th>"
+	    code += "</tr>"
+	    code += "</thead>"
+
+
+	    var darkflip = true
+
+	    remoteobjects.user.transaction_history.forEach(function(row) {
+		var time = new Date(parseInt(row.time))
+		console.log(parseInt(row.time))
+		var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
+		
+		if (darkflip) {
+		    code += "<tr bgcolor='#ddd'>"
+		    darkflip = false
+		} else {
+		    code += "<tr>"
+		    darkflip = true
+		}
+
+		code +="<td class='transactionhistory'>" +  now  + "</td>"
+		code +="<td class='transactionhistory'>" +  row.other_party + "</td>"
+		if (row.deposit) {
+		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
+		} else {
+		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
+		}
+		code +="<td class='transactionhistory'>" +  row.amount + "</td>"
+		code +="<td class='transactionhistory'>" +  row.balance + "</td>"
+		code += "</tr>"
 	    })
-	})
 
-
-
-	socket.on('msg', function(data) {
-	    console.log("GOT MESSAGE",data)
-	    message(data.message)
-	})
-
-
-
-	socket.on('minefield', function(data) {
-	    $("minefieldhash").html(data.hash)
-	})
-
-	socket.on('objectsync', function(data) {
-	    console.log("new object stream received",data)
-	    
-	    for (var objectname in data) {
-		updateobject(objectname,jQuery.parseJSON(data[objectname]))
-	    }
-	})
-
-
-	function syncproperty(objectname,property,value) {
-	    remoteobjects[objectname][property] = value
-	    syncobject(objectname)
-	    remoteobjects[objectname][property] = null
+	    code += "</table>"
 	}
 
-	function syncobject(objectname) {
-	    console.log('syncing',objectname,remoteobjects[objectname])
-	    var data = {objects : {}}
-	    data.objects[objectname] = remoteobjects[objectname]
-	    data.secret = secret
-	    socket.emit('objectsync', data );
+	$("#transaction_history").html(code)
+    }
+    
+    $("#edit_mybitcoin_amount").bind('edited',function(e,node,data,olddata) {
+
+	var amount = parseFloat(data)
+	console.log("amount",amount)
+
+	if (!amount) {
+	    message("invalid amount")
+	    //$("#mybitcoin_link").html( "invalid amount :(")
+	    return
 	}
 	
-
-	function equal(object1, object2) {
-	    if (!object2) { return false }
-
-	    if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
-		return (object1 == object2)
-	    }
-
-	    
-	    if (object1.length != object2.length) { return false }
-	    
-	    for (var property in object1) { 
-
-		if (object1[property] != object2[property]) { return false }
-	    }
-
-	    return true   
-	}
-
-	    /*$(".user_cash").html('<span style="background: red;">' + data.cash + '</span>')
-	    setTimeout(function() {
-		$(".user_cash").html(data.cash)
-	    },1000)
-	    */
-
-	function updateobject(objectname,object) {
-	    if (!remoteobjects[objectname]) {
-		remoteobjects[objectname] = {}
-	    }
-
-	    console.log("updating local object '" + objectname + "'" )
-
-	    for (var property in object) {
-		if (!equal(object[property],remoteobjects[objectname][property])) {
-		    remoteobjects[objectname][property] = object[property]
-//		    console.log(property + " changed", remoteobjects[objectname][property])
-		    objectchange_trigger(objectname,property,object)
-		}
-	    }
-	}
-
-	function objectchange_trigger(objectname,property,object) {
-	    if (object_subscriptions[objectname]) {
-		if  (object_subscriptions[objectname][property] ) {
-		    var subscriptions = object_subscriptions[objectname][property]
-		    subscriptions.forEach(function (callback) {
-			callback(object,property,objectname)
-		    })
-		}
-
-		if ( object_subscriptions[objectname]["*"] ) {
-		    var subscriptions = object_subscriptions[objectname]["*"]
-		    subscriptions.forEach(function (callback) {
-			callback(object,property,objectname)
-		    })
-		}
-	    }
-	}
-	
-	function objectchange(objectname,property,callback) {
-	    if (!object_subscriptions[objectname]) { object_subscriptions[objectname] = {} }
-	    if (!object_subscriptions[objectname][property]) { object_subscriptions[objectname][property] = [] }
-	    object_subscriptions[objectname][property].push(callback)	    
-	}
-	
-
-	objectchange("user","*",function(user,property) {
-	    if ((user[property] != undefined) && (user[property] != null)) {
-		$("#sync_user_" + property).html(user[property])
-		$(".sync_user_" + property).html(user[property])
-	    }
-	    //console.log(property,$(".sync_user_" + property))
-	})
-
-
-	objectchange("user","transaction_history",function(user) {
-	    reload_transaction_history()
-	})
-
-	objectchange("user","address_deposit",function(user) {
-	    console.log("ADDRESS DEPOSIT CHANGED")
-	    if (user.address_deposit.length == 0) { $("#address_deposit").html("no addresses"); $("#paybelow").hide(); return }
-
-	    var list = $("<span></span>")
-	    user.address_deposit.forEach(function(address) { list.append($("<b>" + address + "<b><br>"))})
-	    
-	    $("#paybelow").show()
-	    
-	    if (user.address_deposit.length == 3) {
-		$("#btn_deposit_generate").hide()
+	$("#mybitcoin_link").html("communicating with mybitcoin...")
+	$.post("/ajax/mybitcoinlink",{ secret: secret, amount: amount }, function (data) {
+	    data = $.parseJSON(data)
+	    if (data.responsecode == 0) {
+		$("#mybitcoin_link").html ("<a href='https://www.mybitcoin.com/sci/paypage.php?t=" + data.message + "'>pay</a>" )
 	    } else {
-		$("#btn_deposit_generate").show()
+		$("#mybitcoin_link").html( data.message)
 	    }
-
-	    $("#address_deposit").html(list)
-	    //console.log(list)
 	})
+    })
+    
 
-	objectchange("user","cash",function(user) {
-	    
+    var socket = io.connect('http://lgate-public:45284');
+    socket.emit('hello', { uid: uid, secret: secret });
+    socket.on('connection', function () {
+	console.log('websocket connected. authorizing')
+    });
+
+
+    $("#btnwithdraw").click(function() { 
+	console.log("CALLING SENDMONEY")
+	socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
+    })
+    
+    $("#btn_deposit_generate").click(function() {
+/*	$.post("/ajax/deposit",{ secret: secret }, function (data) { 
+	    data = $.parseJSON(data)
+	    if (data.responsecode == 1) { message("address limit reached") }
 	})
+*/
 
+	router.remoteobjects['user'].GetDepositAddress()
+    })
 
-	objectchange("user","address_withdrawal",function(user) {
-	    if (user.address_withdrawal && user.address_withdrawal != "null") { $("#user_address_withdrawal").html(user.address_withdrawal); return }
+    
+    $("#logout").click(function() {
+	$.post("/ajax/logout",{ secret: secret }, function (data) { 
+	    data = $.parseJSON(data)
 	})
+    })
 
 
+
+    socket.on('msg', function(data) {
+	console.log("GOT MESSAGE",data)
+	message(data.message)
+    })
+
+
+
+    socket.on('minefield', function(data) {
+	$("minefieldhash").html(data.hash)
+    })
+
+    socket.on('objectsync', function(data) {
+	console.log("new object stream received",data)
 	
-	var tabs = [ $('#tab_minefield'), $('#tab_balance'),$('#tab_settings'), $('#tab_chat'), $('#tab_faq'), $('#tab_debugger') ]
-	tabs.forEach(function(tab) {tab.hide() })
-	var selectedtab = undefined
+	for (var objectname in data) {
+	    updateobject(objectname,data[objectname])
+//	    updateobject(objectname,jQuery.parseJSON(data[objectname]))
+	}
+    })
 
-	function selecttab(tabid) {
-	    if (selectedtab != undefined) {
-		tabs[selectedtab].trigger('tabhide')
-		tabs[selectedtab].hide()
-		if (tabid == selectedtab) { selectedtab = undefined; return }
-	    }
-	    tabs[tabid].trigger('tabshow')
-	    tabs[tabid].show()
-	    selectedtab = tabid
+
+
+    function updateobject(objectname,object) {
+	if (!router.remoteobjects[objectname]) {
+	    console.log("created new remote object '" + objectname + "'" )
+	    router.remoteobjects[objectname] = new RemoteObject(objectname,object)
+	} else {
+	    console.log("updating remote object '" + objectname + "'" )
+	    router.remoteobjects[objectname].update(object)
+	}
+    }
+
+    function syncproperty(objectname,property,value) {
+	router.remoteobjects[objectname][property] = value
+    }
+
+
+    function equal(object1, object2) {
+	if (!object2) { return false }
+
+	if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
+	    return (object1 == object2)
 	}
 
-	$('#tab_balance').bind('tabshow', function() { $('#small_balance').hide() } )
-	$('#tab_balance').bind('tabhide', function() { $('#small_balance').show() } )
+	
+	if (object1.length != object2.length) { return false }
+	
+	for (var property in object1) { 
 
-	$('#btnminefield').click( function() { selecttab(0) })
-	$('#btnballance').click( function() { selecttab(1) })
-	$('#btnsettings').click( function() { selecttab(2) })
-	$('#btnchat').click( function() { selecttab(3) })
-	$('#btnfaq').click( function() { selecttab(4) })
-	$('#btndebugger').click( function() { selecttab(5) })	
-	$('#btnminefield').click()
+	    if (object1[property] != object2[property]) { return false }
+	}
+
+	return true   
+    }
+
+    
+
+    router.subscribe("user","*",function(value,oldvalue,property,user) {
+	console.log("USER PROPERTY UPDATED", property,value)
+	if ((user[property] != undefined) && (user[property] != null)) {
+	    $("#sync_user_" + property).html(user[property])
+	    $(".sync_user_" + property).html(user[property])
+	}
+	//console.log(property,$(".sync_user_" + property))
     })
+
+
+    router.subscribe("user","transaction_history",function(value,oldvalue,property,user) {
+	reload_transaction_history()
+    })
+
+    router.subscribe("user","address_deposit",function(value,oldvalue,property,user) {
+	console.log("ADDRESS DEPOSIT CHANGED")
+	if (value.length == 0) { $("#address_deposit").html("no addresses"); $("#paybelow").hide(); return }
+
+	var list = $("<span></span>")
+	value.forEach(function(address) { list.append($("<b>" + address + "<b><br>"))})
+	
+	$("#paybelow").show()
+	
+	if (value.length == 3) {
+	    $("#btn_deposit_generate").hide()
+	} else {
+	    $("#btn_deposit_generate").show()
+	}
+
+	$("#address_deposit").html(list)
+	//console.log(list)
+    })
+
+
+    router.subscribe("user","address_withdrawal",function(value,oldvalue,property,user) {
+	if (user.address_withdrawal && user.address_withdrawal != "null") { $("#user_address_withdrawal").html(user.address_withdrawal); return }
+    })
+
+
+    
+    var tabs = [ $('#tab_minefield'), $('#tab_balance'),$('#tab_settings'), $('#tab_chat'), $('#tab_faq'), $('#tab_debugger') ]
+    tabs.forEach(function(tab) {tab.hide() })
+    var selectedtab = undefined
+
+    function selecttab(tabid) {
+	if (selectedtab != undefined) {
+	    tabs[selectedtab].trigger('tabhide')
+	    tabs[selectedtab].hide()
+	    if (tabid == selectedtab) { selectedtab = undefined; return }
+	}
+	tabs[tabid].trigger('tabshow')
+	tabs[tabid].show()
+	selectedtab = tabid
+    }
+
+    $('#tab_balance').bind('tabshow', function() { $('#small_balance').hide() } )
+    $('#tab_balance').bind('tabhide', function() { $('#small_balance').show() } )
+
+    $('#btnminefield').click( function() { selecttab(0) })
+    $('#btnballance').click( function() { selecttab(1) })
+    $('#btnsettings').click( function() { selecttab(2) })
+    $('#btnchat').click( function() { selecttab(3) })
+    $('#btnfaq').click( function() { selecttab(4) })
+    $('#btndebugger').click( function() { selecttab(5) })	
+    $('#btnminefield').click()
+})
 
 
 </script>
