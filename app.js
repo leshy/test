@@ -714,10 +714,8 @@ io.sockets.on('connection', function (socket) {
     socket.on('hello', function (data) {	
 	getUserBySecret(data.secret,function(user) { 
 	    router.login(user,socket)
-	    user.addowner(socket)
+	    user.addowner(user)
 	    user.sync()
-
-
 	    socket.on('disconnect', function () { 
 		router.logout(user,socket)
 	    })

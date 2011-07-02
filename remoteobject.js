@@ -1,32 +1,42 @@
 var sys = require('sys');
 
-function ArrayRemove (array,entry){
-    var index = array.indexOf(entry)
-    if (index == -1) { return array }    
-    array.splice(index,1);
-    return array;
-}
 
 
 
-function stringuid(uid) {
-    return "" + uid
-}
+
+
+
+
 
 
 function Router() {
-    this.users = {}
-    this.socketobjects = {}
-    this.userobjects = {}
-    this.globalobjects = {user : function (socket,user) { return user }}
+    this.sockets-users = {}
+    this.users-sockets = {}
+
+    this.users-groups = {}
+    this.groups-users = { 'global' : [ user1, user2, user3 ]  }
+
+    this.objects-entitys = { obj1: 'global', obj2: 'global', obj3: user1  }
+    this.entitys-objects = { 'global' : {'settings': obj1, 'bla': obj2 }, user1 : { 'user' : obj3 }  }
+    
+    this.objects = {}
 }
 
 
-Router.prototype.addowner = function(object,user) {
+
+
+
+
+
+
+
+
+
+
+Router.prototype.addowner = function(object,entity) {
     var uid = stringuid(user._id)
     this.users[uid][object.objectname] = object
 }
-
 
 Router.prototype.removeowner = function(object,user) {
     var uid = stringuid(user._id)
@@ -214,11 +224,11 @@ RemoteObject.prototype.emit = function(tag,data) {
 }
 
 
-RemoteObject.prototype.addowner = function(socket) {
+RemoteObject.prototype.addowner = function(entity) {
     var self = this
-    //owner = stringuid(owner._id)
-    //self.router.addowner(this,owner)
-    if (self.sockets.indexOf(socket) == -1) { self.sockets.push(socket) }
+//    var owner = stringuid(owner._id)
+    self.router.addowner(this,owner)
+//    if (self.sockets.indexOf(socket) == -1) { self.sockets.push(socket) }
 }
 
 RemoteObject.prototype.removeowner = function(owner) {
@@ -270,3 +280,15 @@ RemoteObject.prototype.update = function(obj) {
 
 module.exports.RemoteObject = RemoteObject
 module.exports.Router = Router
+
+function ArrayRemove (array,entry){
+    var index = array.indexOf(entry)
+    if (index == -1) { return array }    
+    array.splice(index,1);
+    return array;
+}
+
+function stringuid(uid) {
+    return "" + uid
+}
+
