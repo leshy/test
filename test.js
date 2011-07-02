@@ -44,6 +44,10 @@ RemoteObject.prototype.subscribe = function(property,callback) {
 }
 
 
+RemoteObject.prototype.toString = function() {
+    
+}
+
 
 
 
@@ -70,3 +74,28 @@ console.log(JSON.stringify(a))
 a.testf()
 
 
+
+bla = function (arg) { this.bla = arg; console.log("BLA CONSTRUCTOR INIT") }
+bla.prototype.test = 3
+
+
+bla.prototype.gimme = function() { this.bbb = "bad blue boys"; return this }
+
+bla.prototype.init = function() { this.bla = "LALALL"}
+
+
+blu = function (arg) { this.kk = arg }
+
+blu.prototype.gimme2 = function() { return this }
+blu.prototype = new bla
+
+blu.prototype.test2 = function () { return this.test}
+
+a = new bla()
+b = new blu()
+
+
+
+console.log(a.gimme() == b.gimme())
+console.log(b.gimme() == b.gimme())
+console.log(b.bbb)

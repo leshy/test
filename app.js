@@ -278,11 +278,15 @@ DbProxy.prototype.ship_in = function(data) {
 
 
 
-function MineField(size) {
+function MineField(size,minefield,secret) {
     var self = this
     self.size = size
-    self.minefield = self.generateminefield(size)
-    self.Remoteobject('minefield',user)
+    if (!minefield) { minefield = self.generateminefield(size) }
+    if (!secret) { secret = self.generatesecret() }
+
+    self.secret = secret
+    self.minefield = minefield
+    self.init(router,'minefield')
 }
 
 MineField.prototype = new remoteobject.RemoteObject()
@@ -291,28 +295,23 @@ MineField.prototype.step = function(coords) {
     if (this.minefield[coords[0]][coords[1]] == 2) { return 2 } else { return 1 }
 }
 
-Minefield.prototype.payout = function(callback) {
+MineField.prototype.payout = function(callback) {
     self.parent.cash += 1; // ? ne zelim usera u memoriji..
     getUserById(self.userid,function(user) { user.cash += 1 })
 //    if (callback) { callback() }
 }
 
 
-Minefield.prototype.filter_in = { step: true,
+MineField.prototype.filter_in = { step: true,
 				  payout: true
 				}
 
-Minefield.prototype.filter_out = { minefield : function(minefield) { return minefield.map( function (entry) { if (entry < 2) { return 0 } else { return entry }})},
+MineField.prototype.filter_out = { minefield : function(minefield) { return minefield.map( function (entry) { if (entry < 2) { return 0 } else { return entry }})},
 				   hash : true,
 				   size : true,
 				   step: 'function',
 				   payout: 'function'
 				 }
-
-user.prototype.newminefield = function(size) {
-    user.shareobject('minefield',new MineField(size))
-}
-
 
 
 
@@ -325,24 +324,37 @@ function User(user) {
 	self[entry] = user[entry]
     }
     if (!self.name) { self.name = "user-" + this._id }
-    this.RemoteObject('user',this)
+
+    this.init(router,'user')
 }
 
 User.prototype = new remoteobject.RemoteObject()
 
-User.prototype.shareobject = function(name,object) {
-    object.parent = this
+
+User.prototype.newminefield = function(size) {
+    user.shareobject('minefield',new MineField(size))
+}
+
+
+User.prototype.filter_in = { name: function(name) { return escape(name) },
+			     address_deposit: function(x) { return escape(x) },
+			     ping: function(arg) { return arg },
+			   }
+
+User.prototype.filter_out = { name: true,
+			      cash: true,
+			      address_deposit: true ,
+			      newminefield: 'function'
+			    }
+
+
+User.prototype.shareobject = function(object) {
+    object.addowner(this)
 }
 
 
 User.prototype.sockets = function() {
     return router.users[this._id]
-}
-
-
-User.prototype.emit(tag,data) {
-    var self = this
-    self.sockets().forEach(function(socket) { socket.emit(tag,data)})
 }
 
 
@@ -377,14 +389,9 @@ User.prototype.shipout = function(callback) {
 }
 
 
-User.prototype.sync = function(socket) {
-    var self = this
-    gatekeeper.sync(self,"user",self,socket)
-}
 
 User.prototype.sockets = function(callback) {
-    var self = this
-    if (sockets[self._id]) { sockets[self._id].forEach(function(socket) { callback(socket) }) }
+    if (router.users[self._id]) { router.users[self._id].forEach(function(socket) { callback(socket) }) }
 }
 
 User.prototype.receiveMoney = function(id,time,from,amount) {
@@ -545,7 +552,7 @@ app.post('/ajax/deposit', function(req, res){
 			     user.sync()
 			 }
 			 return 
-		     })}
+		     })},
 		 function(err) { res.send(jsonmsg("internal problem",1)); return }
 		)
 })
@@ -701,7 +708,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('hello', function (data) {	
 	getUserBySecret(data.secret,function(user) { 
 	    router.login(user,socket)
-
+	    user.addowner(socket)
 	    user.sync()
 
 	    socket.on('disconnect', function () { 
@@ -727,7 +734,7 @@ io.sockets.on('connection', function (socket) {
 	getUserBySecret(data.secret, function(user) {
 	    console.log("funcall for user",user._id,data.fun,sys.inspect(data.args))
 	    
-	    if (data.fun = 'startminefield') {
+	    if (data.fun = 'startminefeld') {
 		data.args.push(function(transactionid) {
 		    user.message(transactionid)
 		})
