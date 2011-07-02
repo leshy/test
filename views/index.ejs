@@ -3,16 +3,17 @@
 
 
 /*
-RemoteObject.prototype.subscribe = function(property,callback) {
-    var self = this
-    if (!self.subscriptions[property]) { self.subscriptions[property] = [] }
-    self.subscriptions[property].push(callback)
-}
+  RemoteObject.prototype.subscribe = function(property,callback) {
+  var self = this
+  if (!self.subscriptions[property]) { self.subscriptions[property] = [] }
+  self.subscriptions[property].push(callback)
+  }
 */
 
 
 
 // a = new RemoteObject("testobj",{name: 333, bla: "ivan", testf: "function" })
+
 
 
 
@@ -37,9 +38,9 @@ $(document).ready(function() {
 	var objectname = object.objectname
 
 	if (self.subscriptions[objectname]['*']) { 
-	self.subscriptions[objectname]['*'].forEach( function(callback) {
-	    callback(value,oldvalue,property,object)
-	})
+	    self.subscriptions[objectname]['*'].forEach( function(callback) {
+		callback(value,oldvalue,property,object)
+	    })
 
 	}
 	if (!self.subscriptions[objectname]) { return }
@@ -71,8 +72,11 @@ $(document).ready(function() {
 
 	    function closure(property,value) {
 		if (value == "function") {
-		    self[property] = function() { console.log ("calling remote function " + property) }
-		    
+		    self[property] = function() { console.log ("calling remote function " + property) 
+						  var data = {}
+						  data[property] = arguments
+						  socket.emit('call',data)
+						}
 		    return
 		}
 
@@ -100,8 +104,7 @@ $(document).ready(function() {
 	    }
 	}
     }
-
-
+    
     
     var secret = "<%= user.secret %>"
     var uid = "<%= user._id %>"
@@ -224,11 +227,8 @@ $(document).ready(function() {
 	    var num = randomrange(empty.length)
 	    mines[empty[num]] = true
 	    empty.splice(num,1)
-
 	}
-
 	return r2darray(5,function() { var a = mines.pop(); return a } )
-
     }
 
 
@@ -355,13 +355,7 @@ $(document).ready(function() {
     })
     
     $("#btn_deposit_generate").click(function() {
-/*	$.post("/ajax/deposit",{ secret: secret }, function (data) { 
-	    data = $.parseJSON(data)
-	    if (data.responsecode == 1) { message("address limit reached") }
-	})
-*/
-
-	router.remoteobjects['user'].GetDepositAddress()
+	user.GetDepositAddress()
     })
 
     

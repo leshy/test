@@ -307,8 +307,6 @@ MineField.prototype.filter_in = { step: true,
 				}
 
 
-
-
 MineField.prototype.filter_out = { minefield : function(minefield) { return minefield.map( function (entry) { if (entry < 2) { return 0 } else { return entry }})},
 				   hash : true,
 				   size : true,
@@ -743,23 +741,8 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('call',function (data) {
-	getUserBySecret(data.secret, function(user) {
-	    console.log("funcall for user",user._id,data.fun,sys.inspect(data.args))
-	    
-	    if (data.fun = 'startminefeld') {
-		data.args.push(function(transactionid) {
-		    user.message(transactionid)
-		})
-		data.args.push(function(err) {
-		    user.message(err)
-		})
-		user.sendMoney.apply(user,data.args)
-	    }
-
-
-	})
+	console.log("funcall for user",data)
     })
-
 })
 
 
