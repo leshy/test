@@ -1,32 +1,24 @@
 var sys = require('sys');
 
-function ArrayRemove (array,entry){
-    var index = array.indexOf(entry)
-    if (index == -1) { return array }    
-    array.splice(index,1);
-    return array;
-}
-
-
-
-function stringuid(uid) {
-    return "" + uid
-}
-
-
 function Router() {
-    this.users = {}
-    this.socketobjects = {}
-    this.userobjects = {}
-    this.globalobjects = {user : function (socket,user) { return user }}
-}
+    this.socket-user = { socket1: user1 }
+    this.user-socket = { user1 : socket1 }
 
+    this.group-user = { 'something' : [ user1, user2 ] }
+    this.user-group = { user1 : 'something', user2: 'something' }
+    
+    this.entity-object = { 'something' : { 'game1' : obj1, 'game2': obj2  }, user3 : { 'bla' : obj3} }
+    this.object-entity = { obj1 : 'something', obj2 : [ user1, user3 ] }
+
+
+    this.objects = {}
+
+}
 
 Router.prototype.addowner = function(object,user) {
     var uid = stringuid(user._id)
     this.users[uid][object.objectname] = object
 }
-
 
 Router.prototype.removeowner = function(object,user) {
     var uid = stringuid(user._id)
@@ -67,8 +59,6 @@ Router.prototype.pushobject = function(socket,user,objectname) {
     var obj = self.resolveobject(socket,user,objectname)
 }
 
-
-
 Router.prototype.login = function(user,socket) {
     var uid = stringuid(user._id)
     
@@ -78,14 +68,12 @@ Router.prototype.login = function(user,socket) {
     
 }
 
-
 Router.prototype.logout = function(user,socket) {
     var uid = stringuid(user._id)
     ArrayRemove(this.users[uid],socket)
     if (this.users[uid].length == 0) { delete this.users[uid]; console.log("user " + uid + " completely logged out") } else 
     { console.log("user " + uid + " disconnected a socket") }
 }
-
 
 Router.prototype.shareobject_user = function(user,objectname,object) {
     var uid = stringuid(user._id)    
@@ -270,3 +258,15 @@ RemoteObject.prototype.update = function(obj) {
 
 module.exports.RemoteObject = RemoteObject
 module.exports.Router = Router
+function ArrayRemove (array,entry){
+    var index = array.indexOf(entry)
+    if (index == -1) { return array }    
+    array.splice(index,1);
+    return array;
+}
+
+
+
+function stringuid(uid) {
+    return "" + uid
+}

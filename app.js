@@ -1,5 +1,13 @@
-// settings
 
+/*
+ - obavezno prije produkcije stavi mybitcoin paynment receiver negdje drugdje
+ - htio bi logirati na per socket razini nekako, vjerojatno cu morati pisati svoj logging..
+ 
+*/
+
+
+// settings
+// {{{
 var settings = {}
 
 settings.dbhost = "localhost"
@@ -12,7 +20,6 @@ settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 
 var hashlib = require('hashlib');
 var sys = require('sys');
-
 var mongo = require('mongodb');
 var express = require('express');
 var mongostore = require('connect-mongo');
@@ -24,11 +31,41 @@ var tls = require('tls');
 var socketio = require('socket.io')
 var rbytes = require('rbytes');
 var irc = require('irc')
-var remoteobject = require('./remoteobject.js')
+
+var remoteobject = require('./remoteobject2.js')
 
 
-router = new remoteobject.Router()
+  var myCustomLevels = {
+      levels: {
+	  debug: 0,
+	  info: 1,
+	  payment: 2,
+	  http: 3,
+	  db: 4, 
+	  obj: 5,
+	  user: 6
 
+      },
+      colors: {
+	  payment: 'blue',
+	  http: 'yellow',
+	  db: 'yellow',
+	  obj: 'red',
+	  user: 'green'
+      }
+  };
+
+var winston = require('winston');
+var l = new (winston.Logger)({ levels: myCustomLevels.levels }); 
+winston.addColors(myCustomLevels.colors);
+
+l.add(winston.transports.File, { filename: 'main.log' });
+l.add(winston.transports.Console, { colorize: true })
+
+l.info('starting...');
+
+
+var router = new remoteobject.Router(l)
 
 
 // init
@@ -41,7 +78,6 @@ var sockets = {};
 
 io.configure(function() {
     io.set('log level', 1)
-
 })
 
 app.configure(function(){
@@ -62,26 +98,44 @@ app.configure(function(){
 
 db.open( function (err) {
     if (err) {
-	console.log("mongodb connection failed: " + err.stack );
+	l.info("mongodb connection failed: " + err.stack );
 	return
     }
-    console.log("Connected to mongodb server at " + settings.dbhost + ":" + settings.dbport );
+    l.info("Connected to mongodb server at " + settings.dbhost + ":" + settings.dbport );
     db.collection("users", function (err,collection) {
-	console.log("mongo - User collection open")
+	l.info("mongo - User collection open")
 	settings.collection_users = collection
     })
 
     db.collection("addresses", function (err,collection) {
-	console.log("mongo - Addresses collection open")
+	l.info("mongo - Addresses collection open")
 	settings.collection_addresses = collection
     })
-
-
 })
 
 var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
 
+// }}}
+
 // functions
+// {{{
+
+
+function Length(object) {
+    return Object.keys(object).length
+}
+
+
+function generateid() { 
+    return new Date().getTime() + rbytes.randomBytes(16).toHex()
+}
+
+function stickid(object) {
+    object._id = generateid()
+}
+
+
+socketio.Socket.prototype.toString = function() { return this._id }
 
 
 function equal(object1, object2) {
@@ -90,7 +144,6 @@ function equal(object1, object2) {
     if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
 	return (object1 == object2)
     }
-
     
     if (object1.length != object2.length) { return false }
     
@@ -101,7 +154,6 @@ function equal(object1, object2) {
 
     return true   
 }
-
 
 
 function copyProps (object, props) {
@@ -121,7 +173,7 @@ function jsonmsg(message,responsecode) {
 }
 
 function JSONtoAmount(value) {
-    return amount = Math.round(1e8 * value);
+    return amount = Math.round(1e8 * value)
 }
 
 
@@ -160,15 +212,13 @@ function ArrayRemove (array,entry){
 }
 
 
-var subscriptions = {}
-
 function mybitcoinparse(data) {
     function trim(data) {
 	return data.replace(/^\s+|\s+$/g, '')
     }
     parsed = {}
     data = data.split("\n")
-    console.log(sys.inspect(data))
+    //console.log(sys.inspect(data))
     for (var line in data) {
 	line = data[line].split(":")
 	if (line.length > 1) {
@@ -186,7 +236,7 @@ function mybitcoin(file,callback,postdata) {
     postdata.username = "DAp39A"
     postdata = querystring.stringify(postdata)
     
-    console.log(postdata)
+    //console.log(postdata)
     var headers = {
 	'Host': 'www.mybitcoin.com',
 	'Content-Type': 'application/x-www-form-urlencoded',
@@ -205,7 +255,7 @@ function mybitcoin(file,callback,postdata) {
 			    }, 
 			    function(httpres) {
 				httpres.setEncoding('ascii')
-				console.log( "mybitcoin " + httpres.statusCode + " " + file)
+				//console.log( "mybitcoin " + httpres.statusCode + " " + file)
 				httpres.on('data',function(d) {
 				    databuffer = databuffer + d
 				})
@@ -218,18 +268,6 @@ function mybitcoin(file,callback,postdata) {
 
     httpreq.write(postdata);
     httpreq.end()
-
-
-}
-
-function event_subscribe(selector,fun) {
-    if (subscriptions[selector]) { subscriptions[selector].push(fun) } else {subscriptions[selector] = [fun] }
-}
-
-function event_trigger(selector,data) {
-    if (subscriptions[selector]) {
-	subscriptions[selector].map(function (fun) { fun(data) })
-    }
 }
 
 
@@ -275,82 +313,168 @@ DbProxy.prototype.ship_in = function(data) {
 
 */
 
+// }}}
 
 
 
-function MineField(size,minefield,secret) {
+// minefield
+// {{{
+
+function MineField(size,parent) {
     var self = this
     self.size = size
-    if (!minefield) { minefield = self.generateminefield(size) }
-    if (!secret) { secret = self.generatesecret() }
+    self.generateminefield(size) 
+    console.log(self.minefield)
+    self.userid = parent._id
 
-    self.secret = secret
-    self.minefield = minefield
+    self.crypted = JSON.stringify(self.minefield) + " " + rbytes.randomBytes(16).toHex()
+    self.hash = hashlib.sha256(self.crypted)
+    self.done = false
     self.init(router,'minefield')
 }
 
 MineField.prototype = new remoteobject.RemoteObject()
 
 MineField.prototype.step = function(coords) {
-    if (this.minefield[coords[0]][coords[1]] == 2) { return 2 } else { return 1 }
+    var self = this
+    console.log("got",coords)
+
+    self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
+    
+    if (self.minefield[coords[0]][coords[1]]  == 3) { self.done = true; self.sync() } else {
+	self.syncproperty('minefield')
+    }
+    
 }
 
 MineField.prototype.payout = function(callback) {
-    self.parent.cash += 1; // ? ne zelim usera u memoriji..
+//    self.parent.cash += 1; // ? ne zelim usera u memoriji.. (nuzno)
     getUserById(self.userid,function(user) { user.cash += 1 })
 //    if (callback) { callback() }
 }
 
 
-MineField.prototype.filter_in = { step: true,
-				  payout: true
+MineField.prototype.generateminefield = function(minenum) {
+	console.log("generating minefield of size",minenum)
+	function randomboolean() {
+	    return (Math.random() > 0.5)
+	}
+
+	function randomrange(num) {
+	    return Math.floor(Math.random() * num)
+ 	}
+
+	function rarray(len,rndfn) {
+	    var a = []
+	    for (var i = 0 ; i <len;i++) { a.push(rndfn())}
+	    return a
+	}
+	function r2darray(len,rndfn) {
+	    return rarray(len,function() { return rarray(len,rndfn) })
+	}
+
+	var cnt = -1
+	function counter() { cnt++; return cnt }
+	
+	var empty = rarray(25,counter)
+	var mines = rarray(25,function() { return 0 } )
+
+	
+	for (var i = 0; i < minenum; i++) { 
+	    var num = randomrange(empty.length)
+	    mines[empty[num]] = 1
+	    empty.splice(num,1)
+	}
+    this.minefield = r2darray(5,function() { var a = mines.pop(); return a } )
+    return this.minefield
+}
+
+
+MineField.prototype.filter_in = { step: 'function',
+				  payout: 'function'
 				}
 
 
-MineField.prototype.filter_out = { minefield : function(minefield) { return minefield.map( function (entry) { if (entry < 2) { return 0 } else { return entry }})},
-				   hash : true,
+
+
+MineField.prototype.filter_out = { minefield : 
+				   function(minefield,self) {
+				       o = []
+				       if (!self.done) {
+				       minefield.forEach(function(row) {
+					   var rowout = []
+					   row.forEach(function(block) {
+					       if (block < 2) {
+						   rowout.push(-1)
+					       } else { 
+						   rowout.push(block) 
+					       }
+					   })
+					   o.push(rowout)
+				       })
+				       return o
+
+				       } else { return minefield }
+
+				   },
 				   size : true,
+				   done : true,
+				   hash: function(hash,self) { 
+				       if (!self.done) { return hash } else { return self.crypted + "<br>" + self.hash }
+				   },
 				   step: 'function',
-				   payout: 'function'
+				   payout: 'function',
 				 }
 
 
 
+// }}}
 
-
+// user
+// {{{
 
 function User(user) {
     //console.log(sys.inspect(user))
     var self = this
+    self.objectname = 'user'
+
     for (entry in user) {
 	self[entry] = user[entry]
     }
     if (!self.name) { self.name = "user-" + this._id }
 
     self.init(router,'user')
-    self.subscribe('*',function() { self.save() })
+    //self.subscribe('*',function() { self.save() })
 }
 
 User.prototype = new remoteobject.RemoteObject()
 
 
 User.prototype.newminefield = function(size) {
-    user.shareobject('minefield',new MineField(size))
+    minefield = new MineField(size,this)
+    minefield.addowner(this)
+    minefield.sync()
+    
 }
 
 
-User.prototype.filter_in = { name: function(name) { return escape(name) },
-			     address_deposit: function(x) { return escape(x) },
+User.prototype.filter_in = { name: function(name) { if (name) { if (name) { return escape(name) } else { return null } } },
+			     address_deposit: function(res) { return escape(res) },
 			     ping: function(arg) { return arg },
 			   }
 
 User.prototype.filter_out = { name: true,
 			      cash: true,
 			      address_deposit: true ,
+			      address_withdrawal: true ,
+			      transaction_history: true,
 			      newminefield: 'function',
-			      GetDepositAddress: 'function'
-			    }
+			      sendMoney: 'function',
+			      generatedepositaddr: 'function',
+			      lalala: 'function'
 
+			    
+}
 User.prototype.filter_save = { name: true,
 			       creationdate: true,
 			       lastaccess: true,
@@ -368,62 +492,40 @@ User.prototype.shareobject = function(object) {
 }
 
 
+
 User.prototype.sockets = function() {
-    return router.users[this._id]
+    return this.router.getSocketsFromUser(this)
 }
 
-
-User.prototype.save = function(callback) {
+User.prototype.persist = function(callback) {
     var self = this
-    console.log('saving user object')
+    l.obj('persisting user object ' + self._id + " " + self.name)
     var data = self.getSaveData()
-    console.log("SAVING DATA: " ,data)
     settings.collection_users.update({'_id' : self._id}, data, function (err,r) {
 	if (err) { console.log("ERROR", sys.inspect(err)); return }
 	if(callback) { console.log("SAVED."); callback() }
     })
 }
 
-User.prototype.message = function(message) {
-    var self = this
-    self.sockets(function(socket) { socket.emit('msg',{message: message}) })
+User.prototype.message = function(message) { 
+    this.emit('msg',JSON.stringify({message: message }))
 }
 
-
-
-User.prototype.shipout = function(callback) {
-    var self = this
-    var outobject = copyProps(self, [ 'name','address_deposit','address_withdrawal', 'cash' ])
-    
-    outobject.transaction_history = []
-    for (var i = 0; i < 10; i++) {
-	if (self.transaction_history[i]) {
-	    outobject.transaction_history.push(self.transaction_history[i])
-	} else {
-	    break
-	}
-    }
-    callback(JSON.stringify(outobject))
-}
-
-
-
-User.prototype.sockets = function(callback) {
-    if (router.users[self._id]) { router.users[self._id].forEach(function(socket) { callback(socket) }) }
-}
 
 User.prototype.receiveMoney = function(id,time,from,amount) {
     self = this
+    console.log(self)
     amount = roundMoney(amount)
     self.cash = self.cash + amount
+    self.cash = roundMoney(self.cash)   
 
-    self.cash = roundMoney(self.cash)    
     self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
-
+    self.syncproperty('transaction_history')
     self.save()
-    self.sync()
+    //self.sync()
     self.message("payment received")
     console.log("PAYMENT RECEIVED for user " + self._id  + " from " + from + " " + amount + " BCC users cash is now " + self.cash + " BTC")
+    console.log(self)
 }
 
 User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
@@ -439,7 +541,7 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 		  function(transactionid) { 
 		      if (callback) {callback(transactionid)}
 		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
-		      self.sync()
+		      self.syncproperty('transaction_history')
 		      self.save()
 		  },
 		  function(err) {
@@ -448,17 +550,17 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 		      if (callbackerr) {callbackerr(err)}
 		  })
     } else {
-	callbackerr ('Not enough money on account')
+	if (callbackerr) { callbackerr ('Not enough money on account') }
     }
 }
 
+User.prototype.lalala = function() { console.log("called lalala with args",arguments) }
 
-
-User.prototype.getDepositAddress = function(callback,callbackerr) {
+User.prototype.generatedepositaddr = function(callback,callbackerr) {
     var self = this
 
     if (self.address_deposit.length > 2) {
-	if(callback) { callback(null) }
+	if(callbackerr) { callbackerr(null) }
 	return
     }
 
@@ -468,16 +570,20 @@ User.prototype.getDepositAddress = function(callback,callbackerr) {
 	// put it into user entry in the db
 	console.log("creating new deposit address " + address + " and linking it to user " + self._id)
 	self.address_deposit.push(address)
+	self.syncproperty('address_deposit')
 	self.save(function() {if(callback) { callback(address) }})
-	self.sync()
+	
 	settings.collection_addresses.insert({ "address": address, "creationdate": new Date().getTime(), "cash" : 0  })
 	
 
     })
 }
 
+
  
 function getUserBySecret(secret,callback,callbackerr) {
+    if (router.secretuser[secret]) { callback( router.objects[router.secretuser[secret]] ); return  }
+    l.db('loading user from db (by secret)')
     settings.collection_users.findOne({secret: secret}, function(err,user) {
 	if (!user) { if(callbackerr) { callbackerr() }; return }	
 	user.lastaccess = new Date().getTime()
@@ -490,6 +596,8 @@ function getUserBySecret(secret,callback,callbackerr) {
 
 
 function getUserById(id,callback,callbackerr) {
+    if (router.objects[id] ) { callback(router.objects[id]); return }
+    l.db('loading user from db (by id)')
     settings.collection_users.findOne({_id: new BSON.ObjectID(id)}, function(err,user) {
 	if (!user) { if(callbackerr) { callbackerr() }; return }
 	if (callback) { callback(new User(user)) }
@@ -497,24 +605,52 @@ function getUserById(id,callback,callbackerr) {
 }
 
 
-
 function getUserByAddress(address,callback,callbackerr) {
+    l.db('loading user from db (by address)')
     settings.collection_users.findOne({address_deposit: address}, function(err,user) {
 	if (err) { if(callbackerr) { callbackerr(err) } return}
-	if (callback) { callback(new User(user)) }
+	if (callback) { getUserById(["" + user._id],callback) }
     })
 }
 
-
+// }}}
 // Routes
+// {{{
+
+
+
 
 app.post ('*', function (req, res, next) {
-    console.log (" - " + req.method + " " + req.url + " " )
+    var from = req.socket.remoteAddress
+    if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
+    
+    l.http (from + " " + req.method + " " + req.url + " " )
     next()
 })
 
 app.get ('*', function (req, res, next) {
-    console.log (" - " + req.method + " " + req.url + " " )
+
+    var ignore = {}
+    ignore['/css/ui-smoothness/jquery-ui-1.8.12.custom.css'] = true
+    ignore['/css/style.css'] = true
+    ignore['/js/jquery-1.5.1.min.js'] = true
+    ignore['/js/jquery-ui-1.8.12.custom.min.js'] = true
+    ignore['/js/jquery.jeditable.min.js'] = true
+    ignore['/img/bitcoin2.png'] = true
+    ignore['/css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png'] = true
+    ignore['/css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png'] = true
+    ignore['/css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png'] = true
+    ignore['/favicon.ico'] = true
+    ignore['/css/ui-smoothness/images/ui-bg_glass_75_dadada_1x400.png'] = true
+    ignore[''] = true
+
+
+    if (ignore[req.url]) { next(); return }
+
+    var from = req.socket.remoteAddress
+    if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
+
+    l.http (from + " " + req.method + " " + req.url + " " )
     next()
 })
 
@@ -554,26 +690,6 @@ function getUserByReq(req,callback,callbackerr) {
     return
 
 }
-
-app.post('/ajax/transactions', function(req, res){
-    getUserByReq(req,
-		 function(user) {
-		     res.render('transactions',{title:settings.appname,user: RemoveFunctions(user)})
-		 })
-})
-
-
-app.get('/balance', function(req,res,next) {
-    mybitcoin('auto-getbalance', function(data) {
-	res.send(data)
-    })
-
-})
-
-app.get('/paytest',function(req,res,next) {
-    res.render('paytest',{title:settings.appname})
-
-})
 
 
 app.post('/dVmJvHTrrGhheSbsRDoR',function(req,res,next) {
@@ -636,45 +752,6 @@ app.get('/', function(req, res, next){
 })
 
 
-/*
-    if (req.query.secret) {
-	var user = getUserBySecret(req.query.secret,
-				   function(user) {
-				       req.session.uid = user._id
-				       req.user = user
-				       next()
-				       return
-				   },
-				   function() {
-				       res.send("secret invalid.")
-				       return
-				   })
-    } else {
-	if (req.session.uid) {
-	    var user = getUserById(req.session.uid,
-				   function(user) {
-				       req.user = user
-				       if (!user.password) {
-					   res.redirect('/?secret=' + user.secret)
-				       } else {
-					   next()
-				       }
-				       return;
-				   },
-				   function() {
-				       delete req.user
-				       delete req.session.uid
-				       res.send("session invalid - user not found, reload the page to continue")
-				       return
-				   })
-	} else {
-	    spawnUser(req,next)
-	}
-    }
-*/
-
-
-
 
 app.get('/', function(req, res, next){
     var user = req.user
@@ -683,11 +760,13 @@ app.get('/', function(req, res, next){
 })
 
 
-// Start
+// }}}
 
+// Start
+// {{{
 btc.getBalance(function(err, balance) {
     if (err) return console.log(err);
-    console.log("Connected to bitcoind, Account Balance:", balance, "BIT");
+    l.info("Connected to bitcoind, Account Balance: " +  balance +  " BIT");
 /*    btc.listReceivedByAddress (0,false,function(err, balance) {
 	if (err) return console.log(err);
 	console.log("Addresses:", balance);
@@ -709,40 +788,77 @@ ircclient.addListener('message', function (from, to, message) {
 */
 
 
+
+function GlobalObject() {
+    this.users = 0
+    this.init(router,'globalobject')
+}
+GlobalObject.prototype = new remoteobject.RemoteObject()
+
+GlobalObject.prototype.filter_out = { 'users': true }
+
+globalobject = new GlobalObject()
+
+
 io.sockets.on('connection', function (socket) {
-    console.log("CONNECTION ESTABLISHED")
+    //    console.log("CONNECTION ESTABLISHED")
     socket.on('hello', function (data) {	
 	getUserBySecret(data.secret,function(user) { 
+	    stickid(socket)
 	    router.login(user,socket)
-	    user.addowner(socket)
-	    user.sync()
+	    user.sync(socket)
+	    globalobject.addowner(user)
+	    globalobject.sync(socket)
 
+	    globalobject.users = Object.keys(router.secretuser).length
+
+//	    setTimeout(function() { console.log("message!"); user.message('test message') },2000)
+//	    setTimeout(function() { console.log("dolur!"); console.log(user); user.cash = 10 },2300)
+//	    setTimeout(function() { console.log("payment!"); user.receiveMoney('11111',new Date().getTime(),'test transaction',1) },2500)
+
+//	    setTimeout(function() { console.log("new payment!"); user.cash = 60 },4000)
+	    
 
 	    socket.on('disconnect', function () { 
+		globalobject.users = Object.keys(router.secretuser).length		
 		router.logout(user,socket)
 	    })
+
+
+	    socket.on('call',function (data) {
+		data = JSON.parse(data)
+		l.obj(user._id + " " + user.name + " call " + data.arguments)
+//		console.log("GOT", router.getObjectFromUser(user,data.object))
+//		router.getObjectFromUser(user,data.object)[data.function].apply(user,data.arguments)
+		var object = router.getObjectFromUser(user,data.object)
+		object[data.function].apply(object,data.arguments)
+
+	    })
+
+
+	    socket.on('objectsync',function (data) {
+		data = JSON.parse(data)
+		if (data.objects) {
+		    //getUserBySecret(data.secret, function(user) {
+			for ( var objectname in data.objects) {
+			    var obj = router.getObjectFromUser(user,objectname)
+			    //console.log(obj)
+			    //console.log("resolved object '" + obj.objectname + "', updating...")
+			    //console.log(data.objects[objectname])
+			    if (!obj) { l.obj('error, unable to resolve requested object (' + obj.objectname + ')'); return;}
+			    obj.update(data.objects[objectname])
+			}
+		    //})
+		} else {
+		    console.log( "ERROR invalid sync data received" )
+		}
+	    })
+
+
 	})
     })
     
 
-    socket.on('objectsync',function (data) {
-	if (data.objects && data.secret) {
-	    getUserBySecret(data.secret, function(user) {
-		for ( var objectname in data.objects) {
-		    var obj = router.resolveobject(socket,user,objectname)
-		    console.log("resolved object",obj.objectname,"updating...")
-		    console.log(data.objects[objectname])
-		    obj.update(data.objects[objectname])
-		}
-	    })
-	} else {
-	    console.log( "ERROR invalid sync data received" )
-	}
-    })
-
-    socket.on('call',function (data) {
-	console.log("funcall for user",data)
-    })
 })
 
 
@@ -750,7 +866,7 @@ io.sockets.on('connection', function (socket) {
 
 
 app.listen(45284);
-console.log("Express server listening on port %d", app.address().port);
+l.info("Express server listening on port %d", app.address().port);
 
 
 function parseAddressData(address) {
@@ -779,9 +895,9 @@ function parseAddressData(address) {
 
 function checkFinances() {
   //  console.log('finances tick...')
-   btc.listReceivedByAddress (1,false,function(err, addresses) {
+   btc.listReceivedByAddress (0,false,function(err, addresses) {
 //       console.log(sys.inspect(addresses))
-       if (!addresses) { console.log("problem with bitcoind communication");  }
+       if (!addresses) { l.error("problem with bitcoind communication");  }
        else {
        addresses.forEach(function(address) {
 	   parseAddressData(address)
@@ -790,6 +906,7 @@ function checkFinances() {
     })
 setTimeout(checkFinances,5000)
 }
-
 setTimeout(checkFinances,1000)
+
+// }}}
 

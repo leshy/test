@@ -158,7 +158,6 @@
 
 .mine { 
   display: block;
-  background-color: #555555; 
   color: white;
   border: 2px solid black;
   margin: 1.5px;
@@ -173,8 +172,13 @@
 }
 
 .mine_undefined { 
-  background-color: #555555; 
+    background-color: #555555;
 }
+
+.mine_undefined:hover { 
+    background-color: #555599;
+}
+
 
 .mine_yes { 
   background-color: #bb5555; 
@@ -183,6 +187,15 @@
 .mine_no { 
   background-color: #55bb55; 
 }
+
+.mine_step_yes { 
+  background-color: #ff4444; 
+}
+
+.mine_step_no { 
+  background-color: #44ff44; 
+}
+
 
 .mine_no_img { 
   background-image:url(/img/grass.png);
@@ -199,6 +212,14 @@
     text-align: center;
     align: center;
     padding: 10px;
+}
+
+
+.transactionhistory tr:hover {
+    text-align: center;
+    align: center;
+    padding: 10px;
+    background-color: #ccd;
 }
 
 .plus {

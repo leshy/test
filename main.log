@@ -1,0 +1,2389 @@
+10 Jul 19:59:57 - info: Hello distributed log files!
+10 Jul 19:59:57 - info: Hello again distributed logs
+10 Jul 20:00:40 - info: Hello distributed log files!
+10 Jul 20:00:40 - info: Hello again distributed logs
+10 Jul 20:00:40 - info: Test Log Message anything=This is metadata
+10 Jul 20:03:20 - info: Hello distributed log files!
+10 Jul 20:03:20 - info: Hello again distributed logs
+10 Jul 20:03:20 - info: Test Log Message anything=This is metadata
+10 Jul 20:04:38 - info: starting...
+10 Jul 20:04:38 - info: Express server listening on port %d
+10 Jul 20:05:07 - info: starting...
+10 Jul 20:05:08 - info: Express server listening on port %d
+10 Jul 20:05:08 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:05:08 - info: mongo - User collection open
+10 Jul 20:05:08 - info: mongo - Addresses collection open
+10 Jul 20:05:31 - info: starting...
+10 Jul 20:05:31 - info: Express server listening on port %d
+10 Jul 20:05:31 - info: Connected to bitcoind, Account Balance:
+10 Jul 20:05:59 - info: starting...
+10 Jul 20:05:59 - info: Express server listening on port %d
+10 Jul 20:05:59 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:06:00 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:06:00 - info: mongo - User collection open
+10 Jul 20:06:00 - info: mongo - Addresses collection open
+10 Jul 20:08:06 - info: starting...
+10 Jul 20:08:06 - info: Express server listening on port %d
+10 Jul 20:08:06 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:08:06 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:08:06 - info: mongo - User collection open
+10 Jul 20:08:06 - info: mongo - Addresses collection open
+10 Jul 20:08:16 - payment: starting...
+10 Jul 20:08:16 - info: Express server listening on port %d
+10 Jul 20:08:16 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:08:16 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:08:16 - info: mongo - User collection open
+10 Jul 20:08:16 - info: mongo - Addresses collection open
+10 Jul 20:08:18 - payment: starting...
+10 Jul 20:08:18 - info: Express server listening on port %d
+10 Jul 20:08:18 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:08:18 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:08:18 - info: mongo - User collection open
+10 Jul 20:08:18 - info: mongo - Addresses collection open
+10 Jul 20:08:27 - info: starting...
+10 Jul 20:08:27 - info: Express server listening on port %d
+10 Jul 20:08:27 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:08:27 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:08:27 - info: mongo - User collection open
+10 Jul 20:08:27 - info: mongo - Addresses collection open
+10 Jul 20:08:33 - http: starting...
+10 Jul 20:08:33 - info: Express server listening on port %d
+10 Jul 20:08:33 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:08:33 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:08:33 - info: mongo - User collection open
+10 Jul 20:08:33 - info: mongo - Addresses collection open
+10 Jul 20:09:26 - http: starting...
+10 Jul 20:09:26 - info: Express server listening on port %d
+10 Jul 20:09:26 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:09:26 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:09:26 - info: mongo - User collection open
+10 Jul 20:09:26 - info: mongo - Addresses collection open
+10 Jul 20:10:08 - http: starting...
+10 Jul 20:10:08 - info: Express server listening on port %d
+10 Jul 20:10:08 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:10:08 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:10:08 - info: mongo - User collection open
+10 Jul 20:10:08 - info: mongo - Addresses collection open
+10 Jul 20:10:09 - http: GET / 
+10 Jul 20:10:09 - http: GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 20:10:09 - http: GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:10:09 - http: GET /css/style.css 
+10 Jul 20:10:09 - http: GET /js/jquery-1.5.1.min.js 
+10 Jul 20:10:09 - http: GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:10:09 - http: GET /js/jquery.jeditable.min.js 
+10 Jul 20:10:10 - http: GET /img/bitcoin2.png 
+10 Jul 20:10:10 - http: GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:10:10 - http: GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:10:10 - http: GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:10:10 - http: GET /favicon.ico 
+10 Jul 20:10:37 - http: starting...
+10 Jul 20:10:37 - info: Express server listening on port %d
+10 Jul 20:10:37 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:10:37 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:10:37 - info: mongo - User collection open
+10 Jul 20:10:37 - info: mongo - Addresses collection open
+10 Jul 20:10:39 - http: GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 20:10:39 - http: GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:10:39 - http: GET /css/style.css 
+10 Jul 20:10:39 - http: GET /js/jquery.jeditable.min.js 
+10 Jul 20:10:39 - http: GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:10:39 - http: GET /js/jquery-1.5.1.min.js 
+10 Jul 20:10:40 - http: GET /img/bitcoin2.png 
+10 Jul 20:10:40 - http: GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:10:40 - http: GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:10:40 - http: GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:11:01 - http: starting...
+10 Jul 20:11:01 - info: Express server listening on port %d
+10 Jul 20:11:01 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:11:01 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:11:01 - info: mongo - User collection open
+10 Jul 20:11:01 - info: mongo - Addresses collection open
+10 Jul 20:11:14 - http: GET / 
+10 Jul 20:11:14 - http: GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:11:14 - http: GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:11:14 - http: GET /css/style.css 
+10 Jul 20:11:14 - http: GET /js/jquery-1.5.1.min.js 
+10 Jul 20:11:15 - http: GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:11:15 - http: GET /js/jquery.jeditable.min.js 
+10 Jul 20:11:15 - http: GET /img/bitcoin2.png 
+10 Jul 20:11:15 - http: GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:11:15 - http: GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:11:15 - http: GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:11:16 - http: GET /favicon.ico 
+10 Jul 20:12:50 - http: starting...
+10 Jul 20:12:50 - info: Express server listening on port %d
+10 Jul 20:12:50 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:12:50 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:12:50 - info: mongo - User collection open
+10 Jul 20:12:50 - info: mongo - Addresses collection open
+10 Jul 20:12:51 - http: undefined GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:12:51 - http: undefined GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:12:51 - http: undefined GET /css/style.css 
+10 Jul 20:12:51 - http: undefined GET /js/jquery-1.5.1.min.js 
+10 Jul 20:12:51 - http: undefined GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:12:51 - http: undefined GET /js/jquery.jeditable.min.js 
+10 Jul 20:12:52 - http: undefined GET /img/bitcoin2.png 
+10 Jul 20:12:52 - http: undefined GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:12:52 - http: undefined GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:12:52 - http: undefined GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:12:52 - http: undefined GET /favicon.ico 
+10 Jul 20:13:07 - http: starting...
+10 Jul 20:13:07 - info: Express server listening on port %d
+10 Jul 20:13:07 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:13:07 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:13:07 - info: mongo - User collection open
+10 Jul 20:13:07 - info: mongo - Addresses collection open
+10 Jul 20:13:09 - http: undefined GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:13:09 - http: undefined GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:13:09 - http: undefined GET /css/style.css 
+10 Jul 20:13:09 - http: undefined GET /js/jquery-1.5.1.min.js 
+10 Jul 20:13:09 - http: undefined GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:13:09 - http: undefined GET /js/jquery.jeditable.min.js 
+10 Jul 20:13:10 - http: undefined GET /img/bitcoin2.png 
+10 Jul 20:13:10 - http: undefined GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:13:10 - http: undefined GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:13:10 - http: undefined GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:13:10 - http: undefined GET /favicon.ico 
+10 Jul 20:13:35 - http: starting...
+10 Jul 20:13:35 - info: Express server listening on port %d
+10 Jul 20:13:35 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:13:35 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:13:35 - info: mongo - User collection open
+10 Jul 20:13:35 - info: mongo - Addresses collection open
+10 Jul 20:13:35 - http: undefined GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:13:36 - http: undefined GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:13:36 - http: undefined GET /js/jquery.jeditable.min.js 
+10 Jul 20:13:36 - http: undefined GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:13:36 - http: undefined GET /js/jquery-1.5.1.min.js 
+10 Jul 20:13:36 - http: undefined GET /css/style.css 
+10 Jul 20:13:36 - http: undefined GET /img/bitcoin2.png 
+10 Jul 20:13:36 - http: undefined GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:13:36 - http: undefined GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:13:36 - http: undefined GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:13:37 - http: undefined GET /favicon.ico 
+10 Jul 20:14:27 - http: starting...
+10 Jul 20:14:27 - info: Express server listening on port %d
+10 Jul 20:14:27 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:14:27 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:14:27 - info: mongo - User collection open
+10 Jul 20:14:27 - info: mongo - Addresses collection open
+10 Jul 20:14:28 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:14:28 - http: 78.47.145.170 GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:14:28 - http: 78.47.145.170 GET /css/style.css 
+10 Jul 20:14:28 - http: 78.47.145.170 GET /js/jquery-1.5.1.min.js 
+10 Jul 20:14:28 - http: 78.47.145.170 GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:14:28 - http: 78.47.145.170 GET /js/jquery.jeditable.min.js 
+10 Jul 20:14:29 - http: 78.47.145.170 GET /img/bitcoin2.png 
+10 Jul 20:14:29 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:14:29 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:14:29 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:14:29 - http: 78.47.145.170 GET /favicon.ico 
+10 Jul 20:16:52 - http: starting...
+10 Jul 20:16:52 - info: Express server listening on port %d
+10 Jul 20:16:52 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:16:52 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:16:52 - info: mongo - User collection open
+10 Jul 20:16:52 - info: mongo - Addresses collection open
+10 Jul 20:16:53 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /css/style.css 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /js/jquery-1.5.1.min.js 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /js/jquery.jeditable.min.js 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /img/bitcoin2.png 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:16:53 - http: 78.47.145.170 GET /favicon.ico 
+10 Jul 20:17:25 - http: starting...
+10 Jul 20:17:25 - info: Express server listening on port %d
+10 Jul 20:17:25 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:17:25 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:17:25 - info: mongo - User collection open
+10 Jul 20:17:25 - info: mongo - Addresses collection open
+10 Jul 20:17:26 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:17:26 - http: 78.47.145.170 GET /css/ui-smoothness/jquery-ui-1.8.12.custom.css 
+10 Jul 20:17:26 - http: 78.47.145.170 GET /css/style.css 
+10 Jul 20:17:26 - http: 78.47.145.170 GET /js/jquery-1.5.1.min.js 
+10 Jul 20:17:26 - http: 78.47.145.170 GET /js/jquery-ui-1.8.12.custom.min.js 
+10 Jul 20:17:26 - http: 78.47.145.170 GET /js/jquery.jeditable.min.js 
+10 Jul 20:17:27 - http: 78.47.145.170 GET /img/bitcoin2.png 
+10 Jul 20:17:27 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png 
+10 Jul 20:17:27 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png 
+10 Jul 20:17:27 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png 
+10 Jul 20:17:27 - http: 78.47.145.170 GET /favicon.ico 
+10 Jul 20:17:37 - http: starting...
+10 Jul 20:17:37 - info: Express server listening on port %d
+10 Jul 20:17:37 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:17:37 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:17:37 - info: mongo - User collection open
+10 Jul 20:17:37 - info: mongo - Addresses collection open
+10 Jul 20:17:37 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:17:38 - http: 78.47.145.170 GET /favicon.ico 
+10 Jul 20:17:50 - http: starting...
+10 Jul 20:17:50 - info: Express server listening on port %d
+10 Jul 20:17:50 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:17:50 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:17:50 - info: mongo - User collection open
+10 Jul 20:17:50 - info: mongo - Addresses collection open
+10 Jul 20:17:51 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:17:51 - http: 78.47.145.170 GET /favicon.ico 
+10 Jul 20:18:00 - http: starting...
+10 Jul 20:18:00 - info: Express server listening on port %d
+10 Jul 20:18:00 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:18:00 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:18:00 - info: mongo - User collection open
+10 Jul 20:18:00 - info: mongo - Addresses collection open
+10 Jul 20:18:01 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:18:06 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:18:46 - http: starting...
+10 Jul 20:18:46 - info: Express server listening on port %d
+10 Jul 20:18:46 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:18:46 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:18:46 - info: mongo - User collection open
+10 Jul 20:18:46 - info: mongo - Addresses collection open
+10 Jul 20:18:47 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:18:47 - db: loading user from db...
+10 Jul 20:18:48 - db: loading user from db...
+10 Jul 20:19:09 - info: starting...
+10 Jul 20:19:09 - info: Express server listening on port %d
+10 Jul 20:19:09 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:19:09 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:19:09 - info: mongo - User collection open
+10 Jul 20:19:09 - info: mongo - Addresses collection open
+10 Jul 20:19:15 - http: 78.47.145.170 GET /?secret=e40e33d9ce8ea3b264b5d38980a5009d9e038643 
+10 Jul 20:19:15 - db: loading user from db...
+10 Jul 20:19:16 - db: loading user from db...
+10 Jul 20:19:54 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_75_dadada_1x400.png 
+10 Jul 20:20:02 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 20:20:02 - db: loading user from db...
+10 Jul 20:20:03 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_75_dadada_1x400.png 
+10 Jul 20:20:03 - db: loading user from db...
+10 Jul 20:29:10 - http: 78.47.145.170 GET / 
+10 Jul 20:29:10 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:29:10 - db: loading user from db...
+10 Jul 20:29:12 - db: loading user from db...
+10 Jul 20:31:06 - info: starting...
+10 Jul 20:31:06 - info: Express server listening on port %d
+10 Jul 20:31:06 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:31:06 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:31:06 - info: mongo - User collection open
+10 Jul 20:31:06 - info: mongo - Addresses collection open
+10 Jul 20:31:08 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:31:08 - db: loading user from db (by secret)...
+10 Jul 20:31:09 - db: loading user from db (by secret)...
+10 Jul 20:32:44 - info: starting...
+10 Jul 20:32:44 - info: Express server listening on port %d
+10 Jul 20:32:44 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:32:44 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:32:44 - info: mongo - User collection open
+10 Jul 20:32:44 - info: mongo - Addresses collection open
+10 Jul 20:32:46 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:32:46 - db: loading user from db (by secret)...
+10 Jul 20:32:47 - db: loading user from db (by secret)...
+10 Jul 20:32:52 - info: starting...
+10 Jul 20:32:52 - info: Express server listening on port %d
+10 Jul 20:32:52 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:32:52 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:32:52 - info: mongo - User collection open
+10 Jul 20:32:52 - info: mongo - Addresses collection open
+10 Jul 20:32:53 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:32:53 - db: loading user from db (by secret)...
+10 Jul 20:32:53 - db: loading user from db (by secret)...
+10 Jul 20:32:53 - user: user
+10 Jul 20:33:44 - info: starting...
+10 Jul 20:33:44 - info: Express server listening on port %d
+10 Jul 20:33:44 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:33:44 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:33:44 - info: mongo - User collection open
+10 Jul 20:33:44 - info: mongo - Addresses collection open
+10 Jul 20:33:45 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:33:45 - db: loading user from db (by secret)...
+10 Jul 20:33:46 - db: loading user from db (by secret)...
+10 Jul 20:33:46 - user: user user-4e19ef7610220bf115000001 logged in
+10 Jul 20:34:00 - info: starting...
+10 Jul 20:34:00 - info: Express server listening on port %d
+10 Jul 20:34:00 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:34:00 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:34:00 - info: mongo - User collection open
+10 Jul 20:34:00 - info: mongo - Addresses collection open
+10 Jul 20:34:01 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:34:01 - db: loading user from db (by secret)...
+10 Jul 20:34:02 - db: loading user from db (by secret)...
+10 Jul 20:34:02 - user: user user-4e19ef7610220bf115000001 logged in
+10 Jul 20:34:05 - info: starting...
+10 Jul 20:34:06 - info: Express server listening on port %d
+10 Jul 20:34:06 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:34:06 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:34:06 - info: mongo - User collection open
+10 Jul 20:34:06 - info: mongo - Addresses collection open
+10 Jul 20:34:06 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:34:06 - db: loading user from db (by secret)...
+10 Jul 20:34:07 - db: loading user from db (by secret)...
+10 Jul 20:34:07 - user: user user-4e19ef7610220bf115000001 logged in
+10 Jul 20:34:45 - info: starting...
+10 Jul 20:34:45 - info: Express server listening on port %d
+10 Jul 20:34:45 - info: Connected to bitcoind, Account Balance: 0.039 BIT
+10 Jul 20:34:45 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:34:45 - info: mongo - User collection open
+10 Jul 20:34:45 - info: mongo - Addresses collection open
+10 Jul 20:34:46 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:34:46 - db: loading user from db (by secret)
+10 Jul 20:34:47 - db: loading user from db (by secret)
+10 Jul 20:34:47 - user: user user-4e19ef7610220bf115000001 logged in
+10 Jul 20:35:11 - user: user user-4e19ef7610220bf115000001 logged out.
+10 Jul 20:35:11 - obj: persisting user object 4e19ef7610220bf115000001 user-4e19ef7610220bf115000001
+10 Jul 20:35:11 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:35:11 - db: loading user from db (by secret)
+10 Jul 20:35:12 - db: loading user from db (by secret)
+10 Jul 20:35:12 - user: user user-4e19ef7610220bf115000001 logged in
+10 Jul 20:35:13 - http: 78.47.145.170 GET /css/ui-smoothness/images/ui-bg_glass_75_dadada_1x400.png 
+10 Jul 20:35:15 - db: loading user from db (by secret)
+10 Jul 20:35:25 - obj: persisting user object 4e19ef7610220bf115000001 testbla
+10 Jul 20:35:56 - info: starting...
+10 Jul 20:35:56 - info: Express server listening on port %d
+10 Jul 20:35:56 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:35:56 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:35:56 - info: mongo - User collection open
+10 Jul 20:35:56 - info: mongo - Addresses collection open
+10 Jul 20:35:57 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:35:57 - db: loading user from db (by secret)
+10 Jul 20:35:57 - db: loading user from db (by address)
+10 Jul 20:35:57 - db: loading user from db (by id)
+10 Jul 20:36:03 - info: starting...
+10 Jul 20:36:03 - info: Express server listening on port %d
+10 Jul 20:36:03 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:36:03 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:36:03 - info: mongo - User collection open
+10 Jul 20:36:03 - info: mongo - Addresses collection open
+10 Jul 20:36:11 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:36:11 - db: loading user from db (by secret)
+10 Jul 20:36:12 - db: loading user from db (by secret)
+10 Jul 20:36:12 - user: testbla logged in
+10 Jul 20:36:16 - db: loading user from db (by secret)
+10 Jul 20:36:26 - obj: persisting user object 4e19ef7610220bf115000001 kaka
+10 Jul 20:38:10 - info: starting...
+10 Jul 20:38:10 - info: Express server listening on port %d
+10 Jul 20:38:10 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:38:10 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:38:10 - info: mongo - User collection open
+10 Jul 20:38:10 - info: mongo - Addresses collection open
+10 Jul 20:38:10 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:38:10 - db: loading user from db (by secret)
+10 Jul 20:38:11 - db: loading user from db (by secret)
+10 Jul 20:38:11 - user: kaka logged in
+10 Jul 20:38:18 - db: loading user from db (by secret)
+10 Jul 20:38:34 - info: starting...
+10 Jul 20:38:34 - info: Express server listening on port %d
+10 Jul 20:38:34 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:38:34 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:38:34 - info: mongo - User collection open
+10 Jul 20:38:34 - info: mongo - Addresses collection open
+10 Jul 20:38:34 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:38:34 - db: loading user from db (by secret)
+10 Jul 20:38:35 - db: loading user from db (by secret)
+10 Jul 20:38:35 - user: kaka logged in
+10 Jul 20:38:49 - info: starting...
+10 Jul 20:38:49 - info: Express server listening on port %d
+10 Jul 20:38:49 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:38:49 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:38:49 - info: mongo - User collection open
+10 Jul 20:38:49 - info: mongo - Addresses collection open
+10 Jul 20:38:49 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:38:49 - db: loading user from db (by secret)
+10 Jul 20:38:50 - db: loading user from db (by secret)
+10 Jul 20:38:50 - user: kaka logged in
+10 Jul 20:38:51 - db: loading user from db (by secret)
+10 Jul 20:38:51 - obj: user
+10 Jul 20:38:57 - db: loading user from db (by secret)
+10 Jul 20:38:57 - obj: user
+10 Jul 20:38:58 - user: kaka logged out.
+10 Jul 20:38:58 - obj: persisting user object 4e19ef7610220bf115000001 asdg
+10 Jul 20:38:58 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:38:58 - db: loading user from db (by secret)
+10 Jul 20:38:59 - db: loading user from db (by secret)
+10 Jul 20:38:59 - user: asdg logged in
+10 Jul 20:39:01 - db: loading user from db (by secret)
+10 Jul 20:39:01 - obj: user
+10 Jul 20:39:01 - obj: persisting user object 4e19ef7610220bf115000001 kakaka
+10 Jul 20:39:07 - obj: persisting user object 4e19ef7610220bf115000001 asdg
+10 Jul 20:39:11 - obj: persisting user object 4e19ef7610220bf115000001 kakaka
+10 Jul 20:39:41 - info: starting...
+10 Jul 20:39:41 - info: Express server listening on port %d
+10 Jul 20:39:41 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:39:41 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:39:41 - info: mongo - User collection open
+10 Jul 20:39:41 - info: mongo - Addresses collection open
+10 Jul 20:39:42 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:39:42 - db: loading user from db (by secret)
+10 Jul 20:39:43 - db: loading user from db (by secret)
+10 Jul 20:39:43 - user: kakaka logged in
+10 Jul 20:39:46 - db: loading user from db (by secret)
+10 Jul 20:39:46 - obj: user -> name = kakakaf
+10 Jul 20:39:56 - obj: persisting user object 4e19ef7610220bf115000001 kakakaf
+10 Jul 20:40:01 - info: starting...
+10 Jul 20:40:01 - info: Express server listening on port %d
+10 Jul 20:40:01 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:40:01 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:40:01 - info: mongo - User collection open
+10 Jul 20:40:01 - info: mongo - Addresses collection open
+10 Jul 20:40:02 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:40:02 - db: loading user from db (by secret)
+10 Jul 20:40:03 - db: loading user from db (by secret)
+10 Jul 20:40:03 - user: kakakaf logged in
+10 Jul 20:40:08 - db: loading user from db (by secret)
+10 Jul 20:40:08 - obj: user updating name = asf
+10 Jul 20:40:18 - obj: persisting user object 4e19ef7610220bf115000001 asf
+10 Jul 20:40:40 - db: loading user from db (by secret)
+10 Jul 20:40:40 - obj: user updating name = ff
+10 Jul 20:40:43 - db: loading user from db (by secret)
+10 Jul 20:40:43 - obj: user updating name = ffff
+10 Jul 20:40:50 - obj: persisting user object 4e19ef7610220bf115000001 ff
+10 Jul 20:40:53 - obj: persisting user object 4e19ef7610220bf115000001 ffff
+10 Jul 20:43:02 - user: kakakaf logged out.
+10 Jul 20:43:02 - obj: persisting user object 4e19ef7610220bf115000001 ffff
+10 Jul 20:43:02 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:43:02 - db: loading user from db (by secret)
+10 Jul 20:43:04 - info: starting...
+10 Jul 20:43:04 - info: Express server listening on port %d
+10 Jul 20:43:04 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:43:04 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:43:04 - info: mongo - User collection open
+10 Jul 20:43:04 - info: mongo - Addresses collection open
+10 Jul 20:43:10 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:43:10 - db: loading user from db (by secret)
+10 Jul 20:43:11 - db: loading user from db (by secret)
+10 Jul 20:43:11 - user: ffff logged in
+10 Jul 20:43:14 - db: loading user from db (by secret)
+10 Jul 20:43:14 - obj: user updating name = asdg
+10 Jul 20:43:16 - db: loading user from db (by secret)
+10 Jul 20:43:16 - obj: user updating name = gg
+10 Jul 20:43:24 - obj: persisting user object 4e19ef7610220bf115000001 asdg
+10 Jul 20:43:26 - obj: persisting user object 4e19ef7610220bf115000001 gg
+10 Jul 20:44:07 - info: starting...
+10 Jul 20:44:07 - info: Express server listening on port %d
+10 Jul 20:44:07 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:44:07 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:44:07 - info: mongo - User collection open
+10 Jul 20:44:07 - info: mongo - Addresses collection open
+10 Jul 20:44:08 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:44:08 - db: loading user from db (by secret)
+10 Jul 20:44:09 - db: loading user from db (by secret)
+10 Jul 20:44:09 - user: gg logged in
+10 Jul 20:44:11 - db: loading user from db (by secret)
+10 Jul 20:44:11 - obj: user updating name = asdg
+10 Jul 20:44:12 - db: loading user from db (by secret)
+10 Jul 20:44:12 - obj: user updating name = ff
+10 Jul 20:44:21 - obj: persisting user object 4e19ef7610220bf115000001 asdg
+10 Jul 20:44:22 - obj: persisting user object 4e19ef7610220bf115000001 ff
+10 Jul 20:44:24 - info: starting...
+10 Jul 20:44:24 - info: Express server listening on port %d
+10 Jul 20:44:24 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:44:24 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:44:24 - info: mongo - User collection open
+10 Jul 20:44:24 - info: mongo - Addresses collection open
+10 Jul 20:44:25 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:44:25 - db: loading user from db (by secret)
+10 Jul 20:44:26 - db: loading user from db (by secret)
+10 Jul 20:44:26 - user: ff logged in
+10 Jul 20:44:28 - db: loading user from db (by secret)
+10 Jul 20:44:28 - obj: user updating name = adsg
+10 Jul 20:44:29 - db: loading user from db (by secret)
+10 Jul 20:44:29 - obj: user updating name = ddd
+10 Jul 20:44:38 - obj: persisting user object 4e19ef7610220bf115000001 adsg
+10 Jul 20:44:39 - obj: persisting user object 4e19ef7610220bf115000001 ddd
+10 Jul 20:48:07 - info: starting...
+10 Jul 20:48:07 - info: Express server listening on port %d
+10 Jul 20:48:07 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:48:07 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:48:07 - info: mongo - User collection open
+10 Jul 20:48:07 - info: mongo - Addresses collection open
+10 Jul 20:48:09 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:48:09 - db: loading user from db (by secret)
+10 Jul 20:48:10 - db: loading user from db (by secret)
+10 Jul 20:48:10 - user: ddd logged in
+10 Jul 20:48:13 - db: loading user from db (by secret)
+10 Jul 20:48:13 - obj: user updating name = bbb
+10 Jul 20:48:15 - db: loading user from db (by secret)
+10 Jul 20:48:15 - obj: user updating name = kkk
+10 Jul 20:48:23 - obj: persisting user object undefined undefined
+10 Jul 20:49:08 - info: starting...
+10 Jul 20:49:08 - info: Express server listening on port %d
+10 Jul 20:49:08 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:49:08 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:49:08 - info: mongo - User collection open
+10 Jul 20:49:08 - info: mongo - Addresses collection open
+10 Jul 20:49:24 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:49:24 - db: loading user from db (by secret)
+10 Jul 20:49:25 - db: loading user from db (by secret)
+10 Jul 20:49:25 - user: ddd logged in
+10 Jul 20:49:27 - db: loading user from db (by secret)
+10 Jul 20:49:27 - obj: user updating name = lba
+10 Jul 20:49:29 - db: loading user from db (by secret)
+10 Jul 20:49:29 - obj: user updating name = asdgsadg
+10 Jul 20:49:37 - obj: persisting user object 4e19ef7610220bf115000001 lba
+10 Jul 20:49:39 - obj: persisting user object 4e19ef7610220bf115000001 asdgsadg
+10 Jul 20:51:32 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 20:51:32 - db: loading user from db (by secret)
+10 Jul 20:51:34 - db: loading user from db (by secret)
+10 Jul 20:51:34 - user: usernew logged in
+10 Jul 20:57:56 - info: starting...
+10 Jul 20:57:56 - info: Express server listening on port %d
+10 Jul 20:57:56 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 20:57:56 - info: Connected to mongodb server at localhost:27017
+10 Jul 20:57:56 - info: mongo - User collection open
+10 Jul 20:57:56 - info: mongo - Addresses collection open
+10 Jul 20:57:57 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 20:57:57 - db: loading user from db (by secret)
+10 Jul 20:57:58 - db: loading user from db (by secret)
+10 Jul 20:57:58 - user: usernew logged in
+10 Jul 20:58:00 - obj: user updating name = lalala
+10 Jul 20:58:08 - user: lalala logged out.
+10 Jul 20:58:08 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 20:58:10 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 20:59:40 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 20:59:40 - db: loading user from db (by secret)
+10 Jul 20:59:41 - db: loading user from db (by secret)
+10 Jul 20:59:41 - user: asdgsadg logged in
+10 Jul 21:02:42 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:02:42 - user: asdgsadg logged out.
+10 Jul 21:02:42 - obj: persisting user object 4e19ef7610220bf115000001 asdgsadg
+10 Jul 21:02:44 - db: loading user from db (by secret)
+10 Jul 21:02:44 - user: asdgsadg logged in
+10 Jul 21:02:45 - obj: user updating name = asdgsag
+10 Jul 21:02:47 - obj: user updating name = sad
+10 Jul 21:02:57 - obj: persisting user object 4e19ef7610220bf115000001 sad
+10 Jul 21:04:48 - info: starting...
+10 Jul 21:04:48 - info: Express server listening on port %d
+10 Jul 21:04:48 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:04:48 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:04:48 - info: mongo - User collection open
+10 Jul 21:04:48 - info: mongo - Addresses collection open
+10 Jul 21:04:49 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:04:49 - db: loading user from db (by secret)
+10 Jul 21:04:50 - db: loading user from db (by secret)
+10 Jul 21:04:50 - user: sad logged in
+10 Jul 21:05:35 - info: starting...
+10 Jul 21:05:35 - info: Express server listening on port %d
+10 Jul 21:05:35 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:05:35 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:05:35 - info: mongo - User collection open
+10 Jul 21:05:35 - info: mongo - Addresses collection open
+10 Jul 21:05:36 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:05:36 - db: loading user from db (by secret)
+10 Jul 21:05:38 - db: loading user from db (by secret)
+10 Jul 21:05:38 - user: sad logged in
+10 Jul 21:05:39 - obj: 4e19ef7610220bf115000001 sad call 6
+10 Jul 21:07:08 - user: sad logged out.
+10 Jul 21:07:08 - obj: persisting user object 4e19ef7610220bf115000001 sad
+10 Jul 21:07:09 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:07:09 - db: loading user from db (by secret)
+10 Jul 21:07:10 - db: loading user from db (by secret)
+10 Jul 21:07:10 - user: sad logged in
+10 Jul 21:07:56 - obj: user updating name = alala
+10 Jul 21:08:06 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:08:37 - info: starting...
+10 Jul 21:08:37 - info: Express server listening on port %d
+10 Jul 21:08:37 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:08:37 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:08:37 - info: mongo - User collection open
+10 Jul 21:08:37 - info: mongo - Addresses collection open
+10 Jul 21:08:38 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:08:38 - db: loading user from db (by secret)
+10 Jul 21:08:40 - db: loading user from db (by secret)
+10 Jul 21:08:40 - user: 4e19ef7610220bf115000001 alala logged in
+10 Jul 21:11:50 - info: starting...
+10 Jul 21:11:50 - info: Express server listening on port %d
+10 Jul 21:11:50 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:11:50 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:11:50 - info: mongo - User collection open
+10 Jul 21:11:50 - info: mongo - Addresses collection open
+10 Jul 21:11:55 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:11:55 - db: loading user from db (by secret)
+10 Jul 21:11:56 - db: loading user from db (by secret)
+10 Jul 21:11:56 - user: 4e19ef7610220bf115000001 alala logged in
+10 Jul 21:11:58 - obj: property change rejected
+10 Jul 21:12:00 - user: 4e19ef7610220bf115000001 alala logged out.
+10 Jul 21:12:00 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:12:00 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:12:00 - db: loading user from db (by secret)
+10 Jul 21:12:02 - db: loading user from db (by secret)
+10 Jul 21:12:02 - user: 4e19ef7610220bf115000001 alala logged in
+10 Jul 21:12:08 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:12:22 - user: 4e19ef7610220bf115000001 alala logged out.
+10 Jul 21:12:22 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:12:22 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:12:22 - db: loading user from db (by secret)
+10 Jul 21:12:25 - info: starting...
+10 Jul 21:12:25 - info: Express server listening on port %d
+10 Jul 21:12:25 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:12:25 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:12:25 - info: mongo - User collection open
+10 Jul 21:12:25 - info: mongo - Addresses collection open
+10 Jul 21:12:25 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:12:25 - db: loading user from db (by secret)
+10 Jul 21:12:26 - db: loading user from db (by secret)
+10 Jul 21:12:26 - user: 4e19ef7610220bf115000001 alala logged in
+10 Jul 21:12:27 - user: 4e19ef7610220bf115000001 alala logged out.
+10 Jul 21:12:27 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:12:28 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:12:28 - db: loading user from db (by secret)
+10 Jul 21:12:30 - db: loading user from db (by secret)
+10 Jul 21:12:30 - user: 4e19ef7610220bf115000001 alala logged in
+10 Jul 21:12:30 - user: 4e19ef7610220bf115000001 alala logged out.
+10 Jul 21:12:30 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:12:32 - http: 78.47.145.170 GET /?secret=7ba3aa2b7cdc6e2545d644698de7cc758015e7d5 
+10 Jul 21:12:32 - db: loading user from db (by secret)
+10 Jul 21:12:33 - db: loading user from db (by secret)
+10 Jul 21:12:33 - user: 4e19ef7610220bf115000001 alala logged in
+10 Jul 21:12:35 - obj: property change rejected
+10 Jul 21:12:45 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:13:34 - user: 4e19ef7610220bf115000001 alala logged out.
+10 Jul 21:13:34 - obj: persisting user object 4e19ef7610220bf115000001 alala
+10 Jul 21:13:42 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:13:42 - db: loading user from db (by secret)
+10 Jul 21:13:43 - db: loading user from db (by secret)
+10 Jul 21:13:43 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:14:05 - user: 4e16eae53a4bac8530000006 lalala logged out.
+10 Jul 21:14:05 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 21:14:05 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:14:05 - db: loading user from db (by secret)
+10 Jul 21:14:07 - db: loading user from db (by secret)
+10 Jul 21:14:07 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:14:11 - obj: property change rejected
+10 Jul 21:14:21 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 21:14:21 - user: 4e16eae53a4bac8530000006 lalala logged out.
+10 Jul 21:14:21 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 21:14:21 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:14:21 - db: loading user from db (by secret)
+10 Jul 21:14:23 - db: loading user from db (by secret)
+10 Jul 21:14:23 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:17:19 - obj: 4e16eae53a4bac8530000006 lalala call 6
+10 Jul 21:17:25 - user: 4e16eae53a4bac8530000006 lalala logged out.
+10 Jul 21:17:25 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 21:17:25 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:17:25 - db: loading user from db (by secret)
+10 Jul 21:17:27 - db: loading user from db (by secret)
+10 Jul 21:17:27 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:17:36 - user: 4e16eae53a4bac8530000006 lalala logged out.
+10 Jul 21:17:36 - obj: persisting user object 4e16eae53a4bac8530000006 lalala
+10 Jul 21:17:38 - db: loading user from db (by secret)
+10 Jul 21:17:38 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:17:56 - obj: 4e16eae53a4bac8530000006 lalala call 6
+10 Jul 21:19:54 - info: starting...
+10 Jul 21:19:54 - info: Express server listening on port %d
+10 Jul 21:19:54 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:19:54 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:19:54 - info: mongo - User collection open
+10 Jul 21:19:54 - info: mongo - Addresses collection open
+10 Jul 21:19:56 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:19:56 - db: loading user from db (by secret)
+10 Jul 21:19:57 - db: loading user from db (by secret)
+10 Jul 21:19:57 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:20:02 - obj: 4e16eae53a4bac8530000006 lalala call 6
+10 Jul 21:20:12 - info: starting...
+10 Jul 21:20:12 - info: Express server listening on port %d
+10 Jul 21:20:12 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:20:12 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:20:12 - info: mongo - User collection open
+10 Jul 21:20:12 - info: mongo - Addresses collection open
+10 Jul 21:20:13 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:20:13 - db: loading user from db (by secret)
+10 Jul 21:20:16 - db: loading user from db (by secret)
+10 Jul 21:20:16 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:20:17 - obj: 4e16eae53a4bac8530000006 lalala call 6
+10 Jul 21:23:22 - info: starting...
+10 Jul 21:23:22 - info: Express server listening on port %d
+10 Jul 21:23:22 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:23:22 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:23:22 - info: mongo - User collection open
+10 Jul 21:23:22 - info: mongo - Addresses collection open
+10 Jul 21:23:24 - http: 78.47.145.170 GET /?secret=8b0ca157589e2f99576bc4dacf58abb77b8b5e41 
+10 Jul 21:23:24 - db: loading user from db (by secret)
+10 Jul 21:23:26 - db: loading user from db (by secret)
+10 Jul 21:23:26 - user: 4e16eae53a4bac8530000006 lalala logged in
+10 Jul 21:23:28 - obj: 4e16eae53a4bac8530000006 lalala call 6
+10 Jul 21:29:00 - info: starting...
+10 Jul 21:29:00 - info: Express server listening on port %d
+10 Jul 21:29:00 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:29:00 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:29:00 - info: mongo - User collection open
+10 Jul 21:29:00 - info: mongo - Addresses collection open
+10 Jul 21:32:48 - info: starting...
+10 Jul 21:32:48 - info: Express server listening on port %d
+10 Jul 21:32:48 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:32:48 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:32:48 - info: mongo - User collection open
+10 Jul 21:32:48 - info: mongo - Addresses collection open
+10 Jul 21:34:18 - info: starting...
+10 Jul 21:34:18 - info: Express server listening on port %d
+10 Jul 21:34:18 - info: Connected to bitcoind, Account Balance: 0.04 BIT
+10 Jul 21:34:18 - info: Connected to mongodb server at localhost:27017
+10 Jul 21:34:18 - info: mongo - User collection open
+10 Jul 21:34:18 - info: mongo - Addresses collection open
+10 Jul 21:34:23 - http: 78.47.145.170 GET / 
+10 Jul 21:34:23 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 21:34:23 - db: loading user from db (by secret)
+10 Jul 21:34:25 - db: loading user from db (by secret)
+10 Jul 21:34:25 - user: 4e19febf92c069311f000001 user-4e19febf92c069311f000001 logged in
+10 Jul 21:34:29 - obj: 4e19febf92c069311f000001 user-4e19febf92c069311f000001 call 
+10 Jul 21:34:39 - obj: persisting user object 4e19febf92c069311f000001 user-4e19febf92c069311f000001
+10 Jul 21:34:42 - http: 78.47.145.170 POST /ajax/mybitcoinlink 
+10 Jul 21:35:09 - http: 216.152.133.111 POST /dVmJvHTrrGhheSbsRDoR 
+10 Jul 21:35:09 - obj: user updating cash = 0.001
+10 Jul 21:35:09 - obj: user updating cash = 0.001
+10 Jul 21:35:11 - http: 78.47.145.170 GET /payok 
+10 Jul 21:35:19 - obj: persisting user object 4e19febf92c069311f000001 user-4e19febf92c069311f000001
+10 Jul 21:35:59 - obj: user updating name = newtest
+10 Jul 21:36:09 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 21:36:54 - http: 78.47.145.170 GET /payok 
+10 Jul 21:37:53 - obj: 4e19febf92c069311f000001 newtest call 
+10 Jul 21:38:03 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 21:39:24 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 21:39:25 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 21:39:30 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 21:39:32 - user: 4e19febf92c069311f000001 newtest connected a socket.
+10 Jul 21:39:33 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 21:43:29 - db: loading user from db (by address)
+10 Jul 21:43:29 - obj: user updating address_deposit = 15kX2EqRyAvaHMjj57aetBjnTMRQcT6ns8
+10 Jul 21:43:29 - obj: user updating cash = 0.002
+10 Jul 21:43:29 - obj: user updating cash = 0.002
+10 Jul 21:43:39 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 21:47:58 - user: 4e19febf92c069311f000001 newtest disconnected a socket.
+10 Jul 22:42:07 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:42:48 - obj: 4e19febf92c069311f000001 newtest call 16
+10 Jul 22:43:18 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 22:43:57 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 22:44:15 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:44:49 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 22:44:49 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 22:44:49 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:44:49 - db: loading user from db (by secret)
+10 Jul 22:44:50 - db: loading user from db (by secret)
+10 Jul 22:44:50 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:44:52 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:44:58 - info: starting...
+10 Jul 22:44:58 - info: Express server listening on port %d
+10 Jul 22:44:58 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:44:58 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:44:58 - info: mongo - User collection open
+10 Jul 22:44:58 - info: mongo - Addresses collection open
+10 Jul 22:44:59 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:44:59 - db: loading user from db (by secret)
+10 Jul 22:44:59 - db: loading user from db (by secret)
+10 Jul 22:44:59 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:45:03 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:47:30 - info: starting...
+10 Jul 22:47:30 - info: Express server listening on port %d
+10 Jul 22:47:30 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:47:30 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:47:30 - info: mongo - User collection open
+10 Jul 22:47:30 - info: mongo - Addresses collection open
+10 Jul 22:47:31 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:47:31 - db: loading user from db (by secret)
+10 Jul 22:47:32 - db: loading user from db (by secret)
+10 Jul 22:47:32 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:47:33 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:47:50 - info: starting...
+10 Jul 22:47:50 - info: Express server listening on port %d
+10 Jul 22:47:50 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:47:50 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:47:50 - info: mongo - User collection open
+10 Jul 22:47:50 - info: mongo - Addresses collection open
+10 Jul 22:47:51 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:47:51 - db: loading user from db (by secret)
+10 Jul 22:47:52 - db: loading user from db (by secret)
+10 Jul 22:47:52 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:47:55 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:49:40 - info: starting...
+10 Jul 22:49:40 - info: Express server listening on port %d
+10 Jul 22:49:40 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:49:40 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:49:40 - info: mongo - User collection open
+10 Jul 22:49:40 - info: mongo - Addresses collection open
+10 Jul 22:49:41 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:49:41 - db: loading user from db (by secret)
+10 Jul 22:49:42 - db: loading user from db (by secret)
+10 Jul 22:49:42 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:49:44 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:52:03 - info: starting...
+10 Jul 22:52:03 - info: Express server listening on port %d
+10 Jul 22:52:03 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:52:03 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:52:03 - info: mongo - User collection open
+10 Jul 22:52:03 - info: mongo - Addresses collection open
+10 Jul 22:52:06 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:52:06 - db: loading user from db (by secret)
+10 Jul 22:52:08 - db: loading user from db (by secret)
+10 Jul 22:52:08 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:52:14 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:52:52 - info: starting...
+10 Jul 22:52:52 - info: Express server listening on port %d
+10 Jul 22:52:52 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:52:52 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:52:52 - info: mongo - User collection open
+10 Jul 22:52:52 - info: mongo - Addresses collection open
+10 Jul 22:52:53 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:52:53 - db: loading user from db (by secret)
+10 Jul 22:52:54 - db: loading user from db (by secret)
+10 Jul 22:52:54 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:52:56 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:53:28 - info: starting...
+10 Jul 22:53:28 - info: Express server listening on port %d
+10 Jul 22:53:28 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:53:28 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:53:28 - info: mongo - User collection open
+10 Jul 22:53:28 - info: mongo - Addresses collection open
+10 Jul 22:53:30 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:53:30 - db: loading user from db (by secret)
+10 Jul 22:53:30 - db: loading user from db (by secret)
+10 Jul 22:53:30 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:53:32 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:56:36 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 22:56:36 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 22:56:36 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:56:36 - db: loading user from db (by secret)
+10 Jul 22:56:37 - db: loading user from db (by secret)
+10 Jul 22:56:37 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:56:38 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:57:50 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 22:57:50 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 22:57:50 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:57:50 - db: loading user from db (by secret)
+10 Jul 22:57:51 - db: loading user from db (by secret)
+10 Jul 22:57:51 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:57:51 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:57:55 - obj: 4e19febf92c069311f000001 newtest call 19
+10 Jul 22:57:58 - obj: 4e19febf92c069311f000001 newtest call 7
+10 Jul 22:58:01 - obj: 4e19febf92c069311f000001 newtest call 15
+10 Jul 22:58:23 - info: starting...
+10 Jul 22:58:23 - info: Express server listening on port %d
+10 Jul 22:58:23 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 22:58:23 - info: Connected to mongodb server at localhost:27017
+10 Jul 22:58:23 - info: mongo - User collection open
+10 Jul 22:58:23 - info: mongo - Addresses collection open
+10 Jul 22:58:24 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 22:58:24 - db: loading user from db (by secret)
+10 Jul 22:58:25 - db: loading user from db (by secret)
+10 Jul 22:58:25 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 22:58:27 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:58:29 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:58:31 - obj: 4e19febf92c069311f000001 newtest call 23
+10 Jul 22:58:33 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 22:58:36 - obj: 4e19febf92c069311f000001 newtest call 24
+10 Jul 22:58:41 - obj: 4e19febf92c069311f000001 newtest call 7
+10 Jul 22:59:42 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 22:59:44 - obj: 4e19febf92c069311f000001 newtest call 3
+10 Jul 22:59:46 - obj: 4e19febf92c069311f000001 newtest call 24
+10 Jul 22:59:48 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 22:59:50 - obj: 4e19febf92c069311f000001 newtest call 5
+10 Jul 22:59:54 - obj: 4e19febf92c069311f000001 newtest call 24
+10 Jul 22:59:56 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 22:59:58 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:00:27 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:00:27 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:00:27 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:00:27 - db: loading user from db (by secret)
+10 Jul 23:00:28 - db: loading user from db (by secret)
+10 Jul 23:00:28 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:00:30 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:00:31 - obj: 4e19febf92c069311f000001 newtest call 4
+10 Jul 23:00:33 - obj: 4e19febf92c069311f000001 newtest call 19
+10 Jul 23:00:35 - obj: 4e19febf92c069311f000001 newtest call 22
+10 Jul 23:00:36 - obj: 4e19febf92c069311f000001 newtest call 11
+10 Jul 23:04:13 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:04:13 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:04:13 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:04:13 - db: loading user from db (by secret)
+10 Jul 23:04:52 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:04:52 - db: loading user from db (by secret)
+10 Jul 23:04:53 - db: loading user from db (by secret)
+10 Jul 23:04:53 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:04:55 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 23:06:53 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:06:53 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:06:53 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:06:53 - db: loading user from db (by secret)
+10 Jul 23:06:54 - db: loading user from db (by secret)
+10 Jul 23:06:54 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:06:55 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:07:13 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:07:13 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:07:13 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:07:13 - db: loading user from db (by secret)
+10 Jul 23:07:15 - db: loading user from db (by secret)
+10 Jul 23:07:15 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:07:16 - obj: 4e19febf92c069311f000001 newtest call 16
+10 Jul 23:08:52 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:08:52 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:08:52 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:08:52 - db: loading user from db (by secret)
+10 Jul 23:08:53 - db: loading user from db (by secret)
+10 Jul 23:08:53 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:08:54 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:09:07 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:09:07 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:09:07 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:09:07 - db: loading user from db (by secret)
+10 Jul 23:09:08 - db: loading user from db (by secret)
+10 Jul 23:09:08 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:09:09 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:10:57 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:10:57 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:10:57 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:10:57 - db: loading user from db (by secret)
+10 Jul 23:10:58 - db: loading user from db (by secret)
+10 Jul 23:10:58 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:11:00 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:11:16 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:11:16 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:11:16 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:11:16 - db: loading user from db (by secret)
+10 Jul 23:11:17 - db: loading user from db (by secret)
+10 Jul 23:11:17 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:11:26 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:12:12 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:12:12 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:12:12 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:12:12 - db: loading user from db (by secret)
+10 Jul 23:12:13 - db: loading user from db (by secret)
+10 Jul 23:12:13 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:12:20 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:12:20 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:12:20 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:12:20 - db: loading user from db (by secret)
+10 Jul 23:12:21 - db: loading user from db (by secret)
+10 Jul 23:12:21 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:12:21 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:13:46 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:13:46 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:13:46 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:13:46 - db: loading user from db (by secret)
+10 Jul 23:13:47 - db: loading user from db (by secret)
+10 Jul 23:13:47 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:13:48 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:13:51 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:13:51 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:13:51 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:13:51 - db: loading user from db (by secret)
+10 Jul 23:13:52 - db: loading user from db (by secret)
+10 Jul 23:13:52 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:13:53 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:16:15 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:16:15 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:16:15 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:16:15 - db: loading user from db (by secret)
+10 Jul 23:16:16 - db: loading user from db (by secret)
+10 Jul 23:16:16 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:16:19 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:16:41 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:16:41 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:16:41 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:16:41 - db: loading user from db (by secret)
+10 Jul 23:16:42 - db: loading user from db (by secret)
+10 Jul 23:16:42 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:16:45 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:16:45 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:16:45 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:16:45 - db: loading user from db (by secret)
+10 Jul 23:16:46 - db: loading user from db (by secret)
+10 Jul 23:16:46 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:16:58 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:16:58 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:16:58 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:16:58 - db: loading user from db (by secret)
+10 Jul 23:16:59 - db: loading user from db (by secret)
+10 Jul 23:16:59 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:17:01 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 23:17:14 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:17:14 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:17:14 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:17:14 - db: loading user from db (by secret)
+10 Jul 23:17:15 - db: loading user from db (by secret)
+10 Jul 23:17:15 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:17:17 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:18:02 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:18:02 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:18:02 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:18:02 - db: loading user from db (by secret)
+10 Jul 23:18:03 - db: loading user from db (by secret)
+10 Jul 23:18:03 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:18:05 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 23:18:06 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:18:06 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:18:06 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:18:06 - db: loading user from db (by secret)
+10 Jul 23:18:07 - db: loading user from db (by secret)
+10 Jul 23:18:07 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:18:09 - obj: 4e19febf92c069311f000001 newtest call 11
+10 Jul 23:18:10 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:19:04 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:19:04 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:19:05 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:19:05 - db: loading user from db (by secret)
+10 Jul 23:19:06 - db: loading user from db (by secret)
+10 Jul 23:19:06 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:19:06 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:20:10 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:20:10 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:20:10 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:20:10 - db: loading user from db (by secret)
+10 Jul 23:20:11 - db: loading user from db (by secret)
+10 Jul 23:20:11 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:20:12 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:22:39 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:22:39 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:22:39 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:22:39 - db: loading user from db (by secret)
+10 Jul 23:22:40 - db: loading user from db (by secret)
+10 Jul 23:22:40 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:22:41 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:22:54 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:22:54 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:22:54 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:22:55 - db: loading user from db (by secret)
+10 Jul 23:22:55 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:22:56 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:23:16 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:23:16 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:23:16 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:23:16 - db: loading user from db (by secret)
+10 Jul 23:23:17 - db: loading user from db (by secret)
+10 Jul 23:23:17 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:23:17 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:23:36 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:23:36 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:23:36 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:23:36 - db: loading user from db (by secret)
+10 Jul 23:23:38 - db: loading user from db (by secret)
+10 Jul 23:23:38 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:23:38 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:23:39 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:23:54 - info: starting...
+10 Jul 23:23:54 - info: Express server listening on port %d
+10 Jul 23:23:54 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:23:54 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:23:54 - info: mongo - User collection open
+10 Jul 23:23:54 - info: mongo - Addresses collection open
+10 Jul 23:23:55 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:23:55 - db: loading user from db (by secret)
+10 Jul 23:23:56 - db: loading user from db (by secret)
+10 Jul 23:23:56 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:25:09 - info: starting...
+10 Jul 23:25:09 - info: Express server listening on port %d
+10 Jul 23:25:09 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:25:09 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:25:09 - info: mongo - User collection open
+10 Jul 23:25:09 - info: mongo - Addresses collection open
+10 Jul 23:25:14 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:25:14 - db: loading user from db (by secret)
+10 Jul 23:25:15 - db: loading user from db (by secret)
+10 Jul 23:25:15 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:25:16 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:25:17 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:25:33 - info: starting...
+10 Jul 23:25:33 - info: Express server listening on port %d
+10 Jul 23:25:33 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:25:33 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:25:33 - info: mongo - User collection open
+10 Jul 23:25:33 - info: mongo - Addresses collection open
+10 Jul 23:25:34 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:25:34 - db: loading user from db (by secret)
+10 Jul 23:25:35 - db: loading user from db (by secret)
+10 Jul 23:25:35 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:25:35 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:25:36 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:26:40 - info: starting...
+10 Jul 23:26:40 - info: Express server listening on port %d
+10 Jul 23:26:40 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:26:40 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:26:40 - info: mongo - User collection open
+10 Jul 23:26:40 - info: mongo - Addresses collection open
+10 Jul 23:26:40 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:26:40 - db: loading user from db (by secret)
+10 Jul 23:26:41 - db: loading user from db (by secret)
+10 Jul 23:26:41 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:26:43 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:26:47 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:26:47 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:26:47 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:26:47 - db: loading user from db (by secret)
+10 Jul 23:26:48 - db: loading user from db (by secret)
+10 Jul 23:26:48 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:26:51 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:27:08 - info: starting...
+10 Jul 23:27:08 - info: Express server listening on port %d
+10 Jul 23:27:08 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:27:08 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:27:08 - info: mongo - User collection open
+10 Jul 23:27:08 - info: mongo - Addresses collection open
+10 Jul 23:27:10 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:27:10 - db: loading user from db (by secret)
+10 Jul 23:27:11 - db: loading user from db (by secret)
+10 Jul 23:27:11 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:27:11 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:28:16 - info: starting...
+10 Jul 23:28:16 - info: Express server listening on port %d
+10 Jul 23:28:16 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:28:16 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:28:16 - info: mongo - User collection open
+10 Jul 23:28:16 - info: mongo - Addresses collection open
+10 Jul 23:28:17 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:28:17 - db: loading user from db (by secret)
+10 Jul 23:28:18 - db: loading user from db (by secret)
+10 Jul 23:28:18 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:28:20 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:28:22 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:29:12 - info: starting...
+10 Jul 23:29:12 - info: Express server listening on port %d
+10 Jul 23:29:13 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:29:13 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:29:13 - info: mongo - User collection open
+10 Jul 23:29:13 - info: mongo - Addresses collection open
+10 Jul 23:29:13 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:29:13 - db: loading user from db (by secret)
+10 Jul 23:29:14 - db: loading user from db (by secret)
+10 Jul 23:29:14 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:29:15 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:29:16 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:29:46 - info: starting...
+10 Jul 23:29:46 - info: Express server listening on port %d
+10 Jul 23:29:46 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:29:46 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:29:46 - info: mongo - User collection open
+10 Jul 23:29:46 - info: mongo - Addresses collection open
+10 Jul 23:29:48 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:29:48 - db: loading user from db (by secret)
+10 Jul 23:29:49 - db: loading user from db (by secret)
+10 Jul 23:29:49 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:29:50 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:29:51 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:30:08 - info: starting...
+10 Jul 23:30:08 - info: Express server listening on port %d
+10 Jul 23:30:08 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:30:08 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:30:08 - info: mongo - User collection open
+10 Jul 23:30:08 - info: mongo - Addresses collection open
+10 Jul 23:30:09 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:30:09 - db: loading user from db (by secret)
+10 Jul 23:30:10 - db: loading user from db (by secret)
+10 Jul 23:30:10 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:30:11 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:30:12 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:30:31 - info: starting...
+10 Jul 23:30:31 - info: Express server listening on port %d
+10 Jul 23:30:31 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:30:31 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:30:31 - info: mongo - User collection open
+10 Jul 23:30:31 - info: mongo - Addresses collection open
+10 Jul 23:30:31 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:30:31 - db: loading user from db (by secret)
+10 Jul 23:30:32 - db: loading user from db (by secret)
+10 Jul 23:30:32 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:30:34 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:30:35 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:30:56 - info: starting...
+10 Jul 23:30:56 - info: Express server listening on port %d
+10 Jul 23:30:56 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:30:56 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:30:56 - info: mongo - User collection open
+10 Jul 23:30:56 - info: mongo - Addresses collection open
+10 Jul 23:30:57 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:30:57 - db: loading user from db (by secret)
+10 Jul 23:30:58 - db: loading user from db (by secret)
+10 Jul 23:30:58 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:30:58 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:31:00 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:32:19 - info: starting...
+10 Jul 23:32:19 - info: Express server listening on port %d
+10 Jul 23:32:19 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:32:19 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:32:19 - info: mongo - User collection open
+10 Jul 23:32:19 - info: mongo - Addresses collection open
+10 Jul 23:32:21 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:32:21 - db: loading user from db (by secret)
+10 Jul 23:32:22 - db: loading user from db (by secret)
+10 Jul 23:32:22 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:32:22 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:32:23 - obj: 4e19febf92c069311f000001 newtest call 0,3
+10 Jul 23:32:40 - info: starting...
+10 Jul 23:32:40 - info: Express server listening on port %d
+10 Jul 23:32:40 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:32:40 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:32:40 - info: mongo - User collection open
+10 Jul 23:32:40 - info: mongo - Addresses collection open
+10 Jul 23:32:41 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:32:41 - db: loading user from db (by secret)
+10 Jul 23:32:42 - db: loading user from db (by secret)
+10 Jul 23:32:42 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:32:43 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:32:45 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:34:13 - info: starting...
+10 Jul 23:34:13 - info: Express server listening on port %d
+10 Jul 23:34:13 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:34:13 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:34:13 - info: mongo - User collection open
+10 Jul 23:34:13 - info: mongo - Addresses collection open
+10 Jul 23:34:14 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:34:14 - db: loading user from db (by secret)
+10 Jul 23:34:15 - db: loading user from db (by secret)
+10 Jul 23:34:15 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:34:16 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:34:17 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:34:28 - obj: 4e19febf92c069311f000001 newtest call 2,1
+10 Jul 23:34:30 - obj: 4e19febf92c069311f000001 newtest call 3,3
+10 Jul 23:34:30 - obj: 4e19febf92c069311f000001 newtest call 3,2
+10 Jul 23:35:11 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:35:11 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:35:11 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:35:11 - db: loading user from db (by secret)
+10 Jul 23:35:12 - db: loading user from db (by secret)
+10 Jul 23:35:12 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:35:37 - info: starting...
+10 Jul 23:35:37 - info: Express server listening on port %d
+10 Jul 23:35:37 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:35:37 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:35:37 - info: mongo - User collection open
+10 Jul 23:35:37 - info: mongo - Addresses collection open
+10 Jul 23:35:38 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:35:38 - db: loading user from db (by secret)
+10 Jul 23:35:39 - db: loading user from db (by secret)
+10 Jul 23:35:39 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:35:40 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:35:40 - obj: 4e19febf92c069311f000001 newtest call 0,2
+10 Jul 23:35:41 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:35:42 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:35:43 - obj: 4e19febf92c069311f000001 newtest call 2,1
+10 Jul 23:35:44 - obj: 4e19febf92c069311f000001 newtest call 3,1
+10 Jul 23:35:44 - obj: 4e19febf92c069311f000001 newtest call 4,2
+10 Jul 23:35:47 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:35:48 - obj: 4e19febf92c069311f000001 newtest call 3,2
+10 Jul 23:35:49 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:35:50 - obj: 4e19febf92c069311f000001 newtest call 0,1
+10 Jul 23:35:52 - obj: 4e19febf92c069311f000001 newtest call 15
+10 Jul 23:35:52 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:35:54 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:35:55 - obj: 4e19febf92c069311f000001 newtest call 3,1
+10 Jul 23:35:56 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:35:57 - obj: 4e19febf92c069311f000001 newtest call 3,2
+10 Jul 23:35:57 - obj: 4e19febf92c069311f000001 newtest call 3,3
+10 Jul 23:35:58 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:35:58 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:35:58 - obj: 4e19febf92c069311f000001 newtest call 0,1
+10 Jul 23:35:59 - obj: 4e19febf92c069311f000001 newtest call 1,0
+10 Jul 23:36:21 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:36:55 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:36:56 - obj: 4e19febf92c069311f000001 newtest call 2,1
+10 Jul 23:36:56 - obj: 4e19febf92c069311f000001 newtest call 2,0
+10 Jul 23:36:57 - obj: 4e19febf92c069311f000001 newtest call 4,0
+10 Jul 23:36:58 - obj: 4e19febf92c069311f000001 newtest call 4,1
+10 Jul 23:36:58 - obj: 4e19febf92c069311f000001 newtest call 2,4
+10 Jul 23:36:59 - obj: 4e19febf92c069311f000001 newtest call 1,4
+10 Jul 23:37:00 - obj: 4e19febf92c069311f000001 newtest call 18
+10 Jul 23:37:03 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:37:04 - obj: 4e19febf92c069311f000001 newtest call 3,0
+10 Jul 23:37:04 - obj: 4e19febf92c069311f000001 newtest call 0,1
+10 Jul 23:37:07 - obj: 4e19febf92c069311f000001 newtest call 24
+10 Jul 23:37:08 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:37:09 - obj: 4e19febf92c069311f000001 newtest call 3,4
+10 Jul 23:37:09 - obj: 4e19febf92c069311f000001 newtest call 4,4
+10 Jul 23:37:11 - obj: 4e19febf92c069311f000001 newtest call 16
+10 Jul 23:37:12 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:37:13 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:37:17 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:37:18 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:37:19 - obj: 4e19febf92c069311f000001 newtest call 3,1
+10 Jul 23:37:31 - obj: 4e19febf92c069311f000001 newtest call 9
+10 Jul 23:37:32 - obj: 4e19febf92c069311f000001 newtest call 3,0
+10 Jul 23:37:33 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:37:33 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:37:34 - obj: 4e19febf92c069311f000001 newtest call 3,3
+10 Jul 23:38:05 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:38:06 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:38:06 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:38:06 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:38:06 - db: loading user from db (by secret)
+10 Jul 23:38:07 - db: loading user from db (by secret)
+10 Jul 23:38:07 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:38:10 - obj: 4e19febf92c069311f000001 newtest call 7
+10 Jul 23:38:12 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:38:15 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:38:15 - obj: 4e19febf92c069311f000001 newtest call 3,4
+10 Jul 23:38:30 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:38:30 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:38:30 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:38:30 - db: loading user from db (by secret)
+10 Jul 23:38:31 - db: loading user from db (by secret)
+10 Jul 23:38:31 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:38:33 - obj: 4e19febf92c069311f000001 newtest call 4
+10 Jul 23:38:35 - obj: 4e19febf92c069311f000001 newtest call 17
+10 Jul 23:38:39 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:38:49 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:38:49 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:38:49 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:38:49 - db: loading user from db (by secret)
+10 Jul 23:38:50 - db: loading user from db (by secret)
+10 Jul 23:38:50 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:38:53 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:38:53 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:38:53 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:38:53 - db: loading user from db (by secret)
+10 Jul 23:38:53 - db: loading user from db (by secret)
+10 Jul 23:38:53 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:38:59 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:38:59 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:38:59 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:38:59 - db: loading user from db (by secret)
+10 Jul 23:38:59 - db: loading user from db (by secret)
+10 Jul 23:38:59 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:39:04 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:39:04 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:39:04 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:39:04 - db: loading user from db (by secret)
+10 Jul 23:39:05 - db: loading user from db (by secret)
+10 Jul 23:39:05 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:39:17 - obj: 4e19febf92c069311f000001 newtest call 7
+10 Jul 23:39:20 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:39:44 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:39:44 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:39:44 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:39:44 - db: loading user from db (by secret)
+10 Jul 23:39:45 - db: loading user from db (by secret)
+10 Jul 23:39:45 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:39:46 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:39:47 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:39:49 - info: starting...
+10 Jul 23:39:49 - info: Express server listening on port %d
+10 Jul 23:39:49 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:39:49 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:39:49 - info: mongo - User collection open
+10 Jul 23:39:49 - info: mongo - Addresses collection open
+10 Jul 23:39:49 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:39:49 - db: loading user from db (by secret)
+10 Jul 23:39:50 - db: loading user from db (by secret)
+10 Jul 23:39:50 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:39:52 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:39:53 - obj: 4e19febf92c069311f000001 newtest call 18
+10 Jul 23:39:55 - obj: 4e19febf92c069311f000001 newtest call 11
+10 Jul 23:39:56 - obj: 4e19febf92c069311f000001 newtest call 8
+10 Jul 23:41:09 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:41:09 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:41:09 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:41:09 - db: loading user from db (by secret)
+10 Jul 23:41:10 - db: loading user from db (by secret)
+10 Jul 23:41:10 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:41:12 - obj: 4e19febf92c069311f000001 newtest call 11
+10 Jul 23:41:13 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:41:15 - info: starting...
+10 Jul 23:41:15 - info: Express server listening on port %d
+10 Jul 23:41:15 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:41:15 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:41:15 - info: mongo - User collection open
+10 Jul 23:41:15 - info: mongo - Addresses collection open
+10 Jul 23:41:16 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:41:16 - db: loading user from db (by secret)
+10 Jul 23:41:17 - db: loading user from db (by secret)
+10 Jul 23:41:17 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:41:20 - obj: 4e19febf92c069311f000001 newtest call 11
+10 Jul 23:41:52 - info: starting...
+10 Jul 23:41:52 - info: Express server listening on port %d
+10 Jul 23:41:52 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:41:52 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:41:52 - info: mongo - User collection open
+10 Jul 23:41:52 - info: mongo - Addresses collection open
+10 Jul 23:41:56 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:41:56 - db: loading user from db (by secret)
+10 Jul 23:41:56 - db: loading user from db (by secret)
+10 Jul 23:41:56 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:41:58 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:42:05 - info: starting...
+10 Jul 23:42:05 - info: Express server listening on port %d
+10 Jul 23:42:05 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:42:05 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:42:05 - info: mongo - User collection open
+10 Jul 23:42:05 - info: mongo - Addresses collection open
+10 Jul 23:42:06 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:42:06 - db: loading user from db (by secret)
+10 Jul 23:42:07 - db: loading user from db (by secret)
+10 Jul 23:42:07 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:42:08 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:42:10 - obj: 4e19febf92c069311f000001 newtest call 8
+10 Jul 23:42:11 - obj: 4e19febf92c069311f000001 newtest call 17
+10 Jul 23:42:13 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 23:42:14 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:42:37 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:42:37 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:42:37 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:42:37 - db: loading user from db (by secret)
+10 Jul 23:42:38 - db: loading user from db (by secret)
+10 Jul 23:42:38 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:42:40 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:42:41 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 23:42:52 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:42:52 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:42:52 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:42:52 - db: loading user from db (by secret)
+10 Jul 23:42:53 - db: loading user from db (by secret)
+10 Jul 23:42:53 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:42:54 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:42:55 - obj: 4e19febf92c069311f000001 newtest call 9
+10 Jul 23:42:56 - obj: 4e19febf92c069311f000001 newtest call 4
+10 Jul 23:42:58 - obj: 4e19febf92c069311f000001 newtest call 19
+10 Jul 23:42:59 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:43:03 - obj: 4e19febf92c069311f000001 newtest call 9
+10 Jul 23:43:04 - obj: 4e19febf92c069311f000001 newtest call 15
+10 Jul 23:43:06 - obj: 4e19febf92c069311f000001 newtest call 21
+10 Jul 23:43:08 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:43:11 - obj: 4e19febf92c069311f000001 newtest call 24
+10 Jul 23:43:13 - obj: 4e19febf92c069311f000001 newtest call 4
+10 Jul 23:43:17 - obj: 4e19febf92c069311f000001 newtest call 15
+10 Jul 23:43:19 - obj: 4e19febf92c069311f000001 newtest call 6
+10 Jul 23:43:20 - obj: 4e19febf92c069311f000001 newtest call 20
+10 Jul 23:43:22 - obj: 4e19febf92c069311f000001 newtest call 3
+10 Jul 23:43:24 - obj: 4e19febf92c069311f000001 newtest call 24
+10 Jul 23:43:27 - obj: 4e19febf92c069311f000001 newtest call 7
+10 Jul 23:43:32 - obj: 4e19febf92c069311f000001 newtest call 15
+10 Jul 23:43:33 - obj: 4e19febf92c069311f000001 newtest call 10
+10 Jul 23:46:13 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:46:13 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:46:13 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:46:13 - db: loading user from db (by secret)
+10 Jul 23:46:14 - db: loading user from db (by secret)
+10 Jul 23:46:14 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:46:16 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:46:18 - obj: 4e19febf92c069311f000001 newtest call 3,2
+10 Jul 23:46:19 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:46:19 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:46:21 - obj: 4e19febf92c069311f000001 newtest call 3,3
+10 Jul 23:46:49 - info: starting...
+10 Jul 23:46:49 - info: Express server listening on port %d
+10 Jul 23:46:49 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:46:49 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:46:49 - info: mongo - User collection open
+10 Jul 23:46:49 - info: mongo - Addresses collection open
+10 Jul 23:46:51 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:46:51 - db: loading user from db (by secret)
+10 Jul 23:46:52 - db: loading user from db (by secret)
+10 Jul 23:46:52 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:46:54 - obj: 4e19febf92c069311f000001 newtest call 11
+10 Jul 23:47:05 - info: starting...
+10 Jul 23:47:05 - info: Express server listening on port %d
+10 Jul 23:47:05 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:47:05 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:47:05 - info: mongo - User collection open
+10 Jul 23:47:05 - info: mongo - Addresses collection open
+10 Jul 23:47:07 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:47:07 - db: loading user from db (by secret)
+10 Jul 23:47:08 - db: loading user from db (by secret)
+10 Jul 23:47:08 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:47:10 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:47:38 - info: starting...
+10 Jul 23:47:39 - info: Express server listening on port %d
+10 Jul 23:47:39 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:47:39 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:47:39 - info: mongo - User collection open
+10 Jul 23:47:39 - info: mongo - Addresses collection open
+10 Jul 23:47:39 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:47:39 - db: loading user from db (by secret)
+10 Jul 23:47:40 - db: loading user from db (by secret)
+10 Jul 23:47:40 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:47:41 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:47:42 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:48:17 - info: starting...
+10 Jul 23:48:17 - info: Express server listening on port %d
+10 Jul 23:48:17 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:48:17 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:48:17 - info: mongo - User collection open
+10 Jul 23:48:17 - info: mongo - Addresses collection open
+10 Jul 23:48:18 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:48:18 - db: loading user from db (by secret)
+10 Jul 23:48:19 - db: loading user from db (by secret)
+10 Jul 23:48:19 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:48:21 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:48:21 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:48:21 - obj: minefield updating done = true
+10 Jul 23:49:22 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:49:22 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:49:22 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:49:22 - db: loading user from db (by secret)
+10 Jul 23:49:23 - db: loading user from db (by secret)
+10 Jul 23:49:23 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:49:26 - info: starting...
+10 Jul 23:49:26 - info: Express server listening on port %d
+10 Jul 23:49:26 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:49:26 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:49:26 - info: mongo - User collection open
+10 Jul 23:49:26 - info: mongo - Addresses collection open
+10 Jul 23:49:26 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:49:26 - db: loading user from db (by secret)
+10 Jul 23:49:27 - db: loading user from db (by secret)
+10 Jul 23:49:27 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:49:28 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:49:38 - info: starting...
+10 Jul 23:49:38 - info: Express server listening on port %d
+10 Jul 23:49:38 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:49:38 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:49:38 - info: mongo - User collection open
+10 Jul 23:49:38 - info: mongo - Addresses collection open
+10 Jul 23:49:39 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:49:39 - db: loading user from db (by secret)
+10 Jul 23:49:40 - db: loading user from db (by secret)
+10 Jul 23:49:40 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:49:41 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:49:41 - obj: 4e19febf92c069311f000001 newtest call 2,1
+10 Jul 23:49:41 - obj: minefield updating done = true
+10 Jul 23:49:43 - obj: 4e19febf92c069311f000001 newtest call 14
+10 Jul 23:49:44 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:49:44 - obj: minefield updating done = true
+10 Jul 23:49:46 - obj: 4e19febf92c069311f000001 newtest call 5
+10 Jul 23:49:47 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:49:48 - obj: 4e19febf92c069311f000001 newtest call 0,0
+10 Jul 23:49:48 - obj: minefield updating done = true
+10 Jul 23:49:51 - obj: 4e19febf92c069311f000001 newtest call 3
+10 Jul 23:49:51 - obj: 4e19febf92c069311f000001 newtest call 3,0
+10 Jul 23:49:52 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:49:52 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:49:53 - obj: 4e19febf92c069311f000001 newtest call 3,3
+10 Jul 23:49:55 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:49:55 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:49:56 - obj: 4e19febf92c069311f000001 newtest call 2,1
+10 Jul 23:49:56 - obj: 4e19febf92c069311f000001 newtest call 3,1
+10 Jul 23:49:56 - obj: minefield updating done = true
+10 Jul 23:51:14 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:51:14 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:51:14 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:51:14 - db: loading user from db (by secret)
+10 Jul 23:51:15 - db: loading user from db (by secret)
+10 Jul 23:51:15 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:51:15 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:51:16 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:51:16 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:51:16 - obj: minefield updating done = true
+10 Jul 23:51:24 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:51:24 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:51:24 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:51:25 - db: loading user from db (by secret)
+10 Jul 23:51:25 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:51:27 - info: starting...
+10 Jul 23:51:27 - info: Express server listening on port %d
+10 Jul 23:51:27 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:51:27 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:51:27 - info: mongo - User collection open
+10 Jul 23:51:27 - info: mongo - Addresses collection open
+10 Jul 23:51:27 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:51:27 - db: loading user from db (by secret)
+10 Jul 23:51:28 - db: loading user from db (by secret)
+10 Jul 23:51:28 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:51:30 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:51:31 - obj: 4e19febf92c069311f000001 newtest call 3,2
+10 Jul 23:51:31 - obj: 4e19febf92c069311f000001 newtest call 1,2
+10 Jul 23:51:48 - obj: 4e19febf92c069311f000001 newtest call 2,4
+10 Jul 23:51:48 - obj: minefield updating done = true
+10 Jul 23:53:10 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:53:10 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:53:10 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:53:10 - db: loading user from db (by secret)
+10 Jul 23:53:11 - db: loading user from db (by secret)
+10 Jul 23:53:11 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:53:13 - obj: 4e19febf92c069311f000001 newtest call 12
+10 Jul 23:53:14 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:53:14 - obj: minefield updating done = true
+10 Jul 23:53:24 - user: 4e19febf92c069311f000001 newtest logged out.
+10 Jul 23:53:24 - obj: persisting user object 4e19febf92c069311f000001 newtest
+10 Jul 23:53:24 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:53:24 - db: loading user from db (by secret)
+10 Jul 23:53:25 - db: loading user from db (by secret)
+10 Jul 23:53:25 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:53:26 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:53:27 - obj: 4e19febf92c069311f000001 newtest call 2,2
+10 Jul 23:53:28 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:53:29 - obj: 4e19febf92c069311f000001 newtest call 1,3
+10 Jul 23:53:29 - obj: 4e19febf92c069311f000001 newtest call 1,1
+10 Jul 23:53:30 - obj: 4e19febf92c069311f000001 newtest call 3,1
+10 Jul 23:53:30 - obj: minefield updating done = true
+10 Jul 23:55:53 - info: starting...
+10 Jul 23:55:53 - info: Express server listening on port %d
+10 Jul 23:55:53 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:55:53 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:55:53 - info: mongo - User collection open
+10 Jul 23:55:53 - info: mongo - Addresses collection open
+10 Jul 23:55:54 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:55:54 - db: loading user from db (by secret)
+10 Jul 23:55:54 - db: loading user from db (by secret)
+10 Jul 23:55:54 - user: 4e19febf92c069311f000001 newtest logged in
+10 Jul 23:55:57 - obj: 4e19febf92c069311f000001 newtest call 13
+10 Jul 23:55:58 - obj: 4e19febf92c069311f000001 newtest call 2,3
+10 Jul 23:56:04 - obj: 4e19febf92c069311f000001 newtest call 0,3
+10 Jul 23:56:07 - obj: user updating name = newtest%20user
+10 Jul 23:56:13 - obj: user updating name = newtestuser
+10 Jul 23:56:16 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+10 Jul 23:56:16 - obj: minefield updating done = true
+10 Jul 23:56:23 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+10 Jul 23:56:25 - info: starting...
+10 Jul 23:56:25 - info: Express server listening on port %d
+10 Jul 23:56:25 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:56:25 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:56:25 - info: mongo - User collection open
+10 Jul 23:56:25 - info: mongo - Addresses collection open
+10 Jul 23:56:26 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:56:26 - db: loading user from db (by secret)
+10 Jul 23:56:27 - db: loading user from db (by secret)
+10 Jul 23:56:27 - user: 4e19febf92c069311f000001 newtestuser logged in
+10 Jul 23:56:28 - obj: 4e19febf92c069311f000001 newtestuser call 13
+10 Jul 23:56:29 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+10 Jul 23:56:29 - obj: minefield updating done = true
+10 Jul 23:57:09 - user: 4e19febf92c069311f000001 newtestuser logged out.
+10 Jul 23:57:09 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+10 Jul 23:57:09 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:57:09 - db: loading user from db (by secret)
+10 Jul 23:57:10 - db: loading user from db (by secret)
+10 Jul 23:57:10 - user: 4e19febf92c069311f000001 newtestuser logged in
+10 Jul 23:57:12 - obj: 4e19febf92c069311f000001 newtestuser call 13
+10 Jul 23:57:13 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+10 Jul 23:57:13 - obj: minefield updating done = true
+10 Jul 23:57:27 - info: starting...
+10 Jul 23:57:27 - info: Express server listening on port %d
+10 Jul 23:57:27 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+10 Jul 23:57:27 - info: Connected to mongodb server at localhost:27017
+10 Jul 23:57:27 - info: mongo - User collection open
+10 Jul 23:57:27 - info: mongo - Addresses collection open
+10 Jul 23:57:28 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:57:28 - db: loading user from db (by secret)
+10 Jul 23:57:29 - db: loading user from db (by secret)
+10 Jul 23:57:29 - user: 4e19febf92c069311f000001 newtestuser logged in
+10 Jul 23:57:30 - obj: 4e19febf92c069311f000001 newtestuser call 12
+10 Jul 23:57:31 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+10 Jul 23:57:31 - obj: minefield updating done = true
+10 Jul 23:57:33 - obj: 4e19febf92c069311f000001 newtestuser call 12
+10 Jul 23:57:33 - obj: 4e19febf92c069311f000001 newtestuser call 11
+10 Jul 23:57:34 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+10 Jul 23:57:35 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+10 Jul 23:57:37 - obj: 4e19febf92c069311f000001 newtestuser call 3,4
+10 Jul 23:57:38 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+10 Jul 23:57:38 - obj: 4e19febf92c069311f000001 newtestuser call 4,2
+10 Jul 23:57:39 - obj: 4e19febf92c069311f000001 newtestuser call 4,1
+10 Jul 23:57:40 - obj: 4e19febf92c069311f000001 newtestuser call 4,0
+10 Jul 23:57:40 - obj: minefield updating done = true
+10 Jul 23:58:20 - user: 4e19febf92c069311f000001 newtestuser logged out.
+10 Jul 23:58:20 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+10 Jul 23:58:21 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:58:21 - db: loading user from db (by secret)
+10 Jul 23:58:21 - db: loading user from db (by secret)
+10 Jul 23:58:21 - user: 4e19febf92c069311f000001 newtestuser logged in
+10 Jul 23:58:23 - obj: 4e19febf92c069311f000001 newtestuser call 13
+10 Jul 23:58:24 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+10 Jul 23:58:24 - obj: minefield updating done = true
+10 Jul 23:58:27 - user: 4e19febf92c069311f000001 newtestuser logged out.
+10 Jul 23:58:27 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+10 Jul 23:58:27 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:58:27 - db: loading user from db (by secret)
+10 Jul 23:58:28 - db: loading user from db (by secret)
+10 Jul 23:58:28 - user: 4e19febf92c069311f000001 newtestuser logged in
+10 Jul 23:58:31 - obj: 4e19febf92c069311f000001 newtestuser call 12
+10 Jul 23:58:32 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+10 Jul 23:58:48 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+10 Jul 23:59:21 - user: 4e19febf92c069311f000001 newtestuser logged out.
+10 Jul 23:59:21 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+10 Jul 23:59:22 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:59:22 - db: loading user from db (by secret)
+10 Jul 23:59:22 - db: loading user from db (by secret)
+10 Jul 23:59:22 - user: 4e19febf92c069311f000001 newtestuser logged in
+10 Jul 23:59:25 - obj: 4e19febf92c069311f000001 newtestuser call 12
+10 Jul 23:59:26 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+10 Jul 23:59:26 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+10 Jul 23:59:27 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+10 Jul 23:59:27 - obj: minefield updating done = true
+10 Jul 23:59:28 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+10 Jul 23:59:28 - obj: minefield updating done = true
+10 Jul 23:59:29 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+10 Jul 23:59:29 - obj: minefield updating done = true
+10 Jul 23:59:32 - user: 4e19febf92c069311f000001 newtestuser logged out.
+10 Jul 23:59:32 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+10 Jul 23:59:32 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+10 Jul 23:59:32 - db: loading user from db (by secret)
+10 Jul 23:59:33 - db: loading user from db (by secret)
+10 Jul 23:59:33 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:00:07 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:00:07 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:00:07 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:00:07 - db: loading user from db (by secret)
+11 Jul 00:00:08 - db: loading user from db (by secret)
+11 Jul 00:00:08 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:00:09 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:00:10 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:00:11 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:00:11 - obj: minefield updating done = true
+11 Jul 00:00:14 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:00:14 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:00:14 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:00:14 - db: loading user from db (by secret)
+11 Jul 00:00:15 - db: loading user from db (by secret)
+11 Jul 00:00:15 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:00:17 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:00:18 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:00:40 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:00:40 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:00:41 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:00:41 - db: loading user from db (by secret)
+11 Jul 00:00:42 - db: loading user from db (by secret)
+11 Jul 00:00:42 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:00:44 - obj: 4e19febf92c069311f000001 newtestuser call 11
+11 Jul 00:00:44 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:00:46 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:00:47 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:00:48 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:00:48 - obj: minefield updating done = true
+11 Jul 00:01:00 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:01:00 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:01:00 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:01:00 - db: loading user from db (by secret)
+11 Jul 00:01:01 - db: loading user from db (by secret)
+11 Jul 00:01:01 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:01:02 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:01:02 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:01:03 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:01:04 - obj: 4e19febf92c069311f000001 newtestuser call 2,4
+11 Jul 00:01:05 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:01:06 - obj: 4e19febf92c069311f000001 newtestuser call 4,1
+11 Jul 00:01:07 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:01:07 - obj: minefield updating done = true
+11 Jul 00:01:20 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:01:20 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:01:20 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:01:20 - db: loading user from db (by secret)
+11 Jul 00:01:21 - db: loading user from db (by secret)
+11 Jul 00:01:21 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:01:23 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:01:23 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:01:24 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:01:24 - obj: minefield updating done = true
+11 Jul 00:01:30 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:01:31 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:01:31 - obj: minefield updating done = true
+11 Jul 00:01:33 - obj: 4e19febf92c069311f000001 newtestuser call 7
+11 Jul 00:01:34 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:01:34 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:01:35 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:01:35 - obj: 4e19febf92c069311f000001 newtestuser call 3,3
+11 Jul 00:01:36 - obj: 4e19febf92c069311f000001 newtestuser call 3,4
+11 Jul 00:01:37 - obj: 4e19febf92c069311f000001 newtestuser call 4,4
+11 Jul 00:01:37 - obj: minefield updating done = true
+11 Jul 00:01:46 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:01:47 - obj: 4e19febf92c069311f000001 newtestuser call 19
+11 Jul 00:01:51 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:01:54 - obj: 4e19febf92c069311f000001 newtestuser call 16
+11 Jul 00:05:03 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:05:03 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:05:03 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:05:03 - db: loading user from db (by secret)
+11 Jul 00:05:04 - db: loading user from db (by secret)
+11 Jul 00:05:04 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:05:06 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:05:11 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:05:11 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:05:11 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:05:12 - db: loading user from db (by secret)
+11 Jul 00:05:12 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:05:21 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:05:23 - obj: 4e19febf92c069311f000001 newtestuser call 10
+11 Jul 00:05:40 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:05:40 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:05:40 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:05:40 - db: loading user from db (by secret)
+11 Jul 00:05:41 - db: loading user from db (by secret)
+11 Jul 00:05:41 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:05:42 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:05:43 - http: 78.47.145.170 GET /img/question.png 
+11 Jul 00:05:45 - obj: 4e19febf92c069311f000001 newtestuser call 11
+11 Jul 00:05:48 - obj: 4e19febf92c069311f000001 newtestuser call 17
+11 Jul 00:06:50 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:06:50 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:06:50 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:06:50 - db: loading user from db (by secret)
+11 Jul 00:06:51 - db: loading user from db (by secret)
+11 Jul 00:06:51 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:06:53 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:06:55 - obj: 4e19febf92c069311f000001 newtestuser call 17
+11 Jul 00:06:56 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:06:57 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:06:58 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:06:59 - obj: 4e19febf92c069311f000001 newtestuser call 1,4
+11 Jul 00:07:00 - obj: 4e19febf92c069311f000001 newtestuser call 0,4
+11 Jul 00:07:00 - obj: minefield updating done = true
+11 Jul 00:07:02 - obj: 4e19febf92c069311f000001 newtestuser call 15
+11 Jul 00:07:03 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:08:40 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:08:40 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:08:40 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:08:40 - db: loading user from db (by secret)
+11 Jul 00:08:41 - db: loading user from db (by secret)
+11 Jul 00:08:41 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:08:43 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:08:43 - http: 78.47.145.170 GET /img/question.png 
+11 Jul 00:08:44 - obj: 4e19febf92c069311f000001 newtestuser call 16
+11 Jul 00:09:00 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:09:00 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:09:00 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:09:00 - db: loading user from db (by secret)
+11 Jul 00:09:01 - db: loading user from db (by secret)
+11 Jul 00:09:01 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:09:03 - obj: 4e19febf92c069311f000001 newtestuser call 17
+11 Jul 00:09:04 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:09:09 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:09:09 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:09:09 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:09:09 - db: loading user from db (by secret)
+11 Jul 00:09:10 - db: loading user from db (by secret)
+11 Jul 00:09:10 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:09:12 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:09:13 - obj: 4e19febf92c069311f000001 newtestuser call 15
+11 Jul 00:09:17 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:09:17 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:09:17 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:09:17 - db: loading user from db (by secret)
+11 Jul 00:09:18 - db: loading user from db (by secret)
+11 Jul 00:09:18 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:09:20 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:09:25 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:09:25 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:09:25 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:09:25 - db: loading user from db (by secret)
+11 Jul 00:09:26 - db: loading user from db (by secret)
+11 Jul 00:09:26 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:09:27 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:09:43 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:09:43 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:09:43 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:09:43 - db: loading user from db (by secret)
+11 Jul 00:09:44 - db: loading user from db (by secret)
+11 Jul 00:09:44 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:09:45 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:10:02 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:10:02 - obj: minefield updating done = true
+11 Jul 00:10:04 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:10:05 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:10:07 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:10:07 - obj: minefield updating done = true
+11 Jul 00:10:13 - obj: 4e19febf92c069311f000001 newtestuser call 15
+11 Jul 00:10:15 - obj: 4e19febf92c069311f000001 newtestuser call 5
+11 Jul 00:10:18 - obj: 4e19febf92c069311f000001 newtestuser call 20
+11 Jul 00:10:40 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:10:41 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:10:41 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:10:41 - obj: minefield updating done = true
+11 Jul 00:10:43 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:10:44 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:10:44 - obj: 4e19febf92c069311f000001 newtestuser call 1,4
+11 Jul 00:10:45 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:10:45 - obj: minefield updating done = true
+11 Jul 00:10:47 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:10:58 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:10:58 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:10:58 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:10:58 - db: loading user from db (by secret)
+11 Jul 00:10:59 - db: loading user from db (by secret)
+11 Jul 00:10:59 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:06 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:11:06 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:11:06 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:11:06 - db: loading user from db (by secret)
+11 Jul 00:11:07 - db: loading user from db (by secret)
+11 Jul 00:11:07 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:07 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:11:07 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:11:07 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:11:07 - db: loading user from db (by secret)
+11 Jul 00:11:08 - db: loading user from db (by secret)
+11 Jul 00:11:08 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:10 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:11:10 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:11:10 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:11:10 - db: loading user from db (by secret)
+11 Jul 00:11:11 - db: loading user from db (by secret)
+11 Jul 00:11:11 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:15 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:11:15 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:11:15 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:11:15 - db: loading user from db (by secret)
+11 Jul 00:11:16 - db: loading user from db (by secret)
+11 Jul 00:11:16 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:23 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:11:23 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:11:23 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:11:23 - db: loading user from db (by secret)
+11 Jul 00:11:24 - db: loading user from db (by secret)
+11 Jul 00:11:24 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:26 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:11:27 - obj: 4e19febf92c069311f000001 newtestuser call 20
+11 Jul 00:11:28 - obj: 4e19febf92c069311f000001 newtestuser call 12
+11 Jul 00:11:35 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:11:35 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:11:35 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:11:35 - db: loading user from db (by secret)
+11 Jul 00:11:36 - db: loading user from db (by secret)
+11 Jul 00:11:36 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:11:37 - obj: 4e19febf92c069311f000001 newtestuser call 7
+11 Jul 00:11:40 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:11:43 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:13:35 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:13:35 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:13:35 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:13:35 - db: loading user from db (by secret)
+11 Jul 00:13:36 - db: loading user from db (by secret)
+11 Jul 00:13:36 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:13:36 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:13:41 - obj: 4e19febf92c069311f000001 newtestuser call 20
+11 Jul 00:13:43 - obj: 4e19febf92c069311f000001 newtestuser call 15
+11 Jul 00:13:54 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:13:54 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:13:54 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:13:54 - db: loading user from db (by secret)
+11 Jul 00:13:55 - db: loading user from db (by secret)
+11 Jul 00:13:55 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:13:55 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:13:58 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:13:59 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:13:59 - obj: minefield updating done = true
+11 Jul 00:14:02 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:14:08 - obj: 4e19febf92c069311f000001 newtestuser call 6
+11 Jul 00:14:43 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:14:43 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:14:43 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:14:43 - db: loading user from db (by secret)
+11 Jul 00:14:44 - db: loading user from db (by secret)
+11 Jul 00:14:44 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:14:51 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:14:55 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:14:56 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:14:56 - obj: minefield updating done = true
+11 Jul 00:15:14 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:15:14 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:15:14 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:15:14 - db: loading user from db (by secret)
+11 Jul 00:15:15 - db: loading user from db (by secret)
+11 Jul 00:15:15 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:15:27 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:15:27 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:15:27 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:15:27 - db: loading user from db (by secret)
+11 Jul 00:15:29 - db: loading user from db (by secret)
+11 Jul 00:15:29 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:15:37 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:15:37 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:15:37 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:15:37 - db: loading user from db (by secret)
+11 Jul 00:15:38 - db: loading user from db (by secret)
+11 Jul 00:15:38 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:15:42 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:15:47 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:15:48 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:15:49 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:15:50 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:15:50 - obj: minefield updating done = true
+11 Jul 00:17:54 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:17:54 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:17:54 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:17:54 - db: loading user from db (by secret)
+11 Jul 00:17:55 - db: loading user from db (by secret)
+11 Jul 00:17:55 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:17:58 - http: 188.129.74.17 GET / 
+11 Jul 00:17:58 - http: 75.126.119.103 GET / 
+11 Jul 00:17:59 - http: 188.129.74.17 GET /?secret=7a2de6ac93ccf01b732302f1d44cd7c88f01cc74 
+11 Jul 00:17:59 - db: loading user from db (by secret)
+11 Jul 00:17:59 - http: 75.126.119.103 GET /?secret=8f87f9e65f219ff04cffb0963d2d95c69388e4dc 
+11 Jul 00:17:59 - db: loading user from db (by secret)
+11 Jul 00:18:00 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:18:08 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:18:08 - obj: minefield updating done = true
+11 Jul 00:18:10 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:18:10 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:18:10 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:18:10 - db: loading user from db (by secret)
+11 Jul 00:18:11 - db: loading user from db (by secret)
+11 Jul 00:18:11 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:18:21 - http: 188.129.74.17 GET / 
+11 Jul 00:18:21 - http: 188.129.74.17 GET /?secret=7a2de6ac93ccf01b732302f1d44cd7c88f01cc74 
+11 Jul 00:18:21 - db: loading user from db (by secret)
+11 Jul 00:18:22 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:18:37 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:18:37 - obj: minefield updating done = true
+11 Jul 00:18:39 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:18:39 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:18:39 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:18:39 - db: loading user from db (by secret)
+11 Jul 00:18:40 - db: loading user from db (by secret)
+11 Jul 00:18:40 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:18:42 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:18:43 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:18:44 - obj: 4e19febf92c069311f000001 newtestuser call 1,4
+11 Jul 00:18:44 - obj: minefield updating done = true
+11 Jul 00:18:46 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:18:48 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:18:48 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:18:48 - obj: minefield updating done = true
+11 Jul 00:18:49 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:18:56 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:18:57 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:18:57 - obj: minefield updating done = true
+11 Jul 00:19:03 - obj: 4e19febf92c069311f000001 newtestuser call 7
+11 Jul 00:19:06 - obj: 4e19febf92c069311f000001 newtestuser call 19
+11 Jul 00:19:25 - obj: 4e19febf92c069311f000001 newtestuser call 8
+11 Jul 00:19:39 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:19:40 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:19:40 - obj: minefield updating done = true
+11 Jul 00:19:42 - obj: 4e19febf92c069311f000001 newtestuser call 8
+11 Jul 00:19:43 - obj: 4e19febf92c069311f000001 newtestuser call 1,0
+11 Jul 00:19:43 - obj: minefield updating done = true
+11 Jul 00:19:44 - obj: 4e19febf92c069311f000001 newtestuser call 8
+11 Jul 00:19:57 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:19:57 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:19:57 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:19:57 - db: loading user from db (by secret)
+11 Jul 00:19:58 - db: loading user from db (by secret)
+11 Jul 00:19:58 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:19:59 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:20:04 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:20:06 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:20:06 - obj: minefield updating done = true
+11 Jul 00:20:08 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:21:57 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:21:57 - obj: minefield updating done = true
+11 Jul 00:22:03 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:05 - obj: 4e19febf92c069311f000001 newtestuser call 3,3
+11 Jul 00:22:06 - obj: 4e19febf92c069311f000001 newtestuser call 2,4
+11 Jul 00:22:06 - obj: minefield updating done = true
+11 Jul 00:22:09 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:17 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:22:17 - obj: minefield updating done = true
+11 Jul 00:22:18 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:20 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:22:20 - obj: minefield updating done = true
+11 Jul 00:22:21 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:51 - obj: 4e19febf92c069311f000001 newtestuser call 0,1
+11 Jul 00:22:52 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:22:52 - obj: minefield updating done = true
+11 Jul 00:22:53 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:54 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:22:54 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:22:54 - obj: minefield updating done = true
+11 Jul 00:22:55 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:56 - obj: 4e19febf92c069311f000001 newtestuser call 4,1
+11 Jul 00:22:56 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:22:57 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:22:57 - obj: minefield updating done = true
+11 Jul 00:22:58 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:22:59 - obj: 4e19febf92c069311f000001 newtestuser call 0,0
+11 Jul 00:23:00 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:23:01 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:01 - obj: minefield updating done = true
+11 Jul 00:23:02 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:23:02 - obj: 4e19febf92c069311f000001 newtestuser call 3,3
+11 Jul 00:23:03 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:03 - obj: minefield updating done = true
+11 Jul 00:23:05 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:05 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:23:07 - obj: 4e19febf92c069311f000001 newtestuser call 3,0
+11 Jul 00:23:07 - obj: 4e19febf92c069311f000001 newtestuser call 4,3
+11 Jul 00:23:07 - obj: minefield updating done = true
+11 Jul 00:23:08 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:09 - obj: 4e19febf92c069311f000001 newtestuser call 0,0
+11 Jul 00:23:10 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:23:10 - obj: minefield updating done = true
+11 Jul 00:23:10 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:12 - obj: 4e19febf92c069311f000001 newtestuser call 0,0
+11 Jul 00:23:12 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:23:13 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:13 - obj: 4e19febf92c069311f000001 newtestuser call 3,3
+11 Jul 00:23:14 - obj: 4e19febf92c069311f000001 newtestuser call 4,4
+11 Jul 00:23:15 - obj: 4e19febf92c069311f000001 newtestuser call 0,4
+11 Jul 00:23:15 - obj: minefield updating done = true
+11 Jul 00:23:16 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:17 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:23:17 - obj: minefield updating done = true
+11 Jul 00:23:19 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:20 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:22 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:23:22 - obj: minefield updating done = true
+11 Jul 00:23:22 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:23 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:23:24 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:26 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:23:26 - obj: minefield updating done = true
+11 Jul 00:23:27 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:28 - obj: 4e19febf92c069311f000001 newtestuser call 3,3
+11 Jul 00:23:28 - obj: minefield updating done = true
+11 Jul 00:23:29 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:30 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:31 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:23:32 - obj: 4e19febf92c069311f000001 newtestuser call 4,2
+11 Jul 00:23:32 - obj: minefield updating done = true
+11 Jul 00:23:33 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:33 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:23:34 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:38 - obj: 4e19febf92c069311f000001 newtestuser call 2,4
+11 Jul 00:23:38 - obj: minefield updating done = true
+11 Jul 00:23:40 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:40 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:23:40 - obj: minefield updating done = true
+11 Jul 00:23:41 - obj: 4e19febf92c069311f000001 newtestuser call 9
+11 Jul 00:23:43 - obj: 4e19febf92c069311f000001 newtestuser call 5
+11 Jul 00:23:44 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:23:44 - obj: minefield updating done = true
+11 Jul 00:23:45 - obj: 4e19febf92c069311f000001 newtestuser call 5
+11 Jul 00:23:46 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:23:46 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:23:46 - obj: minefield updating done = true
+11 Jul 00:23:48 - obj: 4e19febf92c069311f000001 newtestuser call 5
+11 Jul 00:23:48 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:23:49 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:23:50 - obj: 4e19febf92c069311f000001 newtestuser call 3,3
+11 Jul 00:23:50 - obj: minefield updating done = true
+11 Jul 00:23:52 - obj: 4e19febf92c069311f000001 newtestuser call 5
+11 Jul 00:24:23 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:24:23 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:24:23 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:24:23 - db: loading user from db (by secret)
+11 Jul 00:24:24 - db: loading user from db (by secret)
+11 Jul 00:24:24 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:24:26 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:24:27 - obj: 4e19febf92c069311f000001 newtestuser call 2,1
+11 Jul 00:24:27 - obj: minefield updating done = true
+11 Jul 00:24:27 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:24:28 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:24:28 - obj: minefield updating done = true
+11 Jul 00:24:29 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:24:29 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:24:29 - obj: minefield updating done = true
+11 Jul 00:24:30 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:24:31 - obj: 4e19febf92c069311f000001 newtestuser call 1,3
+11 Jul 00:24:32 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:24:32 - obj: minefield updating done = true
+11 Jul 00:24:32 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:24:34 - obj: 4e19febf92c069311f000001 newtestuser call 10
+11 Jul 00:24:34 - obj: 4e19febf92c069311f000001 newtestuser call 3,1
+11 Jul 00:24:35 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:24:36 - obj: 4e19febf92c069311f000001 newtestuser call 0,1
+11 Jul 00:24:37 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:24:38 - obj: 4e19febf92c069311f000001 newtestuser call 2,0
+11 Jul 00:24:38 - obj: minefield updating done = true
+11 Jul 00:24:39 - obj: 4e19febf92c069311f000001 newtestuser call 10
+11 Jul 00:24:52 - obj: 4e19febf92c069311f000001 newtestuser call 3
+11 Jul 00:24:53 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:24:54 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:24:54 - obj: minefield updating done = true
+11 Jul 00:24:55 - obj: 4e19febf92c069311f000001 newtestuser call 3
+11 Jul 00:24:55 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:24:56 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:24:57 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:24:57 - obj: 4e19febf92c069311f000001 newtestuser call 3,4
+11 Jul 00:24:58 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:24:59 - obj: 4e19febf92c069311f000001 newtestuser call 4,1
+11 Jul 00:24:59 - obj: 4e19febf92c069311f000001 newtestuser call 3,0
+11 Jul 00:25:06 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:25:07 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:25:08 - obj: 4e19febf92c069311f000001 newtestuser call 0,1
+11 Jul 00:25:08 - obj: 4e19febf92c069311f000001 newtestuser call 0,0
+11 Jul 00:25:08 - obj: minefield updating done = true
+11 Jul 00:25:09 - obj: 4e19febf92c069311f000001 newtestuser call 13
+11 Jul 00:25:10 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:25:59 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:25:59 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:25:59 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:25:59 - db: loading user from db (by secret)
+11 Jul 00:26:00 - db: loading user from db (by secret)
+11 Jul 00:26:00 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:26:10 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:26:10 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:26:10 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:26:10 - db: loading user from db (by secret)
+11 Jul 00:26:11 - db: loading user from db (by secret)
+11 Jul 00:26:11 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:26:53 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:26:53 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:26:53 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:26:53 - db: loading user from db (by secret)
+11 Jul 00:26:54 - db: loading user from db (by secret)
+11 Jul 00:26:54 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:27:08 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:27:31 - obj: 4e19febf92c069311f000001 newtestuser call 3,2
+11 Jul 00:27:32 - obj: 4e19febf92c069311f000001 newtestuser call 1,1
+11 Jul 00:27:33 - obj: 4e19febf92c069311f000001 newtestuser call 1,4
+11 Jul 00:27:33 - obj: minefield updating done = true
+11 Jul 00:27:34 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:27:35 - obj: 4e19febf92c069311f000001 newtestuser call 2,2
+11 Jul 00:27:35 - obj: 4e19febf92c069311f000001 newtestuser call 1,2
+11 Jul 00:27:36 - obj: 4e19febf92c069311f000001 newtestuser call 0,0
+11 Jul 00:27:37 - obj: 4e19febf92c069311f000001 newtestuser call 2,3
+11 Jul 00:27:37 - obj: minefield updating done = true
+11 Jul 00:27:38 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:28:21 - obj: user updating name = newtestuser
+11 Jul 00:28:31 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:31:46 - user: 4e19febf92c069311f000001 newtestuser logged out.
+11 Jul 00:31:46 - obj: persisting user object 4e19febf92c069311f000001 newtestuser
+11 Jul 00:31:46 - http: 78.47.145.170 GET /?secret=275cf00691fd90d53206beecf794b1027b451e75 
+11 Jul 00:31:46 - db: loading user from db (by secret)
+11 Jul 00:31:47 - db: loading user from db (by secret)
+11 Jul 00:31:47 - user: 4e19febf92c069311f000001 newtestuser logged in
+11 Jul 00:31:48 - obj: 4e19febf92c069311f000001 newtestuser call 14
+11 Jul 00:33:48 - http: 78.47.145.170 GET / 
+11 Jul 00:33:49 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:33:49 - db: loading user from db (by secret)
+11 Jul 00:33:50 - db: loading user from db (by secret)
+11 Jul 00:33:50 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:33:54 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 8
+11 Jul 00:33:59 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,3
+11 Jul 00:34:00 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 3,1
+11 Jul 00:34:00 - obj: minefield updating done = true
+11 Jul 00:34:02 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 8
+11 Jul 00:34:04 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,1
+11 Jul 00:34:05 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 3,3
+11 Jul 00:34:05 - obj: minefield updating done = true
+11 Jul 00:34:06 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 8
+11 Jul 00:34:46 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,1
+11 Jul 00:34:46 - obj: minefield updating done = true
+11 Jul 00:34:47 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 8
+11 Jul 00:34:48 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,2
+11 Jul 00:34:49 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 3,4
+11 Jul 00:34:49 - obj: minefield updating done = true
+11 Jul 00:34:50 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 8
+11 Jul 00:34:51 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,1
+11 Jul 00:35:33 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 
+11 Jul 00:35:43 - obj: persisting user object 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003
+11 Jul 00:35:55 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 9
+11 Jul 00:35:56 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,3
+11 Jul 00:35:56 - obj: minefield updating done = true
+11 Jul 00:35:56 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 9
+11 Jul 00:35:58 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,3
+11 Jul 00:35:59 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,2
+11 Jul 00:35:59 - obj: minefield updating done = true
+11 Jul 00:36:00 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 9
+11 Jul 00:36:01 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,3
+11 Jul 00:36:01 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,3
+11 Jul 00:36:01 - obj: minefield updating done = true
+11 Jul 00:36:02 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 9
+11 Jul 00:37:57 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,3
+11 Jul 00:37:57 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,2
+11 Jul 00:37:58 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 3,1
+11 Jul 00:37:58 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,1
+11 Jul 00:37:59 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,3
+11 Jul 00:37:59 - obj: minefield updating done = true
+11 Jul 00:38:00 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 9
+11 Jul 00:38:01 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 1,1
+11 Jul 00:38:02 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 2,4
+11 Jul 00:38:02 - obj: minefield updating done = true
+11 Jul 00:38:04 - obj: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 call 9
+11 Jul 00:39:05 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged out.
+11 Jul 00:39:05 - obj: persisting user object 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003
+11 Jul 00:39:06 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:39:06 - db: loading user from db (by secret)
+11 Jul 00:39:06 - db: loading user from db (by secret)
+11 Jul 00:39:06 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:39:16 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged out.
+11 Jul 00:39:16 - obj: persisting user object 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003
+11 Jul 00:39:16 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:39:16 - db: loading user from db (by secret)
+11 Jul 00:39:17 - db: loading user from db (by secret)
+11 Jul 00:39:17 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:39:22 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged out.
+11 Jul 00:39:22 - obj: persisting user object 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003
+11 Jul 00:39:22 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:39:22 - db: loading user from db (by secret)
+11 Jul 00:39:23 - db: loading user from db (by secret)
+11 Jul 00:39:23 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:39:33 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged out.
+11 Jul 00:39:33 - obj: persisting user object 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003
+11 Jul 00:39:33 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:39:33 - db: loading user from db (by secret)
+11 Jul 00:39:34 - db: loading user from db (by secret)
+11 Jul 00:39:34 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:41:54 - info: starting...
+11 Jul 00:41:54 - info: Express server listening on port %d
+11 Jul 00:41:54 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:41:54 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:41:54 - info: mongo - User collection open
+11 Jul 00:41:54 - info: mongo - Addresses collection open
+11 Jul 00:41:55 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:41:55 - db: loading user from db (by secret)
+11 Jul 00:41:56 - db: loading user from db (by secret)
+11 Jul 00:41:56 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:42:12 - info: starting...
+11 Jul 00:42:12 - info: Express server listening on port %d
+11 Jul 00:42:12 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:42:12 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:42:12 - info: mongo - User collection open
+11 Jul 00:42:12 - info: mongo - Addresses collection open
+11 Jul 00:42:13 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:42:13 - db: loading user from db (by secret)
+11 Jul 00:42:14 - db: loading user from db (by secret)
+11 Jul 00:42:14 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:42:32 - info: starting...
+11 Jul 00:42:32 - info: Express server listening on port %d
+11 Jul 00:42:32 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:42:32 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:42:32 - info: mongo - User collection open
+11 Jul 00:42:32 - info: mongo - Addresses collection open
+11 Jul 00:42:38 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:42:38 - db: loading user from db (by secret)
+11 Jul 00:42:39 - db: loading user from db (by secret)
+11 Jul 00:42:39 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:43:17 - info: starting...
+11 Jul 00:43:17 - info: Express server listening on port %d
+11 Jul 00:43:17 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:43:17 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:43:17 - info: mongo - User collection open
+11 Jul 00:43:17 - info: mongo - Addresses collection open
+11 Jul 00:43:18 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:43:18 - db: loading user from db (by secret)
+11 Jul 00:43:19 - db: loading user from db (by secret)
+11 Jul 00:43:19 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:43:36 - info: starting...
+11 Jul 00:43:36 - info: Express server listening on port %d
+11 Jul 00:43:36 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:43:36 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:43:36 - info: mongo - User collection open
+11 Jul 00:43:36 - info: mongo - Addresses collection open
+11 Jul 00:44:08 - info: starting...
+11 Jul 00:44:08 - info: Express server listening on port %d
+11 Jul 00:44:08 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:44:08 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:44:08 - info: mongo - User collection open
+11 Jul 00:44:08 - info: mongo - Addresses collection open
+11 Jul 00:44:09 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:44:09 - db: loading user from db (by secret)
+11 Jul 00:44:10 - db: loading user from db (by secret)
+11 Jul 00:44:10 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:44:35 - info: starting...
+11 Jul 00:44:35 - info: Express server listening on port %d
+11 Jul 00:44:35 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:44:35 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:44:35 - info: mongo - User collection open
+11 Jul 00:44:35 - info: mongo - Addresses collection open
+11 Jul 00:44:36 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:44:36 - db: loading user from db (by secret)
+11 Jul 00:44:36 - db: loading user from db (by secret)
+11 Jul 00:44:36 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:44:36 - obj: globalobject updating users = 1
+11 Jul 00:45:16 - obj: globalobject updating users = 0
+11 Jul 00:45:16 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged out.
+11 Jul 00:45:16 - obj: persisting user object 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003
+11 Jul 00:45:16 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:45:16 - db: loading user from db (by secret)
+11 Jul 00:45:17 - db: loading user from db (by secret)
+11 Jul 00:45:17 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:45:17 - obj: globalobject updating users = 1
+11 Jul 00:45:21 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:45:22 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 connected a socket.
+11 Jul 00:45:22 - obj: globalobject updating users = 2
+11 Jul 00:45:24 - obj: globalobject updating users = 1
+11 Jul 00:45:24 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 disconnected a socket.
+11 Jul 00:46:26 - info: starting...
+11 Jul 00:46:26 - info: Express server listening on port %d
+11 Jul 00:46:26 - info: Connected to bitcoind, Account Balance: 0.041 BIT
+11 Jul 00:46:26 - info: Connected to mongodb server at localhost:27017
+11 Jul 00:46:26 - info: mongo - User collection open
+11 Jul 00:46:26 - info: mongo - Addresses collection open
+11 Jul 00:46:27 - http: 78.47.145.170 GET /?secret=875d0c6f80f96d362d7028d0c458ae7c03fd9102 
+11 Jul 00:46:27 - db: loading user from db (by secret)
+11 Jul 00:46:28 - db: loading user from db (by secret)
+11 Jul 00:46:28 - user: 4e1a28ccb21d759032000003 user-4e1a28ccb21d759032000003 logged in
+11 Jul 00:46:28 - obj: globalobject updating users = 1
