@@ -8,9 +8,17 @@
     border-radius: 4px;
 } 
 
-
-
+body {
+    font-size: 85%;
+    font-family: "Helvetica", Arial, sans-serif;
+}
 .header {
+    /*
+    float: center;
+    width: 750px;
+    margin-left: auto ;
+    margin-right: auto ;
+*/
     background: black;
     color: white;
     text-decoration: none;
@@ -44,6 +52,14 @@
 } 
 
 .subtab {
+/*
+    float: center;
+    width: 700px;
+    margin-left: auto ;
+    margin-right: auto ;
+*/
+    margin-left: 1px;
+    margin-right: 1px;
   border: 1px solid black;
   background: #eee;
   -webkit-border-radius: 4px;
@@ -52,13 +68,21 @@
   padding: 20px;
   margin-top: 12px;
   margin-bottom: 12px;
-  margin-left: 1px;
-  margin-right: 1px;
 
 }
 
 .float-right {
     float: right;
+}
+
+.betbtn {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  text-align: center; 
+  vertical-align:middle;
+  line-height: 40px;
+
 }
 
 .btn { 
@@ -73,6 +97,14 @@
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
+}
+
+
+.btn:hover {
+    cursor:pointer;
+    background-color: #777777;
+    margin-bottom: -5px;
+    padding-bottom: -5px;
 }
 
 
@@ -92,13 +124,6 @@
 }
 
 
-.btn:hover {
-    cursor:pointer;
-    background-color: #777777;
-    margin-bottom: -5px;
-    padding-bottom: -5px;
-}
-
 
 
 .editable {
@@ -109,6 +134,15 @@
     color: #00FF00; 
     font-size: 1.1em;
     font-weight: "bold";
+
+}
+
+
+.minefieldcash {
+    color: #00FF00; 
+    font-size: 1.1em;
+    font-weight: "bold";
+  cursor:pointer;
 }
 
 .editable input {
@@ -160,8 +194,8 @@
   display: block;
   color: white;
   border: 2px solid black;
-  margin: 1.5px;
-  padding: 5px;
+  margin: -4px;
+  padding: 10px;
   width: 40px;
   height: 40px;
   cursor:pointer;
@@ -171,35 +205,42 @@
   vertical-align: middle;
 }
 
-.mine_undefined { 
-    background-color: #555555;
-}
 
-.mine_undefined:hover { 
-    background-color: #555599;
-}
 
 
 .mine_yes { 
-  background-color: #bb5555; 
+  background-image:url(/img/bomb.png);
+  background-size: 100%;
+/*  background-color: #bb5555;  */
 }
 
 .mine_no { 
-  background-color: #55bb55; 
+  background-image:url(/img/dirt.png);
+  background-size: 100%;
+/*  background-color: #55bb55;  */
 }
 
 .mine_step_yes { 
-  background-color: #ff4444; 
+  background-image:url(/img/bomb_step.png);
+  background-size: 100%;
+/*  background-color: #ff4444;  */
 }
 
 .mine_step_no { 
-  background-color: #44ff44; 
+  background-image:url(/img/dirt_step.png);
+  background-size: 100%;
+/*  background-color: #44ff44; */
 }
 
 
-.mine_no_img { 
+.mine_undefined { 
   background-image:url(/img/grass.png);
-  background-size: 200%;
+  background-size: 100%;
+}
+
+.mine_undefined:hover { 
+  background-image:url(/img/grass_selected.png);
+  background-size: 100%;
 }
 
 
@@ -229,6 +270,9 @@
 }
 
 
+.sync_minefield_hash {
+    cursor: pointer;
+}
 
 .minus {
     text-color: red;

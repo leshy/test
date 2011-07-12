@@ -125,7 +125,6 @@ function Length(object) {
     return Object.keys(object).length
 }
 
-
 function generateid() { 
     return new Date().getTime() + rbytes.randomBytes(16).toHex()
 }
@@ -181,10 +180,10 @@ function sendMoney (address,amount,callback,callbackerr) {
     amount = roundMoney(amount)
     btc.sendToAddress ( address,amount, "bla1","bla2", function(err,paymentid) { 
 	if (paymentid) {
-	    console.log("PAYMENT SUCCESS " + amount + " BTC to" + address + " success - transaction id " + paymentid)
+	    l.payment("SENT " + amount + " BTC to" + address + " success - transaction id " + paymentid)
 	    callback(paymentid)
 	} else {
-	    console.log("ERROR",err)
+	    l.payment("ERROR",err)
 	    if (callbackerr) { callbackerr(err.message) }
 	}
     })
@@ -320,20 +319,56 @@ DbProxy.prototype.ship_in = function(data) {
 // minefield
 // {{{
 
-function MineField(size,parent) {
+function MineField(size,bet,parent) {
     var self = this
-    self.size = size
-    self.generateminefield(size) 
-    console.log(self.minefield)
     self.userid = parent._id
+    self.bet = bet
+    self.size = size
+    self.win = bet
+
+    self.openfields = 0
+    self.calculatemulti()
+    parent.cash = roundMoney(parent.cash - bet)
+//    parent.cash = 0.102
+
+    self.generateminefield(size) 
 
     self.crypted = JSON.stringify(self.minefield) + " " + rbytes.randomBytes(16).toHex()
     self.hash = hashlib.sha256(self.crypted)
     self.done = false
     self.init(router,'minefield')
+
+//    console.log(self.minefield)
 }
 
 MineField.prototype = new remoteobject.RemoteObject()
+
+MineField.prototype.cleanup = function() {
+    var self = this
+//    if (self.bet != 0) { }
+    console.log('applying minefield changes!, winnings',this.win)
+    if (self.win > 0) {
+	getUserById(self.userid,function(user) {
+	    console.log('current cash',user.cash)
+	    user.cash = roundMoney(user._cash + self.win)
+	})
+	
+    }
+}
+
+MineField.prototype.calculatemulti = function() {
+    var chance = 100 - (this.size / ((25 - this.openfields) / 100))
+    var win = (95 / chance)
+    this.multi = Math.round(parseFloat(win) * 100) / 100
+    console.log("MULTI:" ,this.multi, this.size,chance)
+	/*
+    var chance = 100 - (ui.value / (25 / 100))
+    var win = (95 / chance)
+    win = Math.round(parseFloat(win) * 100) / 100 
+    */
+}
+
+
 
 MineField.prototype.step = function(coords) {
     var self = this
@@ -341,16 +376,38 @@ MineField.prototype.step = function(coords) {
 
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
-    if (self.minefield[coords[0]][coords[1]]  == 3) { self.done = true; self.sync() } else {
-	self.syncproperty('minefield')
+    if (self.minefield[coords[0]][coords[1]]  == 3) {
+	self.done = true
+	self.win = 0
+	self.sync()
+    } else {
+	self.win = roundMoney(self.win * self.multi)
+	self.openfields += 1;
+	self.calculatemulti()
+	self.syncpush('minefield')
+	self.syncpush('win')
+	self.syncpush('multi')
+	self.syncflush()
+//	self.sync()
     }
+
+
+
+    
     
 }
 
+
 MineField.prototype.payout = function(callback) {
-//    self.parent.cash += 1; // ? ne zelim usera u memoriji.. (nuzno)
-    getUserById(self.userid,function(user) { user.cash += 1 })
-//    if (callback) { callback() }
+    var self = this
+    if (!self.done) {
+	self.done = true
+	getUserById(self.userid,function(user) { user.cash = roundMoney(user.cash + self.win) })
+	self.win = 0
+	self.syncpush('minefield')
+	self.syncpush('crypted')
+	self.syncflush()
+    }
 }
 
 
@@ -400,27 +457,44 @@ MineField.prototype.filter_in = { step: 'function',
 MineField.prototype.filter_out = { minefield : 
 				   function(minefield,self) {
 				       o = []
-				       if (!self.done) {
 				       minefield.forEach(function(row) {
-					   var rowout = []
-					   row.forEach(function(block) {
-					       if (block < 2) {
-						   rowout.push(-1)
-					       } else { 
-						   rowout.push(block) 
-					       }
-					   })
+					   
+						   var rowout = []					   
+					       row.forEach(function(block) {
+
+						   if (!self.done) {
+						       if (block < 2) {
+							   rowout.push(-1)
+						       } else { 
+							   rowout.push(block)
+						       }
+						   } else {
+						       rowout.push(block);
+						       /*
+						       if (block < 2) {
+							   rowout.push(block)
+						       } else { 
+							   rowout.push(block - 2) 
+						       }
+						       */
+						   }
+					       })
 					   o.push(rowout)
-				       })
+
+					   })
+					   
+				       
 				       return o
 
-				       } else { return minefield }
+				       
 
 				   },
+				   multi: true,
+				   win: true,
 				   size : true,
 				   done : true,
-				   hash: function(hash,self) { 
-				       if (!self.done) { return hash } else { return self.crypted + "<br>" + self.hash }
+				   hash: true,
+				   crypted: function(crypted,self) { if (!self.done) { return "hidden" } else { return crypted }
 				   },
 				   step: 'function',
 				   payout: 'function',
@@ -450,15 +524,18 @@ function User(user) {
 User.prototype = new remoteobject.RemoteObject()
 
 
-User.prototype.newminefield = function(size) {
-    minefield = new MineField(size,this)
+User.prototype.newminefield = function(size,bet) {
+    if (!bet) { bet = 0 }
+    if (!size) { console.log('err, size not set'); return }
+    if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
+    minefield = new MineField(size,bet,this)
     minefield.addowner(this)
     minefield.sync()
     
 }
 
-
-User.prototype.filter_in = { name: function(name) { if (name) { if (name) { return escape(name) } else { return null } } },
+//name: function(name) { if (name) { if (name) { return escape(name) } else { return null } } },
+User.prototype.filter_in = { name: function() { return null },
 			     address_deposit: function(res) { return escape(res) },
 			     ping: function(arg) { return arg },
 			   }
@@ -505,6 +582,9 @@ User.prototype.persist = function(callback) {
 	if (err) { console.log("ERROR", sys.inspect(err)); return }
 	if(callback) { console.log("SAVED."); callback() }
     })
+
+    
+
 }
 
 User.prototype.message = function(message) { 
@@ -524,13 +604,13 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     self.save()
     //self.sync()
     self.message("payment received")
-    console.log("PAYMENT RECEIVED for user " + self._id  + " from " + from + " " + amount + " BCC users cash is now " + self.cash + " BTC")
-    console.log(self)
+    l.payment("RECEIVED for user " + self._id  + " from " + from + " " + amount + " BCC users cash is now " + self.cash + " BTC")
+    //console.log(self)
 }
 
 User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
     self = this
-    console.log("PAYMENT ATTEMPT of",amount,"and user has",self.cash,"userid",self._id)
+    l.payment("PAYMENT ATTEMPT of",amount,"and user has",self.cash,"userid",self._id)
     amount = roundMoney(amount)
     if ((self.cash - amount) >= 0) {
 	var oldcash = self.cash
@@ -640,8 +720,19 @@ app.get ('*', function (req, res, next) {
     ignore['/css/ui-smoothness/images/ui-bg_glass_65_ffffff_1x400.png'] = true
     ignore['/css/ui-smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png'] = true
     ignore['/css/ui-smoothness/images/ui-bg_flat_75_ffffff_40x100.png'] = true
-    ignore['/favicon.ico'] = true
     ignore['/css/ui-smoothness/images/ui-bg_glass_75_dadada_1x400.png'] = true
+    ignore['/favicon.ico'] = true
+    ignore['/snd/dig1.mp3'] = true
+    ignore['/snd/dig2.mp3'] = true
+    ignore['/snd/dig3.mp3'] = true
+    ignore['/snd/dig4.mp3'] = true
+    ignore['/snd/bomb.mp3'] = true
+    ignore['/img/bomb.png'] = true
+    ignore['/img/bomb_step.png'] = true
+    ignore['/img/dirt.png'] = true
+    ignore['/img/dirt_step.png'] = true
+    ignore['/img/grass.png'] = true
+    ignore['/img/grass_selected.png'] = true
     ignore[''] = true
 
 
@@ -791,11 +882,17 @@ ircclient.addListener('message', function (from, to, message) {
 
 function GlobalObject() {
     this.users = 0
+    this.availiablebets = [0,0.01, 0.05, 0.1, 0.5 ]
+    this._id = "globalobj"
     this.init(router,'globalobject')
 }
+
 GlobalObject.prototype = new remoteobject.RemoteObject()
 
-GlobalObject.prototype.filter_out = { 'users': true }
+
+GlobalObject.prototype.sleep = function() {  }
+
+GlobalObject.prototype.filter_out = { 'users': true, 'availiablebets': true }
 
 globalobject = new GlobalObject()
 
@@ -828,10 +925,11 @@ io.sockets.on('connection', function (socket) {
 	    socket.on('call',function (data) {
 		data = JSON.parse(data)
 		l.obj(user._id + " " + user.name + " call " + data.arguments)
-//		console.log("GOT", router.getObjectFromUser(user,data.object))
-//		router.getObjectFromUser(user,data.object)[data.function].apply(user,data.arguments)
 		var object = router.getObjectFromUser(user,data.object)
-		object[data.function].apply(object,data.arguments)
+
+		if (object && object[data.function]) {
+		    object[data.function].apply(object,data.arguments)
+		}
 
 	    })
 

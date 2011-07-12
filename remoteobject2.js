@@ -36,8 +36,18 @@ Router.prototype.login = function(user,socket) {
 
 Router.prototype.logout = function(user,socket) { 
     delete this.usersocket[user][socket]
+    delete this.objects[socket]
     if (Length(this.usersocket[user]) == 0 ) { 
 	this.l.user(user._id + " " + user.name + " logged out.")
+
+	for (var objname in this.userobject[user]) {
+	    var objid = this.userobject[user][objname]
+	    if (this.getUidsFromObject(objid).length == 1) {
+		console.log('looking for',objid)
+		this.getObjectFromId(objid).sleep()
+	    }
+	}
+
 	this.objects[user].sleep()
     } else {
 	this.l.user(user._id + " " + user.name + " disconnected a socket.")
@@ -46,6 +56,8 @@ Router.prototype.logout = function(user,socket) {
 
 Router.prototype.addowner = function(user, object) { 
     if (!this.userobject[user]) { this.userobject[user] = {} }
+    var oldobj = this.getObjectFromUser(user,object.objectname)
+    if (oldobj && oldobj.sleep) { oldobj.sleep() }
     this.userobject[user][object.objectname] = object._id
     if (!this.objectuser[object]) { this.objectuser[object] = {} }
     this.objectuser[object][user] = true
@@ -86,6 +98,14 @@ Router.prototype.getLiveObject = function(id) {
     return this.objects[id]
 }
 
+Router.prototype.getUidsFromObject = function(objid) {
+//    console.log(this.objectuser)
+//    console.log(objid,"OBJECTUSER",this.objectuser[objid])
+    if (!this.objectuser[objid]) { return [] }
+    return Object.keys(this.objectuser[objid])
+}
+
+
 Router.prototype.getObjectFromUser = function(user,objectname) {
     var self = this
     if (objectname == 'user') { return user }
@@ -99,7 +119,7 @@ Router.prototype.getObjectFromSocket = function(socket,objectname) {
     return this.getObjectFromUser(this.socketuser[socket],objectname) 
 }
 
-Router.getObjectFromId = function(objectid) { 
+Router.prototype.getObjectFromId = function(objectid) { 
     if (this.objects[objectid]) { 
 	return this.objects[objectid]
     } else {
@@ -126,6 +146,7 @@ RemoteObject.prototype.init = function(router,name) {
     self.l = router.l
     self.objectname = name
     self.router.objects[self] = self
+    self.syncpool = []
 
     if (self.persist) { self.savetimer = undefined }
     
@@ -141,7 +162,7 @@ RemoteObject.prototype.init = function(router,name) {
 	    if (!self["_" + property]) { 
 		self["_" + property] = self[property]
 		self.__defineSetter__(property, function (value) { 
-		    self.l.obj(self.objectname + " updating " + property + " = " + value)     
+		    self.l.obj(self.objectname + " " + self + " updating " + property + " = " + value)     
 		    var oldvalue = self["_" + property]
 		    self["_" + property] = value
 		    //if (oldvalue != value) {
@@ -204,14 +225,17 @@ RemoteObject.prototype.emit = function(tag,values) {
 
 RemoteObject.prototype.sleep = function(obj) {
     var self = this;
+
+    if (self.cleanup) { self.cleanup() }
     if (self.persist) { self.persist() }
+    
+    delete self.router.objectuser[self]
+    delete self.router.objects[self]
 
     if (self.objectname == 'user') {
 	delete self.router.usersocket[self]
 	delete self.router.secretuser[self.secret]
     }
-
-    delete self.router.objects[self]
 }
 
 RemoteObject.prototype.getSaveData = function(obj) {
@@ -241,7 +265,30 @@ RemoteObject.prototype.toString = function() {
 
 
 
-RemoteObject.prototype.syncproperty = function(property) {
+RemoteObject.prototype.syncpush = function (property) {
+    var self = this
+    self.syncpool.push(property)
+}
+
+RemoteObject.prototype.syncflush = function(socket) {
+    var self = this
+    if (self.syncpool.length == 0) { return }
+
+//    console.log("flushing",self.syncpool)
+
+    data = {}
+    data[self.objectname] = {}
+    self.syncpool.forEach( function(property) {
+	data[self.objectname][property] = self.shipout(property)
+    })
+    self.syncpool = []
+
+    data = JSON.stringify(data)
+    if (!socket) { self.emit('objectsync',data) } else { socket.emit('objectsync',data) }
+    
+}
+
+RemoteObject.prototype.shipout = function(property) {
     var self = this
     
     if (typeof(self.filter_out[property]) == 'function') {
@@ -252,10 +299,15 @@ RemoteObject.prototype.syncproperty = function(property) {
     } else {
 	var value = self.filter_out[property]
     }
+    return value
+}
 
+RemoteObject.prototype.syncproperty = function(property) {
+    var self = this
+    
     data = {}
     data[self.objectname] = {}
-    data[self.objectname][property] = value
+    data[self.objectname][property] = self.shipout(property)
     this.emit('objectsync', JSON.stringify(data) )
     this.save()
 }
@@ -263,26 +315,13 @@ RemoteObject.prototype.syncproperty = function(property) {
 
 RemoteObject.prototype.sync = function(socket) {
     var self = this
-    var objectname = self.objectname
-    var data = { }
-    data[objectname] = {}
+    data = {}
+    data[self.objectname] = {}
     for (var property in self.filter_out) {
-	var filter = self.filter_out[property]
-	var value = undefined
-	if (typeof(filter) == 'function') {
-	    value = filter(self[property],self)
-	} else if (filter == true) {
-	    value = self["_" + property]
-	} else {
-	    value = filter
-	}
-
-	data[objectname][property] = (value)
+	data[self.objectname][property] = self.shipout(property)
     }
     data = JSON.stringify(data)
-//    console.log("EMMITING",data)
     if (!socket) { self.emit('objectsync',data) } else { socket.emit('objectsync',data) }
-
 }
 
 
