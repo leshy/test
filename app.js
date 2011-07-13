@@ -381,13 +381,16 @@ MineField.prototype.step = function(coords) {
 
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
+
     if (self.minefield[coords[0]][coords[1]]  == 3) {
-	l.log('minefield','loss',"user " + self.userid + " lost a game (" + self.bet + " BTC)",{ bet: self.bet })
+	getUserById(self.userid,function(user) { 
+	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, balance: user.cash })
+	})
 	self.done = true
 	self.win = 0
 	self.sync()
     } else {
-	l.log('minefield','pass',"user " + self.userid + " pass, (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ bet: self.bet, win: self.win })
+	l.log('minefield','pass',"user " + self.userid + " pass, (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
 	self.win = roundMoney(self.win * self.multi)
 	self.openfields += 1;
 	self.calculatemulti()
@@ -409,8 +412,10 @@ MineField.prototype.payout = function(callback) {
     var self = this
     if (!self.done) {
 	self.done = true
-	l.log('minefield','payout',"user " + self.userid + " payout (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ bet: self.bet, win: self.win })
-	getUserById(self.userid,function(user) { user.cash = roundMoney(user.cash + self.win) })
+	getUserById(self.userid,function(user) { 
+	    user.cash = roundMoney(user.cash + self.win) 
+	    l.log('minefield','payout',"game end. user " + self.userid + " payout (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win, balance: user.cash })
+	})
 	self.win = 0
 	self.syncpush('minefield')
 	self.syncpush('crypted')
@@ -605,7 +610,9 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     self.cash = roundMoney(self.cash)   
 
     self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
-    self.syncproperty('transaction_history')
+    self.syncpush('transaction_history')
+    self.syncpush('transaction_history')
+    self.syncflush()
     self.save()
     //self.sync()
     self.message("payment received")

@@ -143,7 +143,7 @@ FileOutput.prototype.push = function(logentry) {
 
     out += "\n"
 
-    fs.open(this.file, 'a', 777, function( e, id ) {
+    fs.open(this.file, 'a', 666, function( e, id ) {
 	fs.write( id, out, null, 'utf8', function(){
 	    fs.close(id, function(){})
 	})
