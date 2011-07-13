@@ -169,20 +169,25 @@ function copyProps (object, props) {
 }
 
 function roundMoney(money) {
-    return Math.floor(parseFloat(money) * 1000) / 1000
+//    return Math.floor(parseFloat(money) * 1000) / 1000
+    return Math.floor(money)
+}
+
+function moneyIn(money) {
+    return Math.round(money * 1e8)
+}
+
+function moneyOut(money) {
+    return Math.round(money / 1e4) / 10000
 }
 
 function jsonmsg(message,responsecode) {
     return JSON.stringify({'message': message, 'responsecode': responsecode})
 }
 
-function JSONtoAmount(value) {
-    return amount = Math.round(1e8 * value)
-}
-
 
 function sendMoney (address,amount,callback,callbackerr) {
-    amount = roundMoney(amount)
+    amount = moneyOut(amount)
     btc.sendToAddress ( address,amount, "bla1","bla2", function(err,paymentid) { 
 	if (paymentid) {
 	    l.log("payment","info","SENT " + amount + " BTC to" + address + " success - transaction id " + paymentid)
@@ -326,15 +331,20 @@ function spawnUserData(secret,callback,callbackerr) {
 
 function MineField(size,bet,parent) {
     var self = this
-    self.userid = parent._id
+    bet = moneyIn(bet)
     self.bet = bet
+    self.userid = parent._id
+    console.log("bet is",self.bet)
+    
     self.size = size
     self.win = bet
 
+    console.log("win is",self.win)
     self.openfields = 0
     self.calculatemulti()
     parent.cash = roundMoney(parent.cash - bet)
     //    parent.cash = 0.102
+    console.log("cash is",parent.cash)
 
     self.generateminefield(size) 
 
@@ -350,6 +360,7 @@ MineField.prototype = new remoteobject.RemoteObject()
 
 MineField.prototype.cleanup = function() {
     var self = this
+    console.log("MINEFIELD CLEANUP")
     //    if (self.bet != 0) { }
     console.log('applying minefield changes!, winnings',this.win)
     if (self.win > 0) {
@@ -377,7 +388,6 @@ MineField.prototype.calculatemulti = function() {
 
 MineField.prototype.step = function(coords) {
     var self = this
-//    console.log("got",coords)
 
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
@@ -391,14 +401,13 @@ MineField.prototype.step = function(coords) {
 	self.sync()
     } else {
 	l.log('minefield','pass',"user " + self.userid + " pass, (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
-	self.win = roundMoney(self.win * self.multi)
+	self.win = self.win * self.multi
 	self.openfields += 1;
 	self.calculatemulti()
 	self.syncpush('minefield')
 	self.syncpush('win')
 	self.syncpush('multi')
 	self.syncflush()
-	//	self.sync()
     }
 
 
@@ -503,7 +512,7 @@ MineField.prototype.filter_out = { minefield :
 
 				   },
 				   multi: true,
-				   win: true,
+				   win: function(win) { return moneyOut(win) },
 				   size : true,
 				   done : true,
 				   hash: true,
@@ -554,7 +563,7 @@ User.prototype.filter_in = { name: function() { return null },
 			   }
 
 User.prototype.filter_out = { name: true,
-			      cash: true,
+			      cash: function(cash) { return moneyOut(cash) },
 			      address_deposit: true ,
 			      address_withdrawal: true ,
 			      transaction_history: true,
@@ -605,7 +614,7 @@ User.prototype.message = function(message) {
 User.prototype.receiveMoney = function(id,time,from,amount) {
     self = this
     console.log(self)
-    amount = roundMoney(amount)
+    amount = moneyIn(amount)
     self.cash = self.cash + amount
     self.cash = roundMoney(self.cash)   
 
