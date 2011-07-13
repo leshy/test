@@ -1,22 +1,6 @@
 <script type="text/javascript">
 
 
-
-/*
-  RemoteObject.prototype.subscribe = function(property,callback) {
-  var self = this
-  if (!self.subscriptions[property]) { self.subscriptions[property] = [] }
-  self.subscriptions[property].push(callback)
-  }
-*/
-
-
-
-// a = new RemoteObject("testobj",{name: 333, bla: "ivan", testf: "function" })
-
-
-
-
 $(document).ready(function() { 
 
 
@@ -365,6 +349,10 @@ $(document).ready(function() {
 	setTimeout(function() { message.fadeOut() },1000)
     }
 
+
+    function moneyOut(money) {
+	return Math.floor(money / 1e4) / 10000
+    }
     function reload_transaction_history() {
 	if (router.remoteobjects.user.transaction_history.length == 0) { 
 	    var code = "no transactions"
@@ -404,8 +392,8 @@ $(document).ready(function() {
 		} else {
 		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
 		}
-		code +="<td class='transactionhistory'>" +  row.amount + "</td>"
-		code +="<td class='transactionhistory'>" +  row.balance + "</td>"
+		code +="<td class='transactionhistory'>" +  moneyOut(row.amount) + "</td>"
+		code +="<td class='transactionhistory'>" +  moneyOut(row.balance) + "</td>"
 		code += "</tr>"
 	    })
 
@@ -438,14 +426,36 @@ $(document).ready(function() {
     })
     
 
-    var socket = io.connect('http://bitcoinlab.org:45284');
+    var socket = io.connect('http://bitcoinlab.org:<%= port %>');
     socket.emit('hello', { uid: uid, secret: secret });
     socket.on('connection', function () {
-	//console.log('websocket connected. authorizing')
+	console.log('websocket connected.')
+
+    
 
     });
 
 
+	socket.on('msg', function(data) {
+	    data = JSON.parse(data)
+	    //console.log("GOT MESSAGE",data)
+	    message(data.message)
+	})
+    
+
+	socket.on('objectsync', function(data) {
+	    data = JSON.parse(data)
+//	    	console.log("new object stream received",data)
+	
+	    for (var objectname in data) {
+		updateobject(objectname,data[objectname])
+		//	    updateobject(objectname,jQuery.parseJSON(data[objectname]))
+	    }
+	})
+
+	socket.on('disconnect', function(data) {
+	    location.reload(true)
+	})
 
     $("#btnwithdraw").click(function() { 
 	//console.log("CALLING SENDMONEY")
@@ -467,24 +477,6 @@ $(document).ready(function() {
 	
     })
     
-    
-    socket.on('msg', function(data) {
-	data = JSON.parse(data)
-	//console.log("GOT MESSAGE",data)
-	message(data.message)
-    })
-    
-
-    socket.on('objectsync', function(data) {
-	data = JSON.parse(data)
-//	console.log("new object stream received",data)
-	
-	for (var objectname in data) {
-	    updateobject(objectname,data[objectname])
-//	    updateobject(objectname,jQuery.parseJSON(data[objectname]))
-	}
-    })
-
 
 
     function updateobject(objectname,object) {
@@ -657,7 +649,7 @@ $(document).ready(function() {
 <div class='header'>
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
-    <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= Math.round(user.cash / 1e4) / 10000  %></span>&nbsp;</span></span>
+  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= Math.floor(user.cash / 1e4) / 10000 %></span>&nbsp;</span></span>
 <!--  <span class='btn' id="btnchat" >Chat</span> -->
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>

@@ -1,9 +1,3 @@
-/*
-  - obavezno prije produkcije stavi mybitcoin paynment receiver negdje drugdje
-  - htio bi logirati na per socket razini nekako, vjerojatno cu morati pisati svoj logging.. 
-*/
-
-
 // settings
 // {{{
 var settings = {}
@@ -174,7 +168,7 @@ function roundMoney(money) {
 }
 
 function moneyIn(money) {
-    return Math.round(money * 1e8)
+    return Math.floor(money * 1e8)
 }
 
 
@@ -183,7 +177,7 @@ function moneyOutFull(money) {
 }
 
 function moneyOut(money) {
-    return Math.round(money / 1e4) / 10000
+    return Math.floor(money / 1e4) / 10000
 }
 
 function jsonmsg(message,responsecode) {
@@ -559,7 +553,7 @@ User.prototype.filter_out = { name: true,
 			      cash: function(cash) { return moneyOut(cash) },
 			      address_deposit: true ,
 			      address_withdrawal: true ,
-			      transaction_history: true,
+			      transaction_history: true ,
 			      newminefield: 'function',
 			      sendMoney: 'function',
 			      generatedepositaddr: 'function'
@@ -610,7 +604,7 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     amount = moneyIn(amount)
     self.cash = self.cash + amount
 
-    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: moneyOut(amount), balance: moneyOut(self.cash) })
+    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
     self.syncpush('cash')
     self.syncpush('transaction_history')
     self.syncflush()
@@ -633,7 +627,7 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 	sendMoney(address,amount,
 		  function(transactionid) { 
 		      if (callback) {callback(transactionid)}
-		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: moneyOut(amount), balance: moneyOut(self.cash) })
+		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
 		      self.syncproperty('transaction_history')
 		      self.save()
 		  },
