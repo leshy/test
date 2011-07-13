@@ -657,7 +657,7 @@ $(document).ready(function() {
 <div class='header'>
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
-  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= user.cash %></span>&nbsp;</span></span>
+    <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= Math.round(user.cash / 1e4) / 10000  %></span>&nbsp;</span></span>
 <!--  <span class='btn' id="btnchat" >Chat</span> -->
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>

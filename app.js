@@ -177,6 +177,11 @@ function moneyIn(money) {
     return Math.round(money * 1e8)
 }
 
+
+function moneyOutFull(money) {
+    return money / 1e8
+}
+
 function moneyOut(money) {
     return Math.round(money / 1e4) / 10000
 }
@@ -184,7 +189,6 @@ function moneyOut(money) {
 function jsonmsg(message,responsecode) {
     return JSON.stringify({'message': message, 'responsecode': responsecode})
 }
-
 
 function sendMoney (address,amount,callback,callbackerr) {
     amount = moneyOut(amount)
@@ -334,17 +338,13 @@ function MineField(size,bet,parent) {
     bet = moneyIn(bet)
     self.bet = bet
     self.userid = parent._id
-    console.log("bet is",self.bet)
     
     self.size = size
     self.win = bet
 
-    console.log("win is",self.win)
     self.openfields = 0
     self.calculatemulti()
     parent.cash = roundMoney(parent.cash - bet)
-    //    parent.cash = 0.102
-    console.log("cash is",parent.cash)
 
     self.generateminefield(size) 
 
@@ -353,14 +353,13 @@ function MineField(size,bet,parent) {
     self.done = false
     self.init(router,'minefield')
 
-    //    console.log(self.minefield)
 }
 
 MineField.prototype = new remoteobject.RemoteObject()
 
 MineField.prototype.cleanup = function() {
     var self = this
-    console.log("MINEFIELD CLEANUP")
+//    console.log("MINEFIELD CLEANUP")
     //    if (self.bet != 0) { }
     console.log('applying minefield changes!, winnings',this.win)
     if (self.win > 0) {
@@ -376,12 +375,6 @@ MineField.prototype.calculatemulti = function() {
     var chance = 100 - (this.size / ((25 - this.openfields) / 100))
     var win = (95 / chance)
     this.multi = Math.round(parseFloat(win) * 100) / 100
-//    console.log("MULTI:" ,this.multi, this.size,chance)
-    /*
-      var chance = 100 - (ui.value / (25 / 100))
-      var win = (95 / chance)
-      win = Math.round(parseFloat(win) * 100) / 100 
-    */
 }
 
 
@@ -616,23 +609,22 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     console.log(self)
     amount = moneyIn(amount)
     self.cash = self.cash + amount
-    self.cash = roundMoney(self.cash)   
 
-    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
-    self.syncpush('transaction_history')
+    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: moneyOut(amount), balance: moneyOut(self.cash) })
+    self.syncpush('cash')
     self.syncpush('transaction_history')
     self.syncflush()
     self.save()
     //self.sync()
     self.message("payment received")
-    l.log("payment","info","RECEIVED for user " + self._id  + " from " + from + " " + amount + " BCC users cash is now " + self.cash + " BTC")
+    l.log("payment","info","RECEIVED for user " + self._id  + " from " + from + " " + moneyOutFull(amount) + " BCC users cash is now " + moneyOutFull(self.cash) + " BTC")
     //console.log(self)
 }
 
 User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
     self = this
     l.log("payment","info","PAYMENT ATTEMPT of",amount,"and user has",self.cash,"userid",self._id)
-    amount = roundMoney(amount)
+    amount = moneyIn(amount)
     if ((self.cash - amount) >= 0) {
 	var oldcash = self.cash
 	self.cash -= amount
@@ -641,7 +633,7 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 	sendMoney(address,amount,
 		  function(transactionid) { 
 		      if (callback) {callback(transactionid)}
-		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
+		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: moneyOut(amount), balance: moneyOut(self.cash) })
 		      self.syncproperty('transaction_history')
 		      self.save()
 		  },
@@ -926,7 +918,7 @@ io.sockets.on('connection', function (socket) {
 		data = JSON.parse(data)
 
 		var object = router.getObjectFromUser(user,data.object)
-		l.log('obj','call',data.function + " " + data.arguments, {user : user._id, object: object.objectname })
+		l.log('obj','call',data.function + " " + data.arguments, {user : user._id })
 
 		if (object && object[data.function]) {
 		    object[data.function].apply(object,data.arguments)
