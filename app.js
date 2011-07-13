@@ -600,12 +600,13 @@ User.prototype.message = function(message) {
 
 User.prototype.receiveMoney = function(id,time,from,amount) {
     self = this
-    console.log(self)
+//    console.log(self)
     amount = moneyIn(amount)
     self.cash = self.cash + amount
 
     self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
     self.syncpush('cash')
+    self.syncpush('address_deposit')
     self.syncpush('transaction_history')
     self.syncflush()
     self.save()
@@ -972,15 +973,16 @@ function parseAddressData(address) {
 			console.log("PAYMENT ERROR " + address.address + " is not associated to a user")
 		    }
 		})
-	    }
+	   }
 	}
+
     })
 }
 
 
 function checkFinances() {
     //  console.log('finances tick...')
-    btc.listReceivedByAddress (0,false,function(err, addresses) {
+    btc.listReceivedByAddress (5,false,function(err, addresses) {
 	//       console.log(sys.inspect(addresses))
 	if (!addresses) { l.log("bitcoind","error","problem with bitcoind communication");  }
 	else {

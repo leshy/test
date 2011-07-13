@@ -289,8 +289,9 @@ h3,h2,h1 {
 
 
 a:link {
-    text-decoration: none;
     color: black;
+    text-decoration: underline;
+
 }
 
 a:hover {
@@ -299,6 +300,6 @@ a:hover {
 
 
 a:visited {
-    text-decoration: none;
+    text-decoration: underline;
     color: black;
 }
