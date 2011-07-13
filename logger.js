@@ -62,7 +62,9 @@ function ConsoleOutput() {
     this.loglevel = {}
     this.loglevel['default'] = 'cyan'
     this.loglevel['info'] = 'green'
+    this.loglevel['important'] = 'red'
     
+
 }
 
 ConsoleOutput.prototype.push = function(logentry) {

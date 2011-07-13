@@ -3,12 +3,22 @@
 // {{{
 var settings = {}
 
+settings.staging = false
+if (process.argv.length > 2) {
+    if (process.argv[2]  == "staging" ) {
+	settings.staging = true
+    }
+}
+
 settings.dbhost = "localhost"
 settings.dbport = 27017
-settings.dbname = "bitcoin1"
 settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
-settings.httpport = 45284
+
+if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
+if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
+
+
 // require
 
 var hashlib = require('hashlib');
@@ -51,10 +61,12 @@ var myCustomLevels = {
 var l = new Logger.Logger()
 
 l.outputs.push(new Logger.ConsoleOutput())
-l.outputs.push(new Logger.FileOutput('new.log'))
+l.outputs.push(new Logger.FileOutput('main.log'))
+
+
 
 l.log('general','info','starting...');
-
+if (settings.staging) { l.log('general','important','STAGING INSTANCE') }
 
 
 var router = new remoteobject.Router(l)
