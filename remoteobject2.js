@@ -324,7 +324,9 @@ RemoteObject.prototype.sync = function(socket) {
     for (var property in self.filter_out) {
 	data[self.objectname][property] = self.shipout(property)
     }
+
     data = JSON.stringify(data)
+    console.log(self.objectname,"SYNC",data)
     if (!socket) { self.emit('objectsync',data) } else { socket.emit('objectsync',data) }
 }
 
@@ -334,15 +336,17 @@ RemoteObject.prototype.update = function(obj) {
     for (var property in obj) {
 	var filter = self.filter_in[property]
 	if (filter) {
-	    if (filter == true) { self[property] = obj[property] } else {
-		var r = filter(obj[property])
+	    if (filter == true) { 
+		self[property] = obj[property] 
+	    } else {
+		var r = filter(obj[property],self)
 		if ((r != undefined) && (r != null)) {
 		    self[property] = r
 		    self.save()
-		} else {
-		    this.l.log("obj","debug",'property ' + property + ' change rejected by filter function')
-		    self.syncproperty(property)
 		}
+		 //   this.l.log("obj","debug",'property ' + property + ' change rejected by filter function')
+		   // self.syncproperty(property)
+		//}
 	    }
 	}
     }

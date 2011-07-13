@@ -186,7 +186,7 @@ function moneyIn(money) {
 
 
 function moneyOutFull(money) {
-    return money / 1e8
+    return (money / 1e8)
 }
 
 function moneyOut(money) {
@@ -391,16 +391,15 @@ MineField.prototype.step = function(coords) {
 
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
-
     if (self.minefield[coords[0]][coords[1]]  == 3) {
 	getUserById(self.userid,function(user) { 
-	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, balance: user.cash })
+	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOutFull(self.bet) + " BTC)",{ uid: self.userid, bet: self.bet, balance: user.cash })
 	})
 	self.done = true
 	self.win = 0
 	self.sync()
     } else {
-	l.log('minefield','pass',"user " + self.userid + " pass, (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
+	l.log('minefield','pass',"user " + self.userid + " pass, (" + moneyOutFull(self.win) + " BTC from bet of " + moneyOutFull(self.bet) + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
 	self.win = self.win * self.multi
 	self.openfields += 1;
 	self.calculatemulti()
@@ -557,7 +556,27 @@ User.prototype.newminefield = function(size,bet) {
 }
 
 //name: function(name) { if (name) { if (name) { return escape(name) } else { return null } } },
-User.prototype.filter_in = { name: function() { return null },
+User.prototype.filter_in = { name: function(name,self) { settings.collection_users.findOne( { name: name }, 
+										       function(err,doc) {
+											   if (doc) {
+											       if (String(doc._id) != String(self._id)) {
+												   self.message ("this username is already taken")
+												   l.log("user","namechange","user " + self.name  + " failed while trying to change name to " + name, { fail: true, renamefrom: self.name, renameto: name})
+												   self.syncproperty('name')
+											       }
+											   } else {
+											       if (!name) {  
+												   self.syncproperty('name')
+												   self.message("unable to set name to nothing")
+												   return null 
+											       }
+											       l.log("user","namechange","user " + self.name  + " changed name to " + name, { fail: false, renamefrom: self.name, renameto: name})
+											       self.name = name
+											   }
+										       })
+							 return null
+						       },
+
 			     address_deposit: function(res) { return escape(res) },
 			     ping: function(arg) { return arg },
 			   }
@@ -571,6 +590,7 @@ User.prototype.filter_out = { name: true,
 			      sendMoney: 'function',
 			      generatedepositaddr: 'function'
 			    }
+
 User.prototype.filter_save = { name: true,
 			       creationdate: true,
 			       lastaccess: true,
@@ -601,15 +621,12 @@ User.prototype.persist = function(callback) {
 	if (err) { console.log("ERROR", sys.inspect(err)); return }
 	if(callback) { console.log("SAVED."); callback() }
     })
-
-    
-
 }
 
 User.prototype.message = function(message) { 
+    l.log("user","message",message)
     this.emit('msg',JSON.stringify({message: message }))
 }
-
 
 User.prototype.receiveMoney = function(id,time,from,amount) {
     self = this
@@ -675,9 +692,8 @@ User.prototype.generatedepositaddr = function(callback,callbackerr) {
 	self.syncproperty('address_deposit')
 	self.save(function() {if(callback) { callback(address) }})
 	
-	settings.collection_addresses.insert({ "address": address, "creationdate": new Date().getTime(), "cash" : 0  })
+	settings.collection_addresses.insert({ "address": address, "creationdate": new Date().getTime(), "cash" : 0, "owner" : self._id  })
 	
-
     })
 }
 
@@ -698,6 +714,7 @@ function getUserBySecret(secret,callback,callbackerr) {
 
 
 function getUserById(id,callback,callbackerr) {
+    id = String(id)
     if (router.objects[id] ) { callback(router.objects[id]); return }
     l.log('db','debug','loading user from db (by id)')
     settings.collection_users.findOne({_id: new BSON.ObjectID(id)}, function(err,user) {
@@ -986,16 +1003,14 @@ function parseAddressData(address) {
 			console.log("PAYMENT ERROR " + address.address + " is not associated to a user")
 		    }
 		})
-	   }
-	}
-
+	   }}
     })
 }
 
 
 function checkFinances() {
     //  console.log('finances tick...')
-    btc.listReceivedByAddress (5,false,function(err, addresses) {
+    btc.listReceivedByAddress (0,false,function(err, addresses) {
 	//       console.log(sys.inspect(addresses))
 	if (!addresses) { l.log("bitcoind","error","problem with bitcoind communication");  }
 	else {
