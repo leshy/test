@@ -15,6 +15,7 @@ settings.dbport = 27017
 settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 
+if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 0 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
 
@@ -1010,7 +1011,7 @@ function parseAddressData(address) {
 
 function checkFinances() {
     //  console.log('finances tick...')
-    btc.listReceivedByAddress (0,false,function(err, addresses) {
+    btc.listReceivedByAddress (settings.confirmations,false,function(err, addresses) {
 	//       console.log(sys.inspect(addresses))
 	if (!addresses) { l.log("bitcoind","error","problem with bitcoind communication");  }
 	else {
