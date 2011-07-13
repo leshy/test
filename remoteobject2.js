@@ -24,7 +24,7 @@ function Router(log) {
 }
 
 Router.prototype.login = function(user,socket) { 
-    if (!this.usersocket[user]) { this.usersocket[user] = {}; this.l.user(user._id + " " + user.name + " logged in") } else { this.l.user(user._id + " " + user.name + " connected a socket.")}
+    if (!this.usersocket[user]) { this.usersocket[user] = {}; this.l.log("user","login",user._id + " " + user.name + " logged in") } else { this.l.log("user","login",user._id + " " + user.name + " connected a socket.")}
     this.usersocket[user][socket] = true
     this.secretuser[user.secret] = user
     this.socketuser[socket] = user.toString()
@@ -38,7 +38,7 @@ Router.prototype.logout = function(user,socket) {
     delete this.usersocket[user][socket]
     delete this.objects[socket]
     if (Length(this.usersocket[user]) == 0 ) { 
-	this.l.user(user._id + " " + user.name + " logged out.")
+	this.l.log("user","logout", user._id + " " + user.name + " logged out.")
 
 	for (var objname in this.userobject[user]) {
 	    var objid = this.userobject[user][objname]
@@ -50,7 +50,7 @@ Router.prototype.logout = function(user,socket) {
 
 	this.objects[user].sleep()
     } else {
-	this.l.user(user._id + " " + user.name + " disconnected a socket.")
+	this.l.log("user","login",user._id + " " + user.name + " disconnected a socket.")
     }
 }
 
@@ -162,7 +162,11 @@ RemoteObject.prototype.init = function(router,name) {
 	    if (!self["_" + property]) { 
 		self["_" + property] = self[property]
 		self.__defineSetter__(property, function (value) { 
-		    self.l.obj(self.objectname + " " + self + " updating " + property + " = " + value)     
+		    
+		    if (self["_" + property] == value) { return }
+
+		    self.l.log("obj","debug",self.objectname + " " + self + " updating " + property + " = " + value)     
+
 		    var oldvalue = self["_" + property]
 		    self["_" + property] = value
 		    //if (oldvalue != value) {
@@ -336,7 +340,7 @@ RemoteObject.prototype.update = function(obj) {
 		    self[property] = r
 		    self.save()
 		} else {
-		    this.l.obj('property ' + property + ' change rejected by filter function')
+		    this.l.log("obj","debug",'property ' + property + ' change rejected by filter function')
 		    self.syncproperty(property)
 		}
 	    }

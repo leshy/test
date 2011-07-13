@@ -236,7 +236,7 @@ $(document).ready(function() {
 	    slide: function( event, ui ) {
 		var chance = 100 - (ui.value / (25 / 100))
 		var win = (95 / chance)
-		win = Math.round(parseFloat(win) * 100) / 100 
+		win = Math.round(win * 100) / 100 
 		displayminefield(generateminefield(ui.value,currentbet))
 //		
 
@@ -671,11 +671,12 @@ $(document).ready(function() {
 <div class='tabcontent' id='tab_minefield'>
 <div class='subtab'> 
     <center>
-    <div style="height:150px">
+    <div style="height:175px">
     <h1>Bitcoin MineField</h1>
     <div class="mon">
     <h1><span class="minefieldcash" id="sync_minefield_win">0</span></h1>
-    Click on the winnings to cash out.
+    <img width="20px" src="/img/arrow.png"><br>
+    Click on the winnings to cash out at any time.
     <br>
     <br>
     </div>
