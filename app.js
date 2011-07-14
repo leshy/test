@@ -571,7 +571,6 @@ adminUser.prototype.refreshbalance = function() {
 }
 
 
-/*
 function LogRange(from,to,callback) {
 
     if (!from) { from = 0}
@@ -637,7 +636,7 @@ function getCashLog(from,to,slicesize,callback) {
 		if ((item.area == "minefield") && (item.loglevel == "payout") && (item.payload.win != 0)) {
 		    if (item.payload.win > 100) { item.payload.win = moneyOut(item.payload.win) }
 		    bucket = itembucket(item)
-		    bucket.win = bucket.win + item.payload.win
+		    bucket.win = bucket.win + moneyOutFull((item.payload.bet - item.payload.win))
 		}
 
 //		if ((item.area == "payment") && (item.loglevel == "info") && (item.payload.win != 0)) {
@@ -691,8 +690,6 @@ function ParseLogs(from,to,slicesize,datapoints,callback) {
     })
 }
 
-
-*/
 
 
 
@@ -1244,13 +1241,11 @@ function checkFinances() {
 
 setTimeout(checkFinances,1000)
 
-/*
 setTimeout(function () {  getCashLog(0,Date.now(),1 * 1000,function(data) { 
 
     console.log(data) 
 
 
 } ) },1000)
-*/
 
 // }}}
