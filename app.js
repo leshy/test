@@ -1157,7 +1157,7 @@ io.sockets.on('connection', function (socket) {
 		data = JSON.parse(data)
 
 		var object = router.getObjectFromUser(user,data.object)
-		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, user : user._id })
+		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, uid : user._id })
 
 		
 
