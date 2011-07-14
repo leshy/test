@@ -1,0 +1,229 @@
+    <script type="text/javascript">
+
+
+$(document).ready(function() { 
+
+    function Router() { 
+	this.subscriptions = {}
+	this.remoteobjects = {}
+    }
+
+    Router.prototype.subscribe = function(object,property,callback) {
+	var self = this
+	if (!self.subscriptions[object]) { self.subscriptions[object] = {} }
+	if (!self.subscriptions[object][property]) { self.subscriptions[object][property] = [] }
+	self.subscriptions[object][property].push(callback)
+	for (var prop in self.subscriptions[object]) {  console.log(prop) }
+    }
+
+
+    Router.prototype.event = function(object,property,value,oldvalue) {
+	var self = this
+	var objectname = object.objectname
+	console.log("event",objectname,object,property,value)
+
+	if (self.subscriptions["*"]["*"]) {
+	    self.subscriptions["*"]["*"].forEach( function(callback) {
+		callback(value,oldvalue,property,object)
+	    })
+	}
+
+	if (self.subscriptions["*"][property]) {
+	    self.subscriptions["*"][property].forEach( function(callback) {
+		callback(value,oldvalue,property,object)
+	    })
+	}
+
+
+	if (self.subscriptions[objectname]["*"]) {
+	    self.subscriptions[objectname]["*"].forEach( function(callback) {
+		callback(value,oldvalue,property,object)
+	    })
+	}
+
+	if (!self.subscriptions[objectname]) { return }
+	if (!self.subscriptions[objectname][property]) { return }
+	self.subscriptions[objectname][property].forEach( function(callback) {
+	    callback(value,oldvalue,property,object)
+	})
+    }
+
+
+    router = new Router()
+
+    function RemoteObject(name,obj) {
+	this.objectname = name
+	if (name == 'user') { user = this }
+	router.remoteobjects[name] = this
+	if (!router.subscriptions[name]) {
+	    router.subscriptions[name] = {}
+	}
+	this.update(obj)
+    }
+
+
+    RemoteObject.prototype.update = function(obj) {
+	//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
+
+	var self = this
+	//console.log("update",router,obj)
+	for (var property in obj) {
+	    function c(property,value) {
+		if (value == "function") {
+		    self[property] = function() { 
+			var data = {}
+			data['object'] = self.objectname
+			data['function'] = property
+			var args = Array.prototype.slice.call(arguments);
+			//	console.log ("calling remote function " + property,args) 
+			data['arguments'] = args
+
+			//console.log(data)
+
+			socket.emit('call',JSON.stringify(data))
+		    }
+		    return
+		}
+
+		if (!self["_" + property]) { 
+		    self.__defineSetter__(property, function (value) { 
+			var data = {objects: {}, secret: secret}
+			data.objects[self.objectname] = {}
+			data.objects[self.objectname][property] = value
+			//			console.log("emiting objectsync")
+			socket.emit ('objectsync',JSON.stringify(data))
+		    })
+		    self.__defineGetter__(property, function () { return self["_" + property] })
+		} else {
+		    if (self["_" + property] == value ) { return }
+		}
+		
+		var oldvalue = self["_" + property]
+		self["_" + property] = value
+		if (oldvalue != value) {
+		    router.event(self,property,value,oldvalue)
+		}
+	    }
+	    c(property,obj[property])
+	}
+    }
+
+
+    var socket = io.connect('<%= host %>:<%= port %>');
+    socket.emit('adminlogin', { secret: "<%= secret %>" });
+    socket.on('connection', function () {
+	console.log('websocket connected.')
+    })
+
+    socket.on('objectsync', function(data) {
+	data = JSON.parse(data)
+	
+	for (var objectname in data) {
+	    console.log("objectsync",objectname,data[objectname])
+	    updateobject(objectname,data[objectname])
+	}
+    })
+
+    socket.on('disconnect', function(data) {
+	location.reload(true)
+    })
+
+
+    function updateobject(objectname,object) {
+	if (!router.remoteobjects[objectname]) {
+	    //console.log("created new remote object '" + objectname + "'",object,router )
+	    var newobj = new RemoteObject(objectname,object)
+	    //console.log(newobj)
+	    router.remoteobjects[objectname] = newobj
+	} else {
+	    //console.log("updating remote object '" + objectname + "'",object,router )
+	    router.remoteobjects[objectname].update(object)
+	}
+    }
+
+    function syncproperty(objectname,property,value) {
+	router.remoteobjects[objectname][property] = value
+    }
+
+
+    function equal(object1, object2) {
+	if (!object2) { return false }
+
+	if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
+	    return (object1 == object2)
+	}
+
+	
+	if (object1.length != object2.length) { return false }
+	
+	for (var property in object1) { 
+
+	    if (object1[property] != object2[property]) { return false }
+	}
+
+	return true   
+    }
+
+    
+
+    router.subscribe("*","*",function(value,oldvalue,property,object) {
+	//console.log(object.objectname, "PROPERTY UPDATED", property,value)
+	if ((object[property] != undefined) && (object[property] != null)) {
+	    $("#sync_" + object.objectname + "_" + property).html(object[property])
+	    $(".sync_" + object.objectname + "_" + property).html(object[property])
+	}
+	//console.log(property,$(".sync_user_" + property))
+    })
+
+
+    router.subscribe("user","balance",function(value) {
+	value = parseFloat(value)
+
+	value = value - 4
+	$("#btcbalance").html("<span class='minefieldcash'>" + (Math.round(value * 1000) / 1000) + "</span> BTC")
+	
+	var btctousd = 14
+	var btctohrk = btctousd * 5.25
+
+
+	$("#othevalutes").html ( Math.round(value * btctousd) + " USD, " + Math.round(value * btctohrk) + " HRK"  )
+    })
+
+    router.subscribe("user","logline",function(value) {
+	t = new Date(value.time)
+	var time = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds()
+
+
+	$("#log").append( $("<span><font color='blue'>" + time + "</font> - " + value.message + "</span>"))
+	$("#log").append("<br>")
+    })
+
+
+})
+
+</script>
+
+<div class='subtab'> 
+<center>
+    <h3>Current State</h3>
+    <h3><span id="btcbalance"></span></h3>
+    <h5><span id="othevalutes"></span></h5>
+
+</center>
+</div>
+
+
+<div class='subtab'> 
+<center>
+    <h3>Graphs</h3>
+</center>
+</div>
+
+<div class='subtab'> 
+<center>
+    <h3>Log</h3>
+</center>
+
+<div id="log"></div>
+
+</div>
