@@ -3,6 +3,8 @@
 
 $(document).ready(function() { 
 
+    loglines = []
+
     function Router() { 
 	this.subscriptions = {}
 	this.remoteobjects = {}
@@ -192,9 +194,16 @@ $(document).ready(function() {
     router.subscribe("user","logline",function(value) {
 	t = new Date(value.time)
 	var time = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds()
+	var line = $("<span><font color='blue'>" + time + "</font> - " + value.message + "</span>")
 
+	loglines.unshift(line)
+	if (loglines.length > 10) {
+	    loglines.pop()
+	}
 
-	$("#log").append( $("<span><font color='blue'>" + time + "</font> - " + value.message + "</span>"))
+	
+
+	$("#log").append( $("<span><font color='blue'>" + time + "</font> - " + value.area + " " + value.loglevel + " - " + value.message + "</span>"))
 	$("#log").append("<br>")
     })
 
