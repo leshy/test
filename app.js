@@ -21,9 +21,13 @@ var irc = require('irc')
 var remoteobject = require('./remoteobject2.js')
 var Logger = require('./logger.js');
 
+var BinaryParser = mongo.BinaryParser
 
 
 
+
+
+//console.log(IdAtTime(Date.now()))
 
 var settings = {}
 
@@ -481,8 +485,6 @@ MineField.prototype.filter_in = { step: 'function',
 				}
 
 
-
-
 MineField.prototype.filter_out = { minefield : 
 				   function(minefield,self) {
 				       o = []
@@ -543,7 +545,7 @@ function adminUser() {
     this.logline = 'empty'
     this.name = "admin user"
     this.init(router,'user')
-    this.balance = "querying..."
+    this.balance = 0
     this.refreshbalance()
 //    this.refreshtimer = setTimeout(this.refreshbalance,2000)
 }
@@ -569,6 +571,128 @@ adminUser.prototype.refreshbalance = function() {
 }
 
 
+/*
+function LogRange(from,to,callback) {
+
+    if (!from) { from = 0}
+    if (!to) { to = Date.now() }
+
+    function IdAtTime(time) {
+	function tohexstring(binary) {
+	    var hexString = ''
+	    , number
+	    , value;
+
+	    for (var index = 0, len = binary.length; index < len; index++) {
+		value = BinaryParser.toByte(binary.substr(index, 1));
+		number = value <= 15
+		    ? '0' + value.toString(16)
+		    : value.toString(16);
+		hexString = hexString + number;
+	    }
+	    return hexString;
+	}
+
+	var unixTime = parseInt(time/1000, 10);
+	var time4Bytes = BinaryParser.encodeInt(unixTime, 32, true, true);
+	var machine3Bytes = BinaryParser.encodeInt(0, 24, false);
+	var pid2Bytes = BinaryParser.fromShort(0);
+	var index3Bytes = BinaryParser.encodeInt(0, 24, false, true);
+	return new BSON.ObjectID(tohexstring(time4Bytes + machine3Bytes + pid2Bytes + index3Bytes))
+    }
+    console.log({$gt : IdAtTime(from)}, {$lt : IdAtTime(to)})
+//    settings.collection_log.find({_id : [ {$gt : IdAtTime(from)}, {$lt : IdAtTime(to)} ] }, function(err,cursor) { if (!err) { callback(cursor) } else { console.log(err) } })
+
+    settings.collection_log.find({}, function(err,cursor) { if (!err) { callback(cursor) } else { console.log(err) } })
+}
+
+
+
+function getCashLog(from,to,slicesize,callback) {
+    LogRange(from,to,function(cursor) {
+	data = {}
+
+	function itembucket(item) {
+	    var itemtime = item._id.generationTime
+	    var itembucket = itemtime - (itemtime % slicesize)
+	    var itembucket = new Date(itembucket)
+	    if (!data[itembucket]) { 
+		data[itembucket] = { payments : 0, get : 0, win : 0, loss : 0, plays : 0 }
+	    }
+	    return data[itembucket]
+	}
+
+	cursor.each(function(err, item) {
+	    if(err != null) { console.log("ERR",err); callback(data); return }
+	    if (item != null) {
+
+
+
+		if ((item.area == "minefield") && (item.loglevel == "loss") && (item.payload.bet != 0)) {
+		    if (item.payload.bet > 100) { item.payload.bet = moneyOut(item.payload.bet) }
+		    bucket = itembucket(item)
+		    bucket.loss = bucket.loss + item.payload.bet 
+		}
+
+		if ((item.area == "minefield") && (item.loglevel == "payout") && (item.payload.win != 0)) {
+		    if (item.payload.win > 100) { item.payload.win = moneyOut(item.payload.win) }
+		    bucket = itembucket(item)
+		    bucket.win = bucket.win + item.payload.win
+		}
+
+//		if ((item.area == "payment") && (item.loglevel == "info") && (item.payload.win != 0)) {
+
+
+		if ((item.area == "minefield") && (item.loglevel == "payout") && (item.payload.win != 0)) {
+		    if (item.payload.win > 100) { item.payload.win = moneyOut(item.payload.win) }
+		    bucket = itembucket(item)
+		    bucket.win = bucket.win + item.payload.win
+		}
+
+
+
+		
+	    } else {
+		console.log("NULL")
+		callback(data)
+		return
+	    }
+	})
+})
+}
+	    
+
+
+//ParseLogs(null,null,600, { 'win': { selector: ['minefield','payout'], data : function(entry) { return entry.win}},
+//			   'loss': { selector: ['minefield','loss'], data : function(entry) { return entry.bet}},
+//			   'hits': { selector: ['http','request'], data : function(entry) { return 1}}
+//			 })
+
+
+
+function ParseLogs(from,to,slicesize,datapoints,callback) {        
+    LogRange(from,to,function(cursor) {
+	data = {}
+
+	cursor.each(function(err, item) {
+	    if(err != null) { callback(data); return }
+	    if (item != null) {
+		
+		var itemtime = item._id.generationTime		
+		var itembucket = itemtime - Math.round(itemtime % slicesize)
+//		if data[
+
+
+	    } else {
+		callback(data)
+		return
+	    }
+	})
+    })
+}
+
+
+*/
 
 
 
@@ -593,7 +717,6 @@ User.prototype = new remoteobject.RemoteObject()
 User.prototype.newminefield = function(size,bet) {
     if (!bet) { bet = 0 }
     bet = moneyIn(bet)
-    if (this.cash < 0) { this.cash = 0 }
     if (!size) { console.log('err, size not set'); return }
     if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
     minefield = new MineField(size,bet,this)
@@ -689,13 +812,13 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     self.save()
     //self.sync()
     self.message("payment received")
-    l.log("payment","info","RECEIVED for user " + self._id  + " from " + from + " " + moneyOutFull(amount) + " BCC users cash is now " + moneyOutFull(self.cash) + " BTC")
+    l.log("payment","received","RECEIVED for user " + self._id  + " from " + from + " " + moneyOutFull(amount) + " BTC users cash is now " + moneyOutFull(self.cash) + " BTC", { uid: self._id, amount: amount, balance: self.cash, from: from })
     //console.log(self)
 }
 
 User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
     self = this
-    l.log("payment","info","PAYMENT ATTEMPT of",amount,"and user has",self.cash,"userid",self._id)
+//    l.log("payment","attempt",amount + " and user has ",self.cash,"userid",self._id)
     amount = moneyIn(amount)
     if ((self.cash - amount) >= 0) {
 	var oldcash = self.cash
@@ -704,8 +827,12 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 	self.save()
 	sendMoney(address,amount,
 		  function(transactionid) { 
+
 		      if (callback) {callback(transactionid)}
 		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
+		      
+		      l.log("payment","sent","AMOUNT " + moneyOutFull(amount) + " user has " + moneyOutFull(self.cash) + " userid " + self._id,{ uid: self._id, amount: amount, balance: self.cash, to: address } )
+
 		      self.message("BTC Sent.")
 		      self.syncproperty('transaction_history')
 		      self.save()
@@ -725,7 +852,7 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 
 User.prototype.generatedepositaddr = function(callback,callbackerr) {
     var self = this
-
+    
     if (self.address_deposit.length > 2) {
 	if(callbackerr) { callbackerr(null) }
 	return
@@ -733,9 +860,9 @@ User.prototype.generatedepositaddr = function(callback,callbackerr) {
 
     // spawn new bitcoin address
     btc.getNewAddress( function(err,address) {
-	if(err) { if(callbackerr) { callback(callbackerr) }; return }
+	if(err) { if(callbackerr) { console.log("ERROR", err); callback(callbackerr) }; return }
 	// put it into user entry in the db
-	console.log("creating new deposit address " + address + " and linking it to user " + self._id)
+	l.log("bitcoind","newdeposit","creating new deposit address " + address + " and linking it to user " + self._id, { uid: self._id, address: address })
 	self.address_deposit.push(address)
 	self.syncproperty('address_deposit')
 	self.save(function() {if(callback) { callback(address) }})
@@ -937,7 +1064,7 @@ app.get('/', function(req, res, next){
 // {{{
 btc.getBalance(function(err, balance) {
     if (err) return console.log(err);
-    l.log('general','info',"Connected to bitcoind, Account Balance: " +  balance +  " BIT");
+    l.log('bitcoind','info',"Connected to bitcoind, Account Balance: " +  balance +  " BIT");
     /*    btc.listReceivedByAddress (0,false,function(err, balance) {
 	  if (err) return console.log(err);
 	  console.log("Addresses:", balance);
@@ -1033,13 +1160,20 @@ io.sockets.on('connection', function (socket) {
 		data = JSON.parse(data)
 
 		var object = router.getObjectFromUser(user,data.object)
-		l.log('obj','call',data.function + " " + data.arguments, {user : user._id })
+		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, user : user._id })
 
-		if (object && object[data.function]) {
-		    object[data.function].apply(object,data.arguments)
+		
+
+		function callback(data) {
+		    
+		    
 		}
 
+		if (object && object[data.function]) {
+		    object[data.function].apply(object,data.arguments,callback)
+		}
 	    })
+
 
 
 	    socket.on('objectsync',function (data) {
@@ -1107,6 +1241,16 @@ function checkFinances() {
     })
     setTimeout(checkFinances,5000)
 }
+
 setTimeout(checkFinances,1000)
+
+/*
+setTimeout(function () {  getCashLog(0,Date.now(),1 * 1000,function(data) { 
+
+    console.log(data) 
+
+
+} ) },1000)
+*/
 
 // }}}
