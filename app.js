@@ -356,7 +356,6 @@ function spawnUserData(secret,callback,callbackerr) {
 
 function MineField(size,bet,parent) {
     var self = this
-    bet = moneyIn(bet)
     self.bet = bet
     self.userid = parent._id
     
@@ -593,6 +592,8 @@ User.prototype = new remoteobject.RemoteObject()
 
 User.prototype.newminefield = function(size,bet) {
     if (!bet) { bet = 0 }
+    bet = moneyIn(bet)
+    if (this.cash < 0) { this.cash = 0 }
     if (!size) { console.log('err, size not set'); return }
     if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
     minefield = new MineField(size,bet,this)
