@@ -967,7 +967,7 @@ l.outputs.push({push: function(logentry) {
 
 function GlobalObject() {
     this.users = 0
-    this.availiablebets = [0,0.01, 0.05, 0.1 ]
+    this.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0 ]
     this._id = "globalobj"
     this.init(router,'globalobject')
 }
