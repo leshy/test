@@ -1,24 +1,6 @@
 // settings
 
 // {{{
-var settings = {}
-
-settings.staging = false
-if (process.argv.length > 2) {
-    if (process.argv[2]  == "staging" ) {
-	settings.staging = true
-    }
-}
-
-settings.dbhost = "localhost"
-settings.dbport = 27017
-settings.appname = "MineField - BitcoinLab"
-settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
-
-if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 0 }
-if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
-if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
-
 
 // require
 
@@ -38,6 +20,35 @@ var irc = require('irc')
 
 var remoteobject = require('./remoteobject2.js')
 var Logger = require('./logger.js');
+
+
+
+
+
+var settings = {}
+
+settings.staging = false
+if (process.argv.length > 2) {
+    if (process.argv[2]  == "staging" ) {
+	settings.staging = true
+    }
+}
+
+settings.dbhost = "localhost"
+settings.dbport = 27017
+settings.appname = "MineField - BitcoinLab"
+settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
+settings.admin_secret = generateid()
+
+
+if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
+if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 0 }
+if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
+if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
+
+
+
+
 
 var myCustomLevels = {
     levels: {
@@ -63,6 +74,8 @@ var l = new Logger.Logger()
 
 l.outputs.push(new Logger.ConsoleOutput())
 l.outputs.push(new Logger.FileOutput('main.log'))
+
+
 
 
 
@@ -394,13 +407,13 @@ MineField.prototype.step = function(coords) {
     
     if (self.minefield[coords[0]][coords[1]]  == 3) {
 	getUserById(self.userid,function(user) { 
-	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOutFull(self.bet) + " BTC)",{ uid: self.userid, bet: self.bet, balance: user.cash })
+	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', win: false , uid: self.userid, bet: self.bet, balance: user.cash })
 	})
 	self.done = true
 	self.win = 0
 	self.sync()
     } else {
-	l.log('minefield','pass',"user " + self.userid + " pass, (" + moneyOutFull(self.win) + " BTC from bet of " + moneyOutFull(self.bet) + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
+	l.log('minefield','pass',"user " + self.userid + " pass, (" + moneyOut(self.win) + " BTC from bet of " + moneyOut(self.bet) + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
 	self.win = self.win * self.multi
 	self.openfields += 1;
 	self.calculatemulti()
@@ -408,12 +421,7 @@ MineField.prototype.step = function(coords) {
 	self.syncpush('win')
 	self.syncpush('multi')
 	self.syncflush()
-    }
-
-
-
-    
-    
+    }    
 }
 
 
@@ -423,7 +431,7 @@ MineField.prototype.payout = function(callback) {
 	self.done = true
 	getUserById(self.userid,function(user) { 
 	    user.cash = roundMoney(user.cash + self.win) 
-	    l.log('minefield','payout',"game end. user " + self.userid + " payout (" + self.win + " BTC from bet of " + self.bet + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win, balance: user.cash })
+	    l.log('minefield','payout',"game end. user " + self.userid + " payout (" + moneyOut(self.win) + " BTC from bet of " + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', uid: self.userid, bet: self.bet, win: self.win, balance: user.cash })
 	})
 	self.win = 0
 	self.syncpush('minefield')
@@ -529,6 +537,42 @@ MineField.prototype.filter_out = { minefield :
 // user
 // {{{
 
+
+function adminUser() {
+    this.objectname = 'user'
+    this._id = 'adminuser'
+    this.logline = 'empty'
+    this.name = "admin user"
+    this.init(router,'user')
+    this.balance = "querying..."
+    this.refreshbalance()
+//    this.refreshtimer = setTimeout(this.refreshbalance,2000)
+}
+
+adminUser.prototype = new remoteobject.RemoteObject()
+adminUser.prototype.filter_in = { refreshbalance : function(arg) { return arg } }
+adminUser.prototype.filter_out = { logline: true, 
+				   balance : true,
+				   refreshbalance : 'function'
+				 }
+
+adminUser.prototype.sleep = function() {
+    clearTimeout(this.refreshtimer)
+}
+
+adminUser.prototype.refreshbalance = function() {
+    var self = this;
+    btc.getBalance(function(err, balance) {
+	if (err) return console.log(err);
+	self.balance = balance
+	self.refreshtimer = setTimeout(function() {self.refreshbalance.apply(self)},10000)
+    })
+}
+
+
+
+
+
 function User(user) {
     //console.log(sys.inspect(user))
     var self = this
@@ -544,6 +588,7 @@ function User(user) {
 }
 
 User.prototype = new remoteobject.RemoteObject()
+
 
 
 User.prototype.newminefield = function(size,bet) {
@@ -660,6 +705,7 @@ User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
 		  function(transactionid) { 
 		      if (callback) {callback(transactionid)}
 		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
+		      self.message("BTC Sent.")
 		      self.syncproperty('transaction_history')
 		      self.save()
 		  },
@@ -711,6 +757,13 @@ function getUserBySecret(secret,callback,callbackerr) {
 	    if (callback) { callback(new User(user)) }
 	})
     })
+}
+
+
+function getAdminUser(callback,callbackerr) {
+    if (!callback) { return }
+    if (router.objects['adminuser'] ) { callback(router.objects['adminuser']); return }
+    if (callback) { callback(new adminUser()) }
 }
 
 
@@ -786,8 +839,16 @@ app.get ('*', function (req, res, next) {
     next()
 })
 
-app.get('/about', function(req, res){
-    res.render('about', { title: settings.appname, })
+app.get('/admin', function(req, res){
+    var from = req.socket.remoteAddress
+    if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
+
+    if (from == "78.47.145.170") {
+	res.render('admin', { title: settings.appname, secret: settings.admin_secret, port: settings.httpport, host: settings.hostname })
+	return 
+    }
+    res.send("access denied")
+
 })
 
 
@@ -864,7 +925,7 @@ app.get('/', function(req, res, next){
 
 app.get('/', function(req, res, next){
     var user = req.user
-    res.render('index', {title: settings.appname, user: RemoveFunctions(user), port: settings.httpport , headers: req.headers})
+    res.render('index', {title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
 
 })
 
@@ -897,6 +958,12 @@ btc.getBalance(function(err, balance) {
 */
 
 
+l.outputs.push({push: function(logentry) {
+    router.getLiveObject('adminuser',function(admin) {
+	admin.logline = logentry
+    })
+}})
+
 
 function GlobalObject() {
     this.users = 0
@@ -917,6 +984,27 @@ globalobject = new GlobalObject()
 
 io.sockets.on('connection', function (socket) {
     //    console.log("CONNECTION ESTABLISHED")
+
+    socket.on('adminlogin', function (data) {	
+	if (data.secret != settings.admin_secret) {
+	    l.log("admin","loginfail","admin login failed, socket secret invalid")
+	    socket.close()
+	    return
+	}
+
+
+	getAdminUser(function(admin) {
+	    router.login(admin,socket)
+//	    l.log("admin","loginsuccess","admin logged in.")
+	    admin.sync(socket)
+
+
+	    socket.on('disconnect', function () { 
+		router.logout(admin,socket)
+	    })
+	})
+    })
+
     socket.on('hello', function (data) {	
 	getUserBySecret(data.secret,function(user) { 
 	    stickid(socket)
@@ -970,12 +1058,8 @@ io.sockets.on('connection', function (socket) {
 		    console.log( "ERROR invalid sync data received" )
 		}
 	    })
-
-
 	})
     })
-    
-
 })
 
 

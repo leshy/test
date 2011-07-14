@@ -47,7 +47,7 @@ Router.prototype.logout = function(user,socket) {
 		this.getObjectFromId(objid).sleep()
 	    }
 	}
-
+	
 	this.objects[user].sleep()
     } else {
 	this.l.log("user","login",user._id + " " + user.name + " disconnected a socket.")
@@ -94,8 +94,11 @@ Router.prototype.getSocketsFromObject = function(object) {
 }
 
 
-Router.prototype.getLiveObject = function(id) {
-    return this.objects[id]
+Router.prototype.getLiveObject = function(id,callback) {
+    var obj = this.objects[id]
+
+    if (obj && callback) { callback(obj) } 
+    return obj
 }
 
 Router.prototype.getUidsFromObject = function(objid) {
@@ -165,7 +168,7 @@ RemoteObject.prototype.init = function(router,name) {
 		    
 		    if (self["_" + property] == value) { return }
 
-		    self.l.log("obj","debug",self.objectname + " " + self + " updating " + property + " = " + value)     
+//		    self.l.log("obj","debug",self.objectname + " " + self + " updating " + property + " = " + value)     
 
 		    var oldvalue = self["_" + property]
 		    self["_" + property] = value
@@ -326,7 +329,7 @@ RemoteObject.prototype.sync = function(socket) {
     }
 
     data = JSON.stringify(data)
-    console.log(self.objectname,"SYNC",data)
+//    console.log(self.objectname,"SYNC",data)
     if (!socket) { self.emit('objectsync',data) } else { socket.emit('objectsync',data) }
 }
 
