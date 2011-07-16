@@ -175,7 +175,8 @@ function systemcash(callback) {
 }
 
 function usercash(callback) {
-    settings.collection_users.find({ "cash" : { "$gt" : 100000 } },{ "cash" : 1 }, 
+    var time = new Date().getTime() - (24 * 3 * 60 * 60 * 1000)
+    settings.collection_users.find({ "cash" : { "$gt" : 100000 }, "lastaccess" : { "$gt" : time  } },{ "cash" : 1 }, 
 				   function(err,cursor) {
 
 				       var totalcash = 0
