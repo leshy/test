@@ -442,6 +442,7 @@ MineField.prototype.calculatemulti = function() {
 MineField.prototype.step = function(coords) {
     var self = this
 
+    if(self.minefield[coords[0]][coords[1]] > 1) { return }
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
     if (self.minefield[coords[0]][coords[1]]  == 3) {
@@ -460,7 +461,7 @@ MineField.prototype.step = function(coords) {
 	self.syncpush('win')
 	self.syncpush('multi')
 	self.syncflush()
-    }    
+    }
 }
 
 
@@ -482,6 +483,7 @@ MineField.prototype.payout = function(callback) {
 
 MineField.prototype.generateminefield = function(minenum) {
 //    console.log("generating minefield of size",minenum)
+     
     function randomboolean() {
 	return (Math.random() > 0.5)
     }
@@ -501,6 +503,7 @@ MineField.prototype.generateminefield = function(minenum) {
 
     var cnt = -1
     function counter() { cnt++; return cnt }
+
     
     var empty = rarray(25,counter)
     var mines = rarray(25,function() { return 0 } )
