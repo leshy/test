@@ -167,6 +167,42 @@ function stickid(object) {
 socketio.Socket.prototype.toString = function() { return this._id }
 
 
+function systemcash(callback) {
+    btc.getBalance(function(err, balance) {
+	if (err) return console.log(err);
+	callback(balance)
+    })
+}
+
+function usercash(callback) {
+    settings.collection_users.find({ "cash" : { "$gt" : 100000 } },{ "cash" : 1 }, 
+				   function(err,cursor) {
+
+				       var totalcash = 0
+				       
+				       cursor.each(
+					   function(err, item) {
+					       if(err != null) { callback(totalcash) }
+					       if (item != null) {
+						   totalcash += parseInt(item.cash)
+					       } else {
+						   callback(totalcash);
+					       }
+					   })
+					   }
+				  )
+}
+
+function log_cash_snapshot() {
+    usercash(function(usercash) {
+	systemcash(function(systemcash) {
+	    l.log("snapshot","cash","users cash is " + moneyOut(usercash) + " BTC and system cash is " + systemcash + " BTC",{usercash: usercash, systemcash: moneyIn(systemcash) })
+	})
+    })
+    setTimeout(log_cash_snapshot, 600000)
+}
+
+
 function equal(object1, object2) {
     if (!object2) { return false }
 
@@ -1159,7 +1195,6 @@ io.sockets.on('connection', function (socket) {
 		var object = router.getObjectFromUser(user,data.object)
 		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, uid : user._id })
 
-		
 
 		function callback(data) {
 		    
@@ -1240,12 +1275,9 @@ function checkFinances() {
 }
 
 setTimeout(checkFinances,1000)
-
-setTimeout(function () {  getCashLog(0,Date.now(),1 * 1000,function(data) { 
-
-    console.log(data) 
+setTimeout(log_cash_snapshot,2000)
 
 
-} ) },1000)
+
 
 // }}}

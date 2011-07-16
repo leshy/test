@@ -184,7 +184,7 @@ $(document).ready(function() {
     router.subscribe("user","balance",function(value) {
 	value = parseFloat(value)
 
-	  value = value - 4
+	//value = value - 4
 	$("#btcbalance").html("<span class='minefieldcash'>" + (Math.round(value * 1000) / 1000) + "</span> BTC")
 	
 	var btctousd = 14
@@ -386,8 +386,8 @@ $(document).ready(function() {
 
 <div class='subtab'> 
 <center>
-    <h3>Current State</h3>
-<!--    <img width="150px" src="/img/moneyz.png"> -->
+    <h3>Current State dd</h3>
+    <img width="125px" src="/img/moneyz.png">
     <h3><span id="btcbalance"></span></h3>
     <h5><span id="othevalutes"></span></h5>
 </center>
