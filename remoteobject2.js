@@ -24,7 +24,7 @@ function Router(log) {
 }
 
 Router.prototype.login = function(user,socket) { 
-    if (!this.usersocket[user]) { this.usersocket[user] = {}; this.l.log("user","login",user._id + " " + user.name + " logged in") } else { this.l.log("user","login",user._id + " " + user.name + " connected a socket.")}
+    if (!this.usersocket[user]) { this.usersocket[user] = {}; this.l.log("user","login",user._id + " " + user.name + " logged in." ) } else { this.l.log("user","login",user._id + " " + user.name + " connected a socket."), { uid: user._id }}
     this.usersocket[user][socket] = true
     this.secretuser[user.secret] = user
     this.socketuser[socket] = user.toString()
@@ -118,8 +118,13 @@ Router.prototype.getObjectFromUser = function(user,objectname) {
     return undefined
 }
 
+
+Router.prototype.getUserFromSocket = function(socket) {
+    return router.socketuser[socket]
+}
+
 Router.prototype.getObjectFromSocket = function(socket,objectname) {   
-    return this.getObjectFromUser(this.socketuser[socket],objectname) 
+    return this.getObjectFromUser(this.getUserFromSocket(socket),objectname) 
 }
 
 Router.prototype.getObjectFromId = function(objectid) { 
@@ -226,6 +231,7 @@ RemoteObject.prototype.sockets = function() {
 
 RemoteObject.prototype.emit = function(tag,values) {
     var sockets = this.sockets()
+//    console.log('emmiting',tag,values)
     sockets.forEach(function(socket) { socket.emit(tag,values) })
 }
 
