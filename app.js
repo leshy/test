@@ -52,7 +52,6 @@ if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname =
 
 
 
-settings.statsextractors = []
 
 
 
@@ -619,14 +618,11 @@ adminUser.prototype.refreshbalance = function() {
 
 
 adminUser.prototype.getlogstats = function(callback,resolution,timefrom,timeto) {
-    
     settings.collection_stats.find({ time : {$gt : timefrom, $lt : timeto}, res: resolution },function(err,cursor) {
 	cursor.toArray(function(err,data) {
 	    callback(data)
 	})
     })
-
-
 }
 
 function LogRange(from,to,callback) {
@@ -1314,6 +1310,21 @@ l.log('general','info',"Express server listening on port " + app.address().port)
 
 
 
+settings.statsextractors = []
+
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "snapshot") && (item.loglevel == "cash")) {
+	return { '$set' : { systemcash: parseInt(item.payload.systemcash) } }
+    }
+})
+
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "snapshot") && (item.loglevel == "cash")) {
+	return { '$set' : { usercash: item.payload.usercash } }
+    }
+})
 
 settings.statsextractors.push( function(item) {
     if ((item.area == "user") && (item.loglevel == "login")) {
@@ -1321,13 +1332,11 @@ settings.statsextractors.push( function(item) {
     }
 })
 
-
 settings.statsextractors.push( function(item) {
     if ((item.area == "http") && (item.loglevel == "request")) {
 	return { '$inc' : { httpreq: 1}}
     }
 })
-
 
 settings.statsextractors.push( function(item) {
     if ((item.area == "minefield") && (item.loglevel == "loss")) {
@@ -1361,6 +1370,7 @@ settings.statsextractors.push( function(item) {
 	return { '$inc' : { pay_out : item.payload.amount } }
     }
 })
+
 
 /*
 settings.statsextractors.push( function(item) {
@@ -1409,7 +1419,7 @@ function checkFinances() {
 
 setTimeout(checkFinances,1000)
 
-/*
+
 setTimeout(function() {
     settings.collection_log.find({},function(err,cursor) {
 	cursor.each(function(err, item) {
@@ -1426,9 +1436,9 @@ setTimeout(function() {
 	    })
 
 },2000)
-*/
-
 setTimeout(log_cash_snapshot,2000)
+
+
 
 /*
 setTimeout(
