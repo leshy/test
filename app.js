@@ -200,7 +200,7 @@ function log_cash_snapshot() {
 	    l.log("snapshot","cash","users cash is " + moneyOut(usercash) + " BTC and system cash is " + systemcash + " BTC",{usercash: usercash, systemcash: moneyIn(systemcash) })
 	})
     })
-    setTimeout(log_cash_snapshot, 600000)
+    setTimeout(log_cash_snapshot, (60 * 7.5 * 1000))
 }
 
 
