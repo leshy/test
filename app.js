@@ -52,10 +52,6 @@ if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname =
 
 
 
-
-
-
-
 var myCustomLevels = {
     levels: {
 	debug: 0,
@@ -1421,7 +1417,27 @@ function checkFinances() {
     setTimeout(checkFinances,5000)
 }
 
-setTimeout(checkFinances,1000)
+
+function addtransaction(transaction) {
+    
+}
+
+function checktransactions() {
+    btc.listTransactions(function(err,transactions) {
+	console.log(transactions)
+	transactions.reverse()
+
+	transactions.forEach( function(transaction) {
+	    if (transaction.category == 'receive') {		
+		addtransaction(transaction)
+	    }
+	})
+
+    })
+}
+
+
+setTimeout(checktransactions,1000)
 /*
 
 setTimeout(function() {
