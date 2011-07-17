@@ -399,11 +399,11 @@ $(document).ready(function() {
 		.attr("r", 3)
 		.on('mouseover', function(d) { 
 		    d3.select(this).transition().attr('r', 8) 
-		    $.cursorMessage(Math.round(d[field1] / 1000000) / 100)
+		    $.cursorMessage(field1 + ": " + Math.round(d[field1] / 1000000) / 100)
 		})
 		.on('mouseout',  function() { 
 		    d3.select(this).transition().attr('r', 3) 
-		    $.hideCursorMessage
+		    $.hideCursorMessage()
 		})
 
 	    chart.selectAll('user_cash')
@@ -430,11 +430,11 @@ $(document).ready(function() {
 		.attr("r", 3)
 		.on('mouseover', function(d) { 
 		    d3.select(this).transition().attr('r', 8) 
-		    $.cursorMessage(Math.round(d[field2] / 1000000) / 100)
+		    $.cursorMessage(field2 + ": " + Math.round(d[field2] / 1000000) / 100)
 		})
 		.on('mouseout',  function() { 
 		    d3.select(this).transition().attr('r', 3) 
-		    $.hideCursorMessage
+		    $.hideCursorMessage()
 		})
 
 
@@ -476,7 +476,7 @@ $(document).ready(function() {
 		.attr("height", function(d) { return y(d[field]); })
 		.on("mouseover", 
 		    function(d) {
-			$.cursorMessage(parseInt(d[field]))
+			$.cursorMessage(field + ": " + parseInt(d[field]))
 			d3.select(this).transition()
 			    .attr('fill', 'red') 
 			    .attr("x", function(d, i) { return x(d.time) - ((graphwidth / data.length) / 2) })
@@ -485,7 +485,7 @@ $(document).ready(function() {
 
 		    })
 		.on("mouseout", function() { 
-		    $.hideCursorMessage
+		    $.hideCursorMessage()
 			d3.select(this).transition()
 			.attr('fill', 'steelblue')
 			.attr("x", function(d, i) { return x(d.time)})
@@ -539,11 +539,11 @@ $(document).ready(function() {
 		.attr("r", 3)
 		.on('mouseover', function(d) { 
 		    d3.select(this).transition().attr('r', 8) 
-		    $.cursorMessage(d[field_line1])
+		    $.cursorMessage(field_line1 + ": " + d[field_line1])
 		})
 		.on('mouseout',  function() { 
 		    d3.select(this).transition().attr('r', 3) 
-		    $.hideCursorMessage
+		    $.hideCursorMessage()
 		})
 
 
@@ -557,7 +557,7 @@ $(document).ready(function() {
 
 		.attr("r", 3)
 		.on('mouseover', function(d) { 
-		    $.cursorMessage(d[field_line2])
+		    $.cursorMessage(field_line2 + ": " + d[field_line2])
 		    d3.select(this).transition()
 			.attr('r', 8) 
 			.attr("x", function(d, i) { return x(d.time)})
@@ -566,7 +566,7 @@ $(document).ready(function() {
 		})
 		.on('mouseout',  function() { 
 		    d3.select(this).transition().attr('r', 3)
-		    $.hideCursorMessage
+		    $.hideCursorMessage()
 		})
 
 
