@@ -1418,7 +1418,7 @@ function checkFinances() {
 }
 
 setTimeout(checkFinances,1000)
-
+/*
 
 setTimeout(function() {
     settings.collection_log.find({},function(err,cursor) {
@@ -1436,6 +1436,9 @@ setTimeout(function() {
 	    })
 
 },2000)
+
+*/
+
 setTimeout(log_cash_snapshot,2000)
 
 
