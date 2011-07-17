@@ -405,6 +405,8 @@ function MineField(size,bet,parent) {
     self.bet = bet
     self.userid = parent._id
     
+    if (!size) { size =  10 }
+
     self.size = size
     self.win = bet
 
@@ -448,7 +450,9 @@ MineField.prototype.calculatemulti = function() {
 MineField.prototype.step = function(callback,coords) {
     var self = this
 
-    if(self.minefield[coords[0]][coords[1]] > 1) { return }
+    console.log(sys.inspect(self.minefield))
+    if(self.minefield[coords[0]][coords[1]] > 2) { return }
+
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
     if (self.minefield[coords[0]][coords[1]]  == 3) {
@@ -487,9 +491,9 @@ MineField.prototype.payout = function(callback) {
 }
 
 
-MineField.prototype.generateminefield = function(callback,minenum) {
-//    console.log("generating minefield of size",minenum)
-     
+MineField.prototype.generateminefield = function(minenum) {
+//    console.log("generating minefield of size",minenum,callback)
+    if (!minenum) { minenum = 10 }
     function randomboolean() {
 	return (Math.random() > 0.5)
     }
