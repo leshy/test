@@ -1,6 +1,9 @@
 
     <link rel='stylesheet' href='/css/adminstyle.css' />
+    <link rel='stylesheet' href='/css/jquery.cursorMessage.css' />
     <script type='text/javascript' src='/js/d3/d3.js'></script>
+    <script type='text/javascript' src='/js/jquery.cursorMessage.js'></script>
+
     <script type="text/javascript">
 
 $(document).ready(function() { 
@@ -394,11 +397,14 @@ $(document).ready(function() {
 		.attr("cy", function(d) {  val = line1y(d[field1])
 					   if (!val) { return h/2 } else {return val}})
 		.attr("r", 3)
-		.on('mouseover', function() { d3.select(this).transition().attr('r', 8) })
-		.on('mouseout',  function() { d3.select(this).transition().attr('r', 3) })
-		.on('click', function(d, i)  { console.log (d, d[field1]  / 10e7)})
-
-
+		.on('mouseover', function(d) { 
+		    d3.select(this).transition().attr('r', 8) 
+		    $.cursorMessage(Math.round(d[field1] / 1000000) / 100)
+		})
+		.on('mouseout',  function() { 
+		    d3.select(this).transition().attr('r', 3) 
+		    $.hideCursorMessage
+		})
 
 	    chart.selectAll('user_cash')
 		.data([data])
@@ -422,9 +428,14 @@ $(document).ready(function() {
 		.attr("cy", function(d) {  val = line2y(d[field2])
 					   if (!val) { return h/2 } else {return val}})
 		.attr("r", 3)
-		.on('mouseover', function() { d3.select(this).transition().attr('r', 8) })
-		.on('mouseout',  function() { d3.select(this).transition().attr('r', 3) })
-		.on('click', function(d, i)  { console.log (d, d[field2]  / 10e7)})
+		.on('mouseover', function(d) { 
+		    d3.select(this).transition().attr('r', 8) 
+		    $.cursorMessage(Math.round(d[field2] / 1000000) / 100)
+		})
+		.on('mouseout',  function() { 
+		    d3.select(this).transition().attr('r', 3) 
+		    $.hideCursorMessage
+		})
 
 
 	    addlegend(chart,true)
@@ -463,8 +474,23 @@ $(document).ready(function() {
 		.attr("y", function(d) { return h - y(d[field]) })
 		.attr("width", (graphwidth / data.length) - 1)
 		.attr("height", function(d) { return y(d[field]); })
-		.on("mouseover", fade(true))
-		.on("mouseout", fade(false));
+		.on("mouseover", 
+		    function(d) {
+			$.cursorMessage(parseInt(d[field]))
+			d3.select(this).transition()
+			    .attr('fill', 'red') 
+			    .attr("x", function(d, i) { return x(d.time) - ((graphwidth / data.length) / 2) })
+			    .attr("width",(graphwidth / data.length) * 2)
+
+
+		    })
+		.on("mouseout", function() { 
+		    $.hideCursorMessage
+			d3.select(this).transition()
+			.attr('fill', 'steelblue')
+			.attr("x", function(d, i) { return x(d.time)})
+			.attr("width",(graphwidth / data.length))
+		})
 
 
 	    var playmax = d3.max(data,function(data) { return data[field_line1]} )
@@ -511,9 +537,14 @@ $(document).ready(function() {
 		.attr("cy", function(d) {  val = line1y(d[field_line1])
 					   if (!val) { return h/2 } else {return val}})
 		.attr("r", 3)
-		.on('mouseover', function() { d3.select(this).transition().attr('r', 8) })
-		.on('mouseout',  function() { d3.select(this).transition().attr('r', 3) })
-		.on('click', function(d, i)  { console.log (d, d[field_line1]  / 10e7)})
+		.on('mouseover', function(d) { 
+		    d3.select(this).transition().attr('r', 8) 
+		    $.cursorMessage(d[field_line1])
+		})
+		.on('mouseout',  function() { 
+		    d3.select(this).transition().attr('r', 3) 
+		    $.hideCursorMessage
+		})
 
 
 	    chart.selectAll('point2')
@@ -525,46 +556,25 @@ $(document).ready(function() {
 					    if (!val) { return h/2 } else {return val}}))
 
 		.attr("r", 3)
-		.on('mouseover', function() { d3.select(this).transition().attr('r', 8) })
-		.on('mouseout',  function() { d3.select(this).transition().attr('r', 3) })
-		.on('click', function(d, i)  { console.log (d, d[field_line2] / 10e7)})
+		.on('mouseover', function(d) { 
+		    $.cursorMessage(d[field_line2])
+		    d3.select(this).transition()
+			.attr('r', 8) 
+			.attr("x", function(d, i) { return x(d.time)})
+			.attr("width",(graphwidth / data.length))
 
-
+		})
+		.on('mouseout',  function() { 
+		    d3.select(this).transition().attr('r', 3)
+		    $.hideCursorMessage
+		})
 
 
 	    addlegend(chart)
 
 
 
-
-
-	    function fade(b) {
-		return function(g, i) {
-		    console.log(g.httpreq)
-		    var selected = chart.selectAll("rect")
-			.filter(function(d) {
-			    return g._id == d._id
-			})
-
-		    if (b) {
-			selected.transition()
-			    .style("fill", "red")
-			    .attr("x", function(d, i) { return x(d.time) - ((graphwidth / data.length) / 2) })
-			    .attr("width",(graphwidth / data.length) * 2)
-		    } else {
-			selected.transition()
-			    .style("fill", "steelblue")
-			    .attr("x", function(d, i) { return x(d.time)})
-			    .attr("width",(graphwidth / data.length))
-		    }
-
-		}
-	    }
-
-
 	}
-
-
 
 
 
