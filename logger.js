@@ -5,6 +5,12 @@ function Logger() {
     this.outputs = []
 }
 
+function merge(dfrom,dto) {
+    for (var k in dfrom) { 
+	dto[k] = dfrom[k]
+    }
+}
+
 Logger.prototype.buildlogentry = function(array) {
     var ret = {}
     array.reverse()
@@ -153,6 +159,97 @@ FileOutput.prototype.push = function(logentry) {
 }
 
 
+function MongoStats(collection,dataextractors,minres,maxres) {
+    this.collection = collection
+    this.dataextractors = dataextractors
+    
+    this.res = []
+
+    var res = minres
+    console.log (res,maxres)
+    while (res <= maxres) {
+	this.res.push(res)
+	res *= 2
+	console.log("res: ",res)
+    }
+}
+
+MongoStats.prototype.addextractor = function(dataextractor) { 
+    this.dataextractors.push ( dataextractor )
+}
+
+
+MongoStats.prototype.push = function(logentry) {
+    var self = this
+    var data = { "$inc": {} , "$set" : {} }
+    var dirty = false
+    this.dataextractors.forEach(function(extractor) {
+	var res = extractor(logentry)
+	if (res) {
+
+	    if (res["$inc"]) {
+		dirty = true
+		merge(res["$inc"],data["$inc"])
+	    }
+	    
+	    if (res["$set"]) {
+		dirty = true
+		merge(res["$set"],data["$set"])
+	    }
+	}
+    })
+
+    if (dirty) { 
+	console.log(new Date(logentry.time),data)
+	this.res.forEach( function(res) {
+	    self.pushbucket(self.getbucketname(logentry.time,res),data)
+	})
+    }
+}
+
+//item._id.generationTime
+
+MongoStats.prototype.getbucketname = function(time,res) {
+    return { res : res, time: new Date(time - (time % res)).getTime() }
+}
+
+MongoStats.prototype.pushbucket = function(bucketname,data) {
+    var self = this
+    
+    var output = {}
+
+//    console.log("pushing to bucket",bucketname,data)
+
+    self.collection.update(bucketname, data,{ upsert : true } )
+
+
+/*
+    self.collection.findOne(bucketname,function(err,_entry) { 
+	if (!_entry) { var entry = {} } else { var entry = _entry }
+	
+	for (var key in data) {
+	    if (entry[key]) { 
+		entry[key] += data[key]
+	    } else {
+		entry[key] = data[key]
+	    }
+	}
+
+	if (!_entry) {
+	    entry.res = bucketname.res
+	    entry.time = bucketname.time
+	    self.collection.insert(entry)
+	} else {
+	    self.collection.update(entry)
+	}
+    })
+*/
+
+}
+
+
+
+
 function MongoOutput(collection) {
     this.collection = collection
 }
@@ -166,5 +263,6 @@ module.exports.Logger = Logger
 module.exports.ConsoleOutput = ConsoleOutput
 module.exports.FileOutput = FileOutput
 module.exports.MongoOutput = MongoOutput
+module.exports.MongoStats = MongoStats
 
 

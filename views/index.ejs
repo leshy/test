@@ -196,7 +196,7 @@ $(document).ready(function() {
     $("#user_withdrawal_amount").bind('edited',function(e,node,data) {
 	var amount = parseFloat(data)
 	if (!amount) {
-	    message( "invalid amount")
+	    message( "invalid amount<br>edit the [ ammount ] field")
 	    return
 	}
     })

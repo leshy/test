@@ -52,6 +52,9 @@ if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname =
 
 
 
+settings.statsextractors = []
+
+
 
 
 var myCustomLevels = {
@@ -78,10 +81,6 @@ var l = new Logger.Logger()
 
 l.outputs.push(new Logger.ConsoleOutput())
 l.outputs.push(new Logger.FileOutput('main.log'))
-
-
-
-
 
 l.log('general','info','starting...');
 if (settings.staging) { l.log('general','important','STAGING INSTANCE') }
@@ -133,14 +132,21 @@ db.open( function (err) {
 	l.log('general','info',"mongo - Addresses collection open")
 	settings.collection_addresses = collection
     })
+
     db.collection("log", function (err,collection) {
 	l.log('general','info',"mongo - Log collection open")
 	settings.collection_log = collection
-	l.outputs.push(new Logger.MongoOutput(collection))
-	
+	l.outputs.push(new Logger.MongoOutput(collection))	
     })
 
 
+    db.collection("logstats", function (err,collection) {
+	l.log('general','info',"mongo - Stats collection open")
+	settings.collection_stats = collection
+	var mongostats = new Logger.MongoStats(collection, settings.statsextractors, 7.5 * 60 * 1000, 60 * 60 * 24 * 1000 )
+	settings.mongostats = mongostats
+	l.outputs.push(mongostats)
+    })
 })
 
 var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
@@ -200,7 +206,7 @@ function log_cash_snapshot() {
 	    l.log("snapshot","cash","users cash is " + moneyOut(usercash) + " BTC and system cash is " + systemcash + " BTC",{usercash: usercash, systemcash: moneyIn(systemcash) })
 	})
     })
-    setTimeout(log_cash_snapshot, 600000)
+    setTimeout(log_cash_snapshot, 60 * 7.5 * 1000)
 }
 
 
@@ -440,7 +446,7 @@ MineField.prototype.calculatemulti = function() {
 
 
 
-MineField.prototype.step = function(coords) {
+MineField.prototype.step = function(callback,coords) {
     var self = this
 
     if(self.minefield[coords[0]][coords[1]] > 1) { return }
@@ -482,7 +488,7 @@ MineField.prototype.payout = function(callback) {
 }
 
 
-MineField.prototype.generateminefield = function(minenum) {
+MineField.prototype.generateminefield = function(callback,minenum) {
 //    console.log("generating minefield of size",minenum)
      
     function randomboolean() {
@@ -594,7 +600,8 @@ adminUser.prototype = new remoteobject.RemoteObject()
 adminUser.prototype.filter_in = { refreshbalance : function(arg) { return arg } }
 adminUser.prototype.filter_out = { logline: true, 
 				   balance : true,
-				   refreshbalance : 'function'
+				   refreshbalance : 'function',
+				   getlogstats: 'function'
 				 }
 
 adminUser.prototype.sleep = function() {
@@ -610,6 +617,17 @@ adminUser.prototype.refreshbalance = function() {
     })
 }
 
+
+adminUser.prototype.getlogstats = function(callback,resolution,timefrom,timeto) {
+    
+    settings.collection_stats.find({ time : {$gt : timefrom, $lt : timeto}, res: resolution },function(err,cursor) {
+	cursor.toArray(function(err,data) {
+	    callback(data)
+	})
+    })
+
+
+}
 
 function LogRange(from,to,callback) {
 
@@ -639,7 +657,7 @@ function LogRange(from,to,callback) {
 	var index3Bytes = BinaryParser.encodeInt(0, 24, false, true);
 	return new BSON.ObjectID(tohexstring(time4Bytes + machine3Bytes + pid2Bytes + index3Bytes))
     }
-    console.log({$gt : IdAtTime(from)}, {$lt : IdAtTime(to)})
+
 //    settings.collection_log.find({_id : [ {$gt : IdAtTime(from)}, {$lt : IdAtTime(to)} ] }, function(err,cursor) { if (!err) { callback(cursor) } else { console.log(err) } })
 
     settings.collection_log.find({}, function(err,cursor) { if (!err) { callback(cursor) } else { console.log(err) } })
@@ -650,43 +668,56 @@ function LogRange(from,to,callback) {
 function getCashLog(from,to,slicesize,callback) {
     LogRange(from,to,function(cursor) {
 	data = {}
-
+	
 	function itembucket(item) {
 	    var itemtime = item._id.generationTime
 	    var itembucket = itemtime - (itemtime % slicesize)
 	    var itembucket = new Date(itembucket)
 	    if (!data[itembucket]) { 
-		data[itembucket] = { payments : 0, get : 0, win : 0, loss : 0, plays : 0 }
+		data[itembucket] = { pay_in : 0, pay_out: 0, httprequests : 0, cashplays : 0, nocashplays: 0 , win : 0, loss : 0, plays : 0 }
 	    }
 	    return data[itembucket]
 	}
-
+	
 	cursor.each(function(err, item) {
 	    if(err != null) { console.log("ERR",err); callback(data); return }
 	    if (item != null) {
 
-
-
-		if ((item.area == "minefield") && (item.loglevel == "loss") && (item.payload.bet != 0)) {
-		    if (item.payload.bet > 100) { item.payload.bet = moneyOut(item.payload.bet) }
+		if ((item.area == "http") && (item.loglevel == "request")) {
 		    bucket = itembucket(item)
-		    bucket.loss = bucket.loss + item.payload.bet 
+		    bucket.httprequests += 1
 		}
 
-		if ((item.area == "minefield") && (item.loglevel == "payout") && (item.payload.win != 0)) {
-		    if (item.payload.win > 100) { item.payload.win = moneyOut(item.payload.win) }
+		if ((item.area == "minefield") && (item.loglevel == "loss")) {
 		    bucket = itembucket(item)
-		    bucket.win = bucket.win + moneyOutFull((item.payload.bet - item.payload.win))
+		    if (item.payload.bet != 0) {
+			bucket.loss = bucket.loss + item.payload.bet
+			bucket.cashplays += 1;
+		    } else {
+			bucket.nocashplays += 1;
+		    }
 		}
 
-//		if ((item.area == "payment") && (item.loglevel == "info") && (item.payload.win != 0)) {
-
-
-		if ((item.area == "minefield") && (item.loglevel == "payout") && (item.payload.win != 0)) {
-		    if (item.payload.win > 100) { item.payload.win = moneyOut(item.payload.win) }
+		if ((item.area == "minefield") && (item.loglevel == "payout")) {
 		    bucket = itembucket(item)
-		    bucket.win = bucket.win + item.payload.win
+		    if (item.payload.win > 0) {
+			bucket.cashplays += 1;		    
+			bucket.win = bucket.win + item.payload.win - item.payload.bet
+		    } else {
+			bucket.nocashplays += 1
+		    }
 		}
+
+		if ((item.area == "payment") && (item.loglevel == "received")) {
+		    bucket = itembucket(item) 
+		    bucket.pay_in = bucket.pay_in + item.payload.amount
+		}
+
+		if ((item.area == "payment") && (item.loglevel == "sent")) {
+		    bucket = itembucket(item) 
+		    bucket.pay_out = bucket.pay_out + item.payload.amount
+		}
+
 
 
 
@@ -751,7 +782,7 @@ User.prototype = new remoteobject.RemoteObject()
 
 
 
-User.prototype.newminefield = function(size,bet) {
+User.prototype.newminefield = function(callback,size,bet) {
     if (!bet) { bet = 0 }
     bet = moneyIn(bet)
     if (!size) { console.log('err, size not set'); return }
@@ -853,7 +884,7 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     //console.log(self)
 }
 
-User.prototype.sendMoney = function(address,amount,callback,callbackerr) {
+User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     self = this
 //    l.log("payment","attempt",amount + " and user has ",self.cash,"userid",self._id)
     amount = moneyIn(amount)
@@ -991,8 +1022,10 @@ app.get ('*', function (req, res, next) {
     ignore['/img/grass.png'] = true
     ignore['/img/grass_selected.png'] = true
     ignore['/img/arrow.png'] = true
-
-
+    ignore['/js/d3/d3.js'] = true
+    ignore['/css/adminstyle.css'] = true
+    ignore['/img/moneyz.png'] = true
+    
     if (ignore[req.url]) { next(); return }
 
     var from = req.socket.remoteAddress
@@ -1160,13 +1193,38 @@ io.sockets.on('connection', function (socket) {
 
 	getAdminUser(function(admin) {
 	    router.login(admin,socket)
-//	    l.log("admin","loginsuccess","admin logged in.")
+	    l.log("admin","loginsuccess","admin logged in.")
 	    admin.sync(socket)
 
 
-	    socket.on('disconnect', function () { 
-		router.logout(admin,socket)
+
+
+
+	    socket.on('call',function (data) {
+		data = JSON.parse(data)
+
+		var object = router.getObjectFromUser(admin,data.object)
+		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, uid : admin._id })
+
+
+		function callback(response) {
+		    if (data.answerid) {
+			admin.emit('answer',{ answerid: data.answerid, data: JSON.stringify(response) })
+		    }
+		}
+
+		data.arguments.unshift(callback)
+
+		if (object && object[data.function]) {
+		    object[data.function].apply(object,data.arguments)
+		}
 	    })
+
+
+
+
+
+
 	})
     })
 
@@ -1183,7 +1241,6 @@ io.sockets.on('connection', function (socket) {
 	    //	    setTimeout(function() { console.log("message!"); user.message('test message') },2000)
 	    //	    setTimeout(function() { console.log("dolur!"); console.log(user); user.cash = 10 },2300)
 	    //	    setTimeout(function() { console.log("payment!"); user.receiveMoney('11111',new Date().getTime(),'test transaction',1) },2500)
-
 	    //	    setTimeout(function() { console.log("new payment!"); user.cash = 60 },4000)
 	    
 
@@ -1200,13 +1257,16 @@ io.sockets.on('connection', function (socket) {
 		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, uid : user._id })
 
 
-		function callback(data) {
-		    
-		    
+		function callback(response) {
+		    if (data.answerid) {
+			user.emit('answer',{ answerid: answerid, data: JSON.stringify(response) })
+		    }
 		}
 
+		data.arguments.unshift(callback)
+
 		if (object && object[data.function]) {
-		    object[data.function].apply(object,data.arguments,callback)
+		    object[data.function].apply(object,data.arguments)
 		}
 	    })
 
@@ -1239,6 +1299,75 @@ io.sockets.on('connection', function (socket) {
 
 app.listen(settings.httpport);
 l.log('general','info',"Express server listening on port " + app.address().port);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "user") && (item.loglevel == "login")) {
+	return { '$inc' : { logons: 1}}
+    }
+})
+
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "http") && (item.loglevel == "request")) {
+	return { '$inc' : { httpreq: 1}}
+    }
+})
+
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "minefield") && (item.loglevel == "loss")) {
+	if (item.payload.bet != 0) {
+	    return { '$inc' : { loss: item.payload.bet, cashplays : 1 }}
+	} else {
+	    return { '$inc' : { nocashplays : 1 }
+	}
+	}
+    }
+})
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "minefield") && (item.loglevel == "payout")) {
+	if (item.payload.win > 0) {
+	    return { '$inc' : { win : (item.payload.win - item.payload.bet), cashplays : 1 } }
+	} else {
+	    item.payload.win - item.payload.bet
+	}
+    }
+})
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "payment") && (item.loglevel == "received")) {
+	return { '$inc' : { pay_in : item.payload.amount } }
+    }
+})
+
+settings.statsextractors.push( function(item) {
+    if ((item.area == "payment") && (item.loglevel == "sent")) {
+	return { '$inc' : { pay_out : item.payload.amount } }
+    }
+})
+
+/*
+settings.statsextractors.push( function(item) {
+
+})
+*/
+
 
 
 function parseAddressData(address) {
@@ -1279,9 +1408,35 @@ function checkFinances() {
 }
 
 setTimeout(checkFinances,1000)
+
+/*
+setTimeout(function() {
+    settings.collection_log.find({},function(err,cursor) {
+	cursor.each(function(err, item) {
+	    if(err != null) { console.log("ERR",err); return }
+	    if (item != null) {
+		item.time = item._id.generationTime
+		settings.mongostats.push(item)
+	    } else {
+		console.log("NULL")
+		return
+	    }
+
+	})
+	    })
+
+},2000)
+*/
+
 setTimeout(log_cash_snapshot,2000)
 
+/*
+setTimeout(
+    function() {
+	getCashLog(undefined,undefined,600 * 1000,function(data) {
+	    console.log(data)
+	})
+    },2000)
 
-
-
+*/
 // }}}
