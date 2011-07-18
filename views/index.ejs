@@ -219,7 +219,7 @@ $(document).ready(function() {
 	    step: 1,
 	    slide: function( event, ui ) {
 		var chance = 100 - (ui.value / (25 / 100))
-		var win = (95 / chance)
+		var win = (90 / chance)
 		win = Math.round(win * 100) / 100 
 		displayminefield(generateminefield(ui.value,currentbet))
 //		
@@ -752,6 +752,7 @@ $(document).ready(function() {
 </center>
 </div>
 
+<!--
 <div class='subtab'> 
 <center>
     <h3><a href="https://www.mybitcoin.com">Mybitcoin.com</a> Transfer</h3>
@@ -760,7 +761,7 @@ $(document).ready(function() {
 </center>
 </div>
 
-
+-->
 <div class='subtab'> 
 <center>
     <h3>Withdrawal</h3>

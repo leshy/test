@@ -444,7 +444,7 @@ MineField.prototype.cleanup = function() {
 
 MineField.prototype.calculatemulti = function() {
     var chance = 100 - (this.size / ((25 - this.openfields) / 100))
-    var win = (95 / chance)
+    var win = (90 / chance)
     this.multi = Math.round(parseFloat(win) * 100) / 100
 }
 
