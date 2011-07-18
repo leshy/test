@@ -44,6 +44,7 @@ settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 settings.admin_secret = generateid()
 
+settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
 if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 0 }
@@ -255,7 +256,7 @@ function jsonmsg(message,responsecode) {
 
 function sendMoney (address,amount,callback,callbackerr) {
     amount = moneyOut(amount)
-    btc.sendToAddress ( address,amount, "bla1","bla2", function(err,paymentid) { 
+    btc.sendToAddress ( address,amount, "bitcoin minefield payout","user", function(err,paymentid) { 
 	if (paymentid) {
 	    l.log("payment","info","SENT " + amount + " BTC to" + address + " success - transaction id " + paymentid)
 	    callback(paymentid)
@@ -278,6 +279,13 @@ function RemoveFunctions(object) {
 	if (typeof(object[p]) != 'function') { res[p] = object[p] }
     }
     return res
+}
+
+function ArrayContains (array,entry) {
+    for (var key in array) {
+	if (array[key] == entry) { return true }
+    }
+    return false
 }
 
 function ArrayRemove (array,entry){
@@ -401,7 +409,7 @@ function MineField(size,bet,parent) {
     self.bet = bet
     self.userid = parent._id
     
-    if (!size) { size =  10 }
+
 
     self.size = size
     self.win = bet
@@ -416,7 +424,6 @@ function MineField(size,bet,parent) {
     self.hash = hashlib.sha256(self.crypted)
     self.done = false
     self.init(router,'minefield')
-
 }
 
 MineField.prototype = new remoteobject.RemoteObject()
@@ -446,8 +453,12 @@ MineField.prototype.calculatemulti = function() {
 MineField.prototype.step = function(callback,coords) {
     var self = this
 
-    console.log(sys.inspect(self.minefield))
     if(self.minefield[coords[0]][coords[1]] > 2) { return }
+    if(!coords) { return }
+    if(typeof(coords) != 'object') { return }
+    if((!coords[0]) || (!coords[1])) { return }
+    if((coords[0] > 4) || (coords[0] < 0)) { return }
+    if((coords[1] > 4) || (coords[1] < 0)) { return }
 
     self.minefield[coords[0]][coords[1]] = self.minefield[coords[0]][coords[1]] +  2
     
@@ -780,6 +791,13 @@ User.prototype = new remoteobject.RemoteObject()
 
 User.prototype.newminefield = function(callback,size,bet) {
     if (!bet) { bet = 0 }
+    if (!ArrayContains(settings.availiablebets,bet)) { l.log("hackattempt","invalidbet", "invalid bet"); return }
+    if (size < 3) { size =  10 }
+    if (size > 24) { size =  10 }
+    if (!size) { size =  10 }
+
+    
+
     bet = moneyIn(bet)
     if (!size) { console.log('err, size not set'); return }
     if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
@@ -883,6 +901,8 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
 User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     self = this
 //    l.log("payment","attempt",amount + " and user has ",self.cash,"userid",self._id)
+    if (!amount) { return }
+
     amount = moneyIn(amount)
     if ((self.cash - amount) >= 0) {
 	var oldcash = self.cash
@@ -1161,7 +1181,8 @@ l.outputs.push({push: function(logentry) {
 
 function GlobalObject() {
     this.users = 0
-    this.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0 ]
+    this.availiablebets = settings.availiablebets
+    
     this._id = "globalobj"
     this.init(router,'globalobject')
 }
@@ -1404,30 +1425,7 @@ function checkFinances() {
     })
     setTimeout(checkFinances,5000)
 }
-
-
-function addtransaction(transaction) {
-    
-}
-
-function checktransactions() {
-    btc.listTransactions(function(err,transactions) {
-	console.log(transactions)
-	transactions.reverse()
-
-	transactions.forEach( function(transaction) {
-	    if (transaction.category == 'receive') {		
-		addtransaction(transaction)
-	    }
-	})
-
-    })
-}
-
-
-setTimeout(checktransactions,1000)
 /*
-
 setTimeout(function() {
     settings.collection_log.find({},function(err,cursor) {
 	cursor.each(function(err, item) {
@@ -1448,7 +1446,7 @@ setTimeout(function() {
 */
 
 setTimeout(log_cash_snapshot,2000)
-
+setTimeout(checkFinances,3000)
 
 
 /*
