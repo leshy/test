@@ -47,7 +47,7 @@ settings.admin_secret = generateid()
 settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
-if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 5 }
+if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 1 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
 
@@ -957,25 +957,30 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
 
 	sendMoney(address,amount,self,
 		  function(transactionid) { 
+		      btc.getTransaction(transactionid,function(err,transaction) {
+			  function fixData(trans) {
+			      for (var detail in trans.details[0]) {
+				  console.log(detail)
+				  trans[detail] = trans.details[0][detail]
+			      }   
+			      delete trans['details']
+			      return trans
+			  }
 
-		      if (callback) {callback(transactionid)}
-		      transaction = {}
-		      transaction.owner = new BSON.ObjectID(self._id)
-		      transaction.txid = transactionid
-		      transaction.amount = moneyIn(amount)
-		      transaction.address = address
-		      transaction.category = "send"
-		      transaction.fetch = true
-		      insertTransaction(transaction)
-		      
+			  transaction = fixData(transaction)
+			  transaction = importTransaction(transaction)
+			  transaction.confirmed = true
+			  transaction.owner = self._id
+			  insertTransaction(transaction)
+			  if (callback) {callback(transactionid)}
 
-		      //self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
-		      
-		      l.log("payment","sent","AMOUNT " + moneyOutFull(amount) + " user has " + moneyOutFull(self.cash) + " userid " + self._id,{ uid: self._id, amount: amount, balance: self.cash, to: address } )
-
-		      self.message("BTC Sent.")
-		      self.syncproperty('transaction_history')
-		      self.save()
+			  l.log("payment","sent","AMOUNT " + moneyOutFull(amount) + " user has " + moneyOutFull(self.cash) + " userid " + self._id,{ uid: self._id, amount: amount, balance: self.cash, to: address } )
+			  
+			  self.message("BTC Sent.")
+			  self.lasttransaction = new Date().getTime()
+			  self.address_withdrawal = address
+			  self.save()
+		      })
 		  },
 		  function(err) {
 		      self.cash = oldcash
@@ -985,7 +990,7 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
 		  })
     } else {
 	if (callbackerr) { callbackerr ('Not enough money on account') }
-	this.message("Not enough money on account")
+	self.message("Not enough money on account")
     }
 	
 
@@ -1522,21 +1527,12 @@ function IterateTransactions(transactions) {
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
 	if (dbtransaction) {
 
-	    if (!dbtransaction.owner) { next(); return }
+	    if (!dbtransaction.owner) { 
+		next(); return
+	    }
 
 	    if (transaction.category != 'receive') { 
-		
-		if (!dbtransaction.time) { 
-
-		    getUserById(transaction.owner,function(user) {
-			transaction = importTransaction(transaction)
-			transaction.confirmed = true
-			updateTransaction(transaction.txid,transaction)
-			user.lasttransaction = new Date().getTime()
-		    })
-		}
-
-		next(); return 
+		next(); return
 	    }
 	    
 	    if (!dbtransaction.confirmed) {
@@ -1544,18 +1540,20 @@ function IterateTransactions(transactions) {
 		var set = {}
 
 		if (transaction.confirmations >= settings.confirmations) { 
-		    l.log("transaction","confirmed", "transaction " + stringTransaction(dbtransaction) +  " confirmed for " + transaction.owner, dbtransaction)
+		    l.log("transaction","confirmed", "transaction " + stringTransaction(dbtransaction) +  " confirmed for " + dbtransaction.owner, dbtransaction)
+		    console.log('confirmed!')
 		    set.confirmed = true
-		    getUserById(transaction.owner,function(user) { user.message ( "transaction confirmed" )})
+		    getUserById(dbtransaction.owner,function(user) { user.message ( "transaction confirmed" )})		    
 		} else {
 		    if (transaction.confirmations == dbtransaction.confirmations) { next(); return; }
+		    console.log('enlarged!')
 		    set.confirmations = transaction.confirmations
 		}
 
 		if (Object.keys(set).length > 0 ) {
 		    updateTransaction(transaction.txid,set)
 		    console.log(transaction.txid, "changed state, looking for " + transaction.owner)
-		    getUserById(transaction.owner,function(user) { user.lasttransaction = new Date().getTime()})
+		    getUserById(dbtransaction.owner,function(user) { user.lasttransaction = new Date().getTime()})
 		}
 	    }
 	} else {
@@ -1577,7 +1575,7 @@ function IterateTransactions(transactions) {
 		user.address_deposit_used.push(transaction.address)
 		user.lasttransaction = new Date().getTime()
 		user.cash = user.cash + transaction.amount
-//		user.syncproperty('address_deposit')
+		user.syncproperty('address_deposit')
 		user.message("payment received")
 		user.save()
 		    
@@ -1609,7 +1607,7 @@ function insertTransaction(transaction) {
 }
 
 function checkTransactions() {
-    btc.listTransactions( "", 40, function (err,transactions)  {
+    btc.listTransactions( "", 50, function (err,transactions)  {
 //	console.log("transactions ping")
 	IterateTransactions (transactions)
     })
@@ -1621,6 +1619,16 @@ function checkTransactions() {
 //setTimeout(log_cash_snapshot,2000)
 //setTimeout(checkFinances,3000)
 
+setTimeout ( function() {
+    btc.getTransaction("34a31434454362384d1104c19d5c8e3af25d2d06e8f400a425b26c29c500e6c4",function(err,transaction) { 
+
+	console.log("TRASN",transaction)
+
+	
+
+    })
+
+},500)
 setTimeout(checkTransactions,1000)
 
 
