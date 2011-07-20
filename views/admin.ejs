@@ -84,6 +84,8 @@ $(document).ready(function() {
     RemoteObject.prototype.update = function(obj) {
 	//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
 
+
+
 	var self = this
 	//console.log("update",router,obj)
 	for (var property in obj) {
@@ -167,12 +169,14 @@ $(document).ready(function() {
 
 
     function updateobject(objectname,object) {
+
+
 	if (!router.remoteobjects[objectname]) {
 	    //console.log("created new remote object '" + objectname + "'",object,router )
 	    var newobj = new RemoteObject(objectname,object)
 	    //console.log(newobj)
 	    router.remoteobjects[objectname] = newobj
-
+	    router.event(newobj,'created')
 	} else {
 	    //console.log("updating remote object '" + objectname + "'",object,router )
 	    router.remoteobjects[objectname].update(object)

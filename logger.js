@@ -166,11 +166,11 @@ function MongoStats(collection,dataextractors,minres,maxres) {
     this.res = []
 
     var res = minres
-    console.log (res,maxres)
+//    console.log (res,maxres)
     while (res <= maxres) {
 	this.res.push(res)
 	res *= 2
-	console.log("res: ",res)
+//	console.log("res: ",res)
     }
 }
 

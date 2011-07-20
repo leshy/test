@@ -15,7 +15,10 @@ $(document).ready(function() {
     function Router() { 
 	this.subscriptions = {}
 	this.remoteobjects = {}
+	this.callback = {}
+
 	this.sounds = {}
+
 
 	this.sounds.bomb = []
 	this.sounds.bomb.push(new Audio("/snd/bomb.mp3"))
@@ -90,27 +93,35 @@ $(document).ready(function() {
 	this.update(obj)
     }
 
-
     RemoteObject.prototype.update = function(obj) {
-//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
+	//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
 
 	var self = this
-	console.log("update",router,obj)
+	//console.log("update",router,obj)
 	for (var property in obj) {
 	    function c(property,value) {
 		if (value == "function") {
 		    self[property] = function() { 
-						  var data = {}
-						  data['object'] = self.objectname
-						  data['function'] = property
-						  var args = Array.prototype.slice.call(arguments);
-		//	console.log ("calling remote function " + property,args) 
-						  data['arguments'] = args
+			var data = {}
+			data['object'] = self.objectname
+			data['function'] = property
+			var args = Array.prototype.slice.call(arguments);
 
-						  //console.log(data)
+			//	console.log ("calling remote function " + property,args) 
 
-						  socket.emit('call',JSON.stringify(data))
-						}
+			if (typeof(args[args.length - 1]) == 'function') {
+			    var answerid = property + new Date().getTime()
+			    data['answerid'] = answerid
+			    router.callback[answerid] = args.pop()
+			    setTimeout(function() { delete router[answerid] },10000)
+			}
+			
+			data['arguments'] = args
+
+//			console.log('calling',data)
+			socket.emit('call',JSON.stringify(data))
+		    }
+		    router.event(self,property)
 		    return
 		}
 
@@ -119,7 +130,7 @@ $(document).ready(function() {
 			var data = {objects: {}, secret: secret}
 			data.objects[self.objectname] = {}
 			data.objects[self.objectname][property] = value
-//			console.log("emiting objectsync")
+			//			console.log("emiting objectsync")
 			socket.emit ('objectsync',JSON.stringify(data))
 		    })
 		    self.__defineGetter__(property, function () { return self["_" + property] })
@@ -131,22 +142,13 @@ $(document).ready(function() {
 		self["_" + property] = value
 		if (oldvalue != value) {
 		    router.event(self,property,value,oldvalue)
-		    //if (self.subscriptions[property]) {self.subscriptions[property].forEach( function(callback) { callback(value,oldvalue,property) })}
-		    //if (self.subscriptions["*"]) {self.subscriptions["*"].forEach( function(callback) { callback(value,oldvalue,property) })}
 		}
 	    }
-
-
-
 	    c(property,obj[property])
-
-
-
-
 	}
     }
-    
-    
+
+
     var secret = "<%= user.secret %>"
     var uid = "<%= user._id %>"
 
@@ -348,11 +350,89 @@ $(document).ready(function() {
 	message.fadeIn(500)
 	setTimeout(function() { message.fadeOut() },1000)
     }
-
+    
+    
+    function moneyIn(money) {
+	return Math.floor(money * 1e8)
+    }
+    
 
     function moneyOut(money) {
 	return Math.floor(money / 1e4) / 10000
     }
+
+    function update_transaction_history(data) {
+
+	user.listTransactions(function(data) {
+//	    console.log("GOT TRANSACTIONS",data)
+	    
+	    if (data.length == 0) { 
+		var code = "no transactions"
+	    } else {
+	    
+	    var code = "<table cellspacing=0 cellpadding=13>"
+	    code += "<thead>"
+	    code += "<tr>"
+	    code += "<th>time</th>"
+	    code += "<th>from/to</th>"
+	    code += "<th></th>"
+	    code += "<th>amount</th>"
+	    code += "<th>confirmations</th>"
+	    code += "<th></th>"
+	    code += "</tr>"
+	    code += "</thead>"
+	    code += "<tbody class='transactionhistory'>"
+
+	    var darkflip = true
+
+	    data.forEach(function(row) {
+		var time = new Date(parseInt(row.time))
+		//console.log(parseInt(row.time))
+		var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
+		
+
+
+
+		if (darkflip) {
+		    code += "<tr bgcolor='#ddd'>"
+		    darkflip = false
+		} else {
+		    code += "<tr>"
+		    darkflip = true
+		}
+
+
+
+		code +="<td class='transactionhistory'>" +  now  + "</td>"
+
+
+		code +="<td class='transactionhistory'>" +  row.address + "</td>"
+		if (row.amount > 0) {
+		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
+		} else {
+		    row.amount *= -1
+		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
+		}
+		code +="<td class='transactionhistory'>" +  moneyOut(row.amount) + "</td>"
+		if (row.confirmed) { row.confirmations = "<font color='green'>confirmed</font>" }
+		code +="<td class='transactionhistory'>" +  row.confirmations + "</td>"
+		code +="<td class='transactionhistory'>" + "<a href='http://blockexplorer.com/tx/" + row.txid  + "'><img width='20px' src='/img/info.png'></a></td>"
+		code += "</tr>"
+
+
+	    })
+
+	    code += "</tbody></table>"
+	}
+	    //$("#transaction_history").fadeOut()
+	    $("#transaction_history").html(code)
+	    //$("#transaction_history").fadeIn()
+
+	})
+
+    }
+
+
     function reload_transaction_history() {
 	if (router.remoteobjects.user.transaction_history.length == 0) { 
 	    var code = "no transactions"
@@ -362,7 +442,7 @@ $(document).ready(function() {
 	    code += "<thead>"
 	    code += "<tr>"
 	    code += "<th>time</th>"
-	    code += "<th>from/to</th>"
+	    code += "<th>address</th>"
 	    code += "<th></th>"
 	    code += "<th>amount</th>"
 	    code += "<th>balance</th>"
@@ -399,7 +479,6 @@ $(document).ready(function() {
 
 	    code += "</tbody></table>"
 	}
-
 	$("#transaction_history").html(code)
     }
     
@@ -429,11 +508,19 @@ $(document).ready(function() {
     var socket = io.connect('http://bitcoinlab.org:<%= port %>');
     socket.emit('hello', { uid: uid, secret: secret });
     socket.on('connection', function () {
-	console.log('websocket connected.')
+//	console.log('websocket connected.')
 
     
 
     });
+
+    socket.on('answer', function(data) { 
+	if (router.callback[data.answerid]) {
+	    router.callback[data.answerid](JSON.parse(data.data))
+	} else {
+//	    console.log("function response received but there is no answerid.. ")
+	}
+    })
 
 
 	socket.on('msg', function(data) {
@@ -460,7 +547,7 @@ $(document).ready(function() {
     $("#btnwithdraw").click(function() { 
 	//console.log("CALLING SENDMONEY")
 //	socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
-	user.sendMoney($("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html())
+	user.sendMoney($("#user_withdrawal_address").html(), moneyIn($("#user_withdrawal_amount").html()))
     })
     
     $("#btn_deposit_generate").click(function() {
@@ -485,6 +572,7 @@ $(document).ready(function() {
 	    var newobj = new RemoteObject(objectname,object)
 	    //console.log(newobj)
 	    router.remoteobjects[objectname] = newobj
+	    router.event(newobj,'created',newobj)
 	} else {
 	    //console.log("updating remote object '" + objectname + "'",object,router )
 	    router.remoteobjects[objectname].update(object)
@@ -525,10 +613,19 @@ $(document).ready(function() {
 	//console.log(property,$(".sync_user_" + property))
     })
 
-
+/*
     router.subscribe("user","transaction_history",function(value,oldvalue,property,user) {
 	reload_transaction_history()
     })
+
+*/
+    router.subscribe("user","created",function(value,oldvalue,property) {
+	update_transaction_history()
+	router.subscribe("user","lasttransaction",function(value,oldvalue,property) {
+		update_transaction_history()
+	})
+    })
+
 
     router.subscribe("user","address_deposit",function(value,oldvalue,property,user) {
 	//console.log("ADDRESS DEPOSIT CHANGED")
@@ -747,25 +844,23 @@ $(document).ready(function() {
  <br> 
 <br>
     <span class='btn blackborder' id="btn_deposit_generate">generate</span>
-    <br><br>
-    The site requires 5 confirmations before the transaction is registered.
 </center>
 </div>
 
-<!--
 <div class='subtab'> 
 <center>
     <h3><a href="https://www.mybitcoin.com">Mybitcoin.com</a> Transfer</h3>
+    (<font color='#660000'>mybitcoin is known to be unstable, use this at your own risk</font>)<br><br>
     I'd like to deposit <b><span id='edit_mybitcoin_amount' class='editable'>[ amount ]</span></b> BTC with <a href="https://www.mybitcoin.com">mybitcoin.com</a>
 <div id="mybitcoin_link"></div>
 </center>
 </div>
 
--->
 <div class='subtab'> 
 <center>
     <h3>Withdrawal</h3>
-    I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='user_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='sync_user_address_withdrawal editable'>[ address ]</span></b><br>
+    I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='user_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='sync_user_address_withdrawal editable'>[ address ]</span></b><br><br>
+(all your transactions need to be confirmed in order to withdraw)
 </center>
 </div>
 <div class='subtab'> 

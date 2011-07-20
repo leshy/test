@@ -47,7 +47,7 @@ settings.admin_secret = generateid()
 settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
-if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 0 }
+if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 5 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
 
@@ -128,6 +128,12 @@ db.open( function (err) {
 	l.log('general','info',"mongo - Addresses collection open")
 	settings.collection_addresses = collection
     })
+
+    db.collection("transactions", function (err,collection) {
+	l.log('general','info',"mongo - Transactions collection open")
+	settings.collection_transactions = collection
+    })
+
 
     db.collection("log", function (err,collection) {
 	l.log('general','info',"mongo - Log collection open")
@@ -254,15 +260,16 @@ function jsonmsg(message,responsecode) {
     return JSON.stringify({'message': message, 'responsecode': responsecode})
 }
 
-function sendMoney (address,amount,callback,callbackerr) {
+function sendMoney (address,amount,user,callback,callbackerr) {
     amount = moneyOut(amount)
+    console.log("sending",address,amount)
     btc.sendToAddress ( address,amount, "bitcoin minefield payout","user", function(err,paymentid) { 
 	if (paymentid) {
-	    l.log("payment","info","SENT " + amount + " BTC to" + address + " success - transaction id " + paymentid)
+	    l.log("payment","sent","SENT " + amount + " BTC to" + address + " success - transaction id " + paymentid,{ address: address, amount: amount, uid: user._id})
 	    callback(paymentid)
 	} else {
-	    l.log("payment","error","ERROR",err)
-	    if (callbackerr) { callbackerr(err.message) }
+	    l.log("payment","error","",{err: err, address: address, amount: amount, uid: user._id })
+	    if (callbackerr) { callbackerr(err) }
 	}
     })
 }
@@ -775,6 +782,7 @@ function User(user) {
     //console.log(sys.inspect(user))
     var self = this
     self.objectname = 'user'
+    self.lasttransaction = 0
 
     for (entry in user) {
 	self[entry] = user[entry]
@@ -807,6 +815,17 @@ User.prototype.newminefield = function(callback,size,bet) {
     
 }
 
+
+User.prototype.listTransactions = function(callback) { 
+    var self = this;
+    settings.collection_transactions.find({owner: self._id},function(err,cursor) {
+	cursor.toArray(function(err,data) {
+//	    console.log(data)
+	    callback(data.reverse())
+	})
+    })
+}
+
 //name: function(name) { if (name) { if (name) { return escape(name) } else { return null } } },
 User.prototype.filter_in = { name: function(name,self) { settings.collection_users.findOne( { name: name }, 
 										       function(err,doc) {
@@ -837,9 +856,10 @@ User.prototype.filter_out = { name: true,
 			      cash: function(cash) { return moneyOut(cash) },
 			      address_deposit: true ,
 			      address_withdrawal: true ,
-			      transaction_history: true ,
+			      lasttransaction: true,
 			      newminefield: 'function',
 			      sendMoney: 'function',
+			      listTransactions: 'function',
 			      generatedepositaddr: 'function'
 			    }
 
@@ -849,7 +869,7 @@ User.prototype.filter_save = { name: true,
 			       secret: true,
 			       address_deposit_used: true,
 			       address_deposit: true,
-			       transaction_history: true,
+//			       transaction_history: true,
 			       address_withdrawal: true,
 			       cash: true
 			     }
@@ -898,22 +918,58 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     //console.log(self)
 }
 
+User.prototype.transactions_confirmed = function(callback) {
+    var self = this
+    settings.collection_transactions.find({owner: self._id},function(err,cursor) {
+	cursor.toArray(function(err,data) {
+	    if (!data) { callback(false); return }
+
+	    for (var i in data) { 
+		if (!data[i].confirmed) { 
+		    callback(false)
+		    return
+		}
+	    }
+	    
+	    callback(true)
+	})
+    })
+}
+
 User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     self = this
 //    l.log("payment","attempt",amount + " and user has ",self.cash,"userid",self._id)
     if (!amount) { return }
 
-    amount = moneyIn(amount)
+    //amount = moneyIn(amount)
+    //console.log(amount)
+  
+  
+    self.transactions_confirmed(function(confirmed) {
+	if (!confirmed) { self.message("transactions unconfirmed"); return }
+
+
     if ((self.cash - amount) >= 0) {
 	var oldcash = self.cash
 	self.cash -= amount
 	self.cash = Math.round(self.cash * 1000) / 1000
 	self.save()
-	sendMoney(address,amount,
+
+	sendMoney(address,amount,self,
 		  function(transactionid) { 
 
 		      if (callback) {callback(transactionid)}
-		      self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
+		      transaction = {}
+		      transaction.owner = new BSON.ObjectID(self._id)
+		      transaction.txid = transactionid
+		      transaction.amount = moneyIn(amount)
+		      transaction.address = address
+		      transaction.category = "send"
+		      transaction.fetch = true
+		      insertTransaction(transaction)
+		      
+
+		      //self.transaction_history.unshift({ transactionid: transactionid, deposit: false, time: new Date().getTime(), other_party: address, amount: amount, balance: self.cash })
 		      
 		      l.log("payment","sent","AMOUNT " + moneyOutFull(amount) + " user has " + moneyOutFull(self.cash) + " userid " + self._id,{ uid: self._id, amount: amount, balance: self.cash, to: address } )
 
@@ -924,13 +980,18 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
 		  function(err) {
 		      self.cash = oldcash
 		      self.save()
-		      this.message("Error")
+		      self.message("Error: " + err.message )
 		      if (callbackerr) {callbackerr(err)}
 		  })
     } else {
 	if (callbackerr) { callbackerr ('Not enough money on account') }
 	this.message("Not enough money on account")
     }
+	
+
+    })
+    
+    
 }
 
 
@@ -949,10 +1010,10 @@ User.prototype.generatedepositaddr = function(callback,callbackerr) {
 	l.log("bitcoind","newdeposit","creating new deposit address " + address + " and linking it to user " + self._id, { uid: self._id, address: address })
 	self.address_deposit.push(address)
 	self.syncproperty('address_deposit')
+	//callback(self.address_deposit)
 	self.save(function() {if(callback) { callback(address) }})
 	
 	settings.collection_addresses.insert({ "address": address, "creationdate": new Date().getTime(), "cash" : 0, "owner" : self._id  })
-	
     })
 }
 
@@ -979,9 +1040,10 @@ function getAdminUser(callback,callbackerr) {
 }
 
 
-function getUserById(id,callback,callbackerr) {
+function getUserById(id,callback,callbackerr,liveonly) {
     id = String(id)
     if (router.objects[id] ) { callback(router.objects[id]); return }
+    if (liveonly) { callbackerr(); return}
     l.log('db','debug','loading user from db (by id)')
     settings.collection_users.findOne({_id: new BSON.ObjectID(id)}, function(err,user) {
 	if (!user) { if(callbackerr) { callbackerr() }; return }
@@ -1276,7 +1338,7 @@ io.sockets.on('connection', function (socket) {
 
 		function callback(response) {
 		    if (data.answerid) {
-			user.emit('answer',{ answerid: answerid, data: JSON.stringify(response) })
+			user.emit('answer',{ answerid: data.answerid, data: JSON.stringify(response) })
 		    }
 		}
 
@@ -1445,8 +1507,121 @@ setTimeout(function() {
 
 */
 
-setTimeout(log_cash_snapshot,2000)
-setTimeout(checkFinances,3000)
+function IterateTransactions(transactions) {
+    var transaction = transactions.pop()
+
+    function next() {
+	if (transactions.length > 0) {
+	    IterateTransactions(transactions)
+	}
+    }
+
+    //if (transaction.category != 'receive') { next(); return }
+//    console.log(transaction)
+
+    settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
+	if (dbtransaction) {
+
+	    if (!dbtransaction.owner) { next(); return }
+
+	    if (transaction.category != 'receive') { 
+		
+		if (!dbtransaction.time) { 
+
+		    getUserById(transaction.owner,function(user) {
+			transaction = importTransaction(transaction)
+			transaction.confirmed = true
+			updateTransaction(transaction.txid,transaction)
+			user.lasttransaction = new Date().getTime()
+		    })
+		}
+
+		next(); return 
+	    }
+	    
+	    if (!dbtransaction.confirmed) {
+		
+		var set = {}
+
+		if (transaction.confirmations >= settings.confirmations) { 
+		    l.log("transaction","confirmed", "transaction " + stringTransaction(dbtransaction) +  " confirmed for " + transaction.owner, dbtransaction)
+		    set.confirmed = true
+		    getUserById(transaction.owner,function(user) { user.message ( "transaction confirmed" )})
+		} else {
+		    if (transaction.confirmations == dbtransaction.confirmations) { next(); return; }
+		    set.confirmations = transaction.confirmations
+		}
+
+		if (Object.keys(set).length > 0 ) {
+		    updateTransaction(transaction.txid,set)
+		    console.log(transaction.txid, "changed state, looking for " + transaction.owner)
+		    getUserById(transaction.owner,function(user) { user.lasttransaction = new Date().getTime()})
+		}
+	    }
+	} else {
+	    // not in db, add
+
+	    transaction = importTransaction(transaction)
+
+	    if (transaction.confirmations >= settings.confirmations) { 
+		transaction.confirmed = true
+	    } else { 
+		transaction.confirmed = false 
+	    }
+
+	    getUserByAddress(transaction.address,function(user) {
+		transaction.owner = user._id
+		insertTransaction(transaction)
+		l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
+		user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
+		user.address_deposit_used.push(transaction.address)
+		user.lasttransaction = new Date().getTime()
+		user.cash = user.cash + transaction.amount
+//		user.syncproperty('address_deposit')
+		user.message("payment received")
+		user.save()
+		    
+	    }, function() {
+		insertTransaction(transaction)
+		l.log("transaction","noowner", "owner for transaction " +  stringTransaction(transaction) + " not found", transaction)
+	    })
+	}
+    })
+    next()
+}
+
+function stringTransaction(transaction) {
+    return transaction.txid + " " + transaction.amount + " BTC" 
+}
+
+function importTransaction(transaction) {
+    transaction.time = new Date(transaction.time * 1000).getTime()
+    transaction.amount = moneyIn(transaction.amount)
+    return transaction
+}
+
+function updateTransaction(txid,set) {
+    settings.collection_transactions.update({txid: txid},{ "$set" : set })
+}
+
+function insertTransaction(transaction) {
+    settings.collection_transactions.insert(transaction)
+}
+
+function checkTransactions() {
+    btc.listTransactions( "", 40, function (err,transactions)  {
+//	console.log("transactions ping")
+	IterateTransactions (transactions)
+    })
+
+    setTimeout(checkTransactions,10000)   
+}
+
+
+//setTimeout(log_cash_snapshot,2000)
+//setTimeout(checkFinances,3000)
+
+setTimeout(checkTransactions,1000)
 
 
 /*
@@ -1459,3 +1634,7 @@ setTimeout(
 
 */
 // }}}
+
+
+
+// prepisi sendmoney funkciju sa user strane da radi sa 10e8 integerima
