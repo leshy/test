@@ -379,7 +379,7 @@ function spawnUserData(secret,callback,callbackerr) {
 	secret: secret,
 	address_deposit_used: [],
 	address_deposit: [],
-	transaction_history: [],
+//	transaction_history: [],
 	address_withdrawal: undefined,
 	cash: 0
     }, function(err,doc) {
@@ -906,10 +906,10 @@ User.prototype.receiveMoney = function(id,time,from,amount) {
     amount = moneyIn(amount)
     self.cash = self.cash + amount
 
-    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
+//    self.transaction_history.unshift({ transactionid: id, deposit: true, time: time, other_party: from, amount: amount, balance: self.cash })
     self.syncpush('cash')
     self.syncpush('address_deposit')
-    self.syncpush('transaction_history')
+//    self.syncpush('transaction_history')
     self.syncflush()
     self.save()
     //self.sync()
@@ -1165,7 +1165,7 @@ function getUserByReq(req,callback,callbackerr) {
 
 }
 
-
+/*
 app.post('/dVmJvHTrrGhheSbsRDoR',function(req,res,next) {
     var receipt = mybitcoinparse(req.body.input)
     
@@ -1174,6 +1174,8 @@ app.post('/dVmJvHTrrGhheSbsRDoR',function(req,res,next) {
     })
     res.send("ok")
 })
+
+*/
 
 app.get ('/payok',function(req, res, next){
     res.send("<a href='/'>thanks</a>")
@@ -1619,16 +1621,6 @@ function checkTransactions() {
 //setTimeout(log_cash_snapshot,2000)
 //setTimeout(checkFinances,3000)
 
-setTimeout ( function() {
-    btc.getTransaction("34a31434454362384d1104c19d5c8e3af25d2d06e8f400a425b26c29c500e6c4",function(err,transaction) { 
-
-	console.log("TRASN",transaction)
-
-	
-
-    })
-
-},500)
 setTimeout(checkTransactions,1000)
 
 
