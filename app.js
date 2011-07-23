@@ -184,7 +184,7 @@ function systemcash(callback) {
 
 function usercash(callback) {
     var time = new Date().getTime() - (24 * 3 * 60 * 60 * 1000)
-    settings.collection_users.find({ "cash" : { "$gt" : 100000 }, "lastaccess" : { "$gt" : time  } },{ "cash" : 1 }, 
+    settings.collection_users.find({ "cash" : { "$gt" : 100000 }, "blacklist" : undefined,  "lastaccess" : { "$gt" : time  } },{ "cash" : 1 }, 
 				   function(err,cursor) {
 
 				       var totalcash = 0
@@ -1636,7 +1636,7 @@ function checkTransactions() {
 }
 
 
-//setTimeout(log_cash_snapshot,2000)
+setTimeout(log_cash_snapshot,2000)
 //setTimeout(checkFinances,3000)
 
 setTimeout(checkTransactions,1000)
