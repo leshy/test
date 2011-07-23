@@ -549,8 +549,8 @@ $(document).ready(function() {
 //	socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
 	var amount = moneyIn($("#user_withdrawal_amount").html())
 	
-	if ((!amount) || (amount = 0)) { message('invalid amount') } else {
-	user.sendMoney($("#user_withdrawal_address").html(), ammount )
+	if ((!amount) || (amount == 0)) { message('invalid amount') } else {
+	user.sendMoney($("#user_withdrawal_address").html(), amount )
 	}
     })
     

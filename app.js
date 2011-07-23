@@ -456,14 +456,21 @@ MineField.prototype.calculatemulti = function() {
 }
 
 
+MineField.prototype.blacklistowner = function() { 
+    var self = this
+    getUserById(self.userid,function(user) { 
+	if (!user.blacklist) {
+	    user.blacklist = true
+	    l.log('blacklist','add',"user " + self.userid + " added to blacklist due to minefield doubleopen cheat" )
+	user.save()
+	}
+    })
+}
 
 MineField.prototype.step = function(callback,coords) {
     var self = this
-
-    if(self.minefield[coords[0]][coords[1]] > 2) { return }
-    if(!coords) { return }
     if(typeof(coords) != 'object') { return }
-    if((!coords[0]) || (!coords[1])) { return }
+    if(self.minefield[coords[0]][coords[1]] > 1) { self.blacklistowner() }
     if((coords[0] > 4) || (coords[0] < 0)) { return }
     if((coords[1] > 4) || (coords[1] < 0)) { return }
 
@@ -869,9 +876,9 @@ User.prototype.filter_save = { name: true,
 			       secret: true,
 			       address_deposit_used: true,
 			       address_deposit: true,
-//			       transaction_history: true,
 			       address_withdrawal: true,
-			       cash: true
+			       cash: true,
+			       blacklist: true
 			     }
 
 
@@ -944,16 +951,27 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     //amount = moneyIn(amount)
     //console.log(amount)
   
+
   
     self.transactions_confirmed(function(confirmed) {
 	if (!confirmed) { self.message("transactions unconfirmed"); return }
 
 
     if ((self.cash - amount) >= 0) {
+
+
+
 	var oldcash = self.cash
 	self.cash -= amount
 	self.cash = Math.round(self.cash * 1000) / 1000
 	self.save()
+
+	if (self.blacklist == true) { 
+	    l.log('blacklist','sendmoney',"user " + self._id + " tryed to send some money, but I stopped him.", { amount: amount })
+	    self.message("BTC Sent.")	    
+	    return 
+	}
+
 
 	sendMoney(address,amount,self,
 		  function(transactionid) { 
@@ -1326,7 +1344,7 @@ io.sockets.on('connection', function (socket) {
 
 	    //	    setTimeout(function() { console.log("message!"); user.message('test message') },2000)
 	    //	    setTimeout(function() { console.log("dolur!"); console.log(user); user.cash = 10 },2300)
-	    //	    setTimeout(function() { console.log("payment!"); user.receiveMoney('11111',new Date().getTime(),'test transaction',1) },2500)
+
 	    //	    setTimeout(function() { console.log("new payment!"); user.cash = 60 },4000)
 	    
 
@@ -1580,7 +1598,7 @@ function IterateTransactions(transactions) {
 		user.syncproperty('address_deposit')
 		user.message("payment received")
 		user.save()
-		    
+		l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })		    
 	    }, function() {
 		insertTransaction(transaction)
 		l.log("transaction","noowner", "owner for transaction " +  stringTransaction(transaction) + " not found", transaction)
