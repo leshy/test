@@ -178,7 +178,7 @@ socketio.Socket.prototype.toString = function() { return this._id }
 function systemcash(callback) {
     btc.getBalance(function(err, balance) {
 	if (err) return console.log(err);
-	callback(balance + 12)
+	callback(balance + 14)
     })
 }
 
