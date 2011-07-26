@@ -323,8 +323,12 @@ $(document).ready(function() {
 
 		    if (entry == -1) { 
 			var unknown =  $("<span class='mine mine_undefined'></span>")
-			unknown.click(function() { router.playsound('dig'); router.remoteobjects.minefield.step([rowid,entryid])  })
+			unknown.click(function() { 
+			    unknown.unbind('click')
+			    router.playsound('dig')
+			    router.remoteobjects.minefield.step([rowid,entryid])  })
 			
+
 			field.append(unknown)
 		    }
 
@@ -692,7 +696,7 @@ $(document).ready(function() {
 
 
     
-    var tabs = [ $('#tab_minefield'), $('#tab_balance'),$('#tab_settings'), $('#tab_chat'), $('#tab_faq') ]
+    var tabs = [ $('#tab_minefield'), $('#tab_balance'),$('#tab_referals'), $('#tab_faq') ] 
     tabs.forEach(function(tab) {tab.hide() })
     var selectedtab = undefined
 
@@ -712,8 +716,7 @@ $(document).ready(function() {
 
     $('#btnminefield').click( function() { selecttab(0) })
     $('#btnballance').click( function() { selecttab(1) })
-    $('#btnsettings').click( function() { selecttab(2) })
-    $('#btnchat').click( function() { selecttab(3) })
+    $('#btnreferals').click( function() { selecttab(2) })
     $('#btnfaq').click( function() { selecttab(4) })
     $('#btnminefield').click()
     $('#btnsound').click( function() {
@@ -751,7 +754,8 @@ $(document).ready(function() {
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
   <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= Math.floor(user.cash / 1e4) / 10000 %></span>&nbsp;</span></span>
-<!--  <span class='btn' id="btnchat" >Chat</span> -->
+  <span class='btn' id="btnreferals" >Referals</span>
+
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>
     <span class='btn' id="btnsound">Sound on</span>
@@ -759,6 +763,23 @@ $(document).ready(function() {
     <span class='btn' id="btncontact"><a href="http://bitcoinlab.org" target="_blank"><font color="white">Contact</font></a></span>
     <span id="span_users"></span>
   </span>
+</div>
+
+<div class='tabcontent' id='tab_referals'>
+<div class='subtab'> 
+<center>
+<h1>Referals</h1>
+    For every user you refer to this site, you'll forever receive 5% of that users losses<br><br>
+    your unique url is:<br>
+<h3>http://minefield.bitcoinlab.org/?r=4e2d00759d401a8652000005</h3>
+
+</center>
+</div>
+<div class='subtab'> 
+</div>
+<div class='subtab'> 
+</div>
+
 </div>
 
 <div class='tabcontent' id='tab_minefield'>
@@ -804,7 +825,7 @@ $(document).ready(function() {
 
 </div>
 
-
+<!--
 <div class='tabcontent' id='tab_chat'>
 <div class='subtab'> 
     <center>
@@ -831,6 +852,8 @@ $(document).ready(function() {
 </center>
 </div>
 </div>
+
+-->
 
 <div class='tabcontent' id='tab_balance'>
 
