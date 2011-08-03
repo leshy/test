@@ -85,6 +85,7 @@ if (settings.staging) { l.log('general','important','STAGING INSTANCE') }
 var router = new remoteobject.Router(l)
 
 
+
 // init
 
 var app = express.createServer();
@@ -1077,11 +1078,12 @@ function getUserById(id,callback,callbackerr,liveonly) {
 
 function getUserByAddress(address,callback,callbackerr) {
     l.log('db','debug','loading user from db (by address)')
-    settings.collection_users.findOne({address_deposit: address}, function(err,user) {
-	if ((err) || (!user)) { if(callbackerr) { callbackerr(err) } return}
-	if (callback) { getUserById(["" + user._id],callback) }
+    settings.collection_addresses.findOne({address: address}, function(err,data) {
+	if ((err) || (!data)) { if(callbackerr) { callbackerr(err) } return}
+	if (callback) { getUserById(data.owner,callback) }
     })
 }
+
 
 // }}}
 // Routes
