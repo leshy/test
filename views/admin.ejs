@@ -250,7 +250,8 @@ $(document).ready(function() {
 
     router.subscribe("user","getlogstats",function(value,oldvalue,property,object) {
 	
-	admin.getlogstats(900000  ,new Date().getTime() - (24 * 60 * 60 * 1000 * 2),new Date().getTime() ,
+	admin.getlogstats(900000 * 2 * 2 * 2   ,new Date().getTime() - (24 * 60 * 60 * 1000 * 8),new Date().getTime() ,
+//	admin.getlogstats(900000   ,new Date().getTime() - (24 * 60 * 60 * 1000 * 2),new Date().getTime() ,
 			  function(response) { 
 			      console.log("GOT RESPONSE",response) 
 			      graphdata(response)

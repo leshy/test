@@ -232,7 +232,11 @@ RemoteObject.prototype.sockets = function() {
 RemoteObject.prototype.emit = function(tag,values) {
     var sockets = this.sockets()
 //    console.log('emmiting',tag,values)
-    sockets.forEach(function(socket) { socket.emit(tag,values) })
+    sockets.forEach(function(socket) { 
+	if (socket) {
+	    socket.emit(tag,values) 
+	}
+    })
 }
 
 

@@ -1632,7 +1632,7 @@ function checkTransactions() {
 	IterateTransactions (transactions)
     })
 
-    setTimeout(checkTransactions,10000)   
+    setTimeout(checkTransactions,30000)   
 }
 
 
