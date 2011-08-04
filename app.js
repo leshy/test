@@ -1278,6 +1278,18 @@ app.get('/', function(req, res, next){
 		     }
 
 		     if (req.query && req.query.r) { 
+			 if (req.query.r == "dbppc") { 
+			     l.log("newuser","dbppc","Creating new user, dailybitcoins pay per click")
+			     spawn({})
+			     return
+			 }
+
+			 if (req.query.r == "dbpps") { 
+			     l.log("newuser","dbpps","Creating new user, dailybitcoins pay per show")
+			     spawn({})
+			     return
+			 }
+
 			 getUserByReferal(req.query.r,function(user) { 
 			     l.log("newuser","referal","Creating new user, with parent user", { parent: user._id })
 			     getUserById(user._id,function(user) { 
