@@ -830,6 +830,7 @@ function User(user) {
     }
     if (!self.name) { self.name = "user-" + this._id }
 
+    if (!self.referalurl) { self.referalurl = spawnReferalUrl(); self.referalcount = 0; self.referalearnings = 0 }
 
     self.init(router,'user')
     //self.subscribe('*',function() { self.save() })
