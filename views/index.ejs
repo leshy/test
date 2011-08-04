@@ -8,39 +8,20 @@ $(document).ready(function() {
     }
 
     var currentbet = 0
-    var sound = true
 
     function Router() { 
 	this.subscriptions = {}
 	this.remoteobjects = {}
 	this.callback = {}
-
-	this.sounds = {}
-
-
-	this.sounds.bomb = []
-	this.sounds.bomb.push(new Audio("/snd/bomb.mp3"))
-	this.sounds.dig = []
-	this.sounds.dig.push(new Audio("/snd/dig1.mp3"))
-	this.sounds.dig.push(new Audio("/snd/dig2.mp3"))
-	this.sounds.dig.push(new Audio("/snd/dig3.mp3"))
-	this.sounds.dig.push(new Audio("/snd/dig4.mp3"))
-    }
-
-    Router.prototype.playsound = function(sndname) {
-	if (sound) {
-	    pickone(this.sounds[sndname]).play()
-	}
     }
 
 
     Router.prototype.subscribe = function(object,property,callback) {
 	var self = this
-//	console.log('subscribe',property)
 	if (!self.subscriptions[object]) { self.subscriptions[object] = {} }
 	if (!self.subscriptions[object][property]) { self.subscriptions[object][property] = [] }
 	self.subscriptions[object][property].push(callback)
-	for (var prop in self.subscriptions[object]) {  console.log(prop) }
+//	for (var prop in self.subscriptions[object]) {  console.log(prop) }
     }
 
 
@@ -323,7 +304,6 @@ $(document).ready(function() {
 			var unknown =  $("<span class='mine mine_undefined'></span>")
 			unknown.click(function() { 
 			    unknown.unbind('click')
-			    router.playsound('dig')
 			    router.remoteobjects.minefield.step([rowid,entryid])  })
 			
 
@@ -521,7 +501,7 @@ $(document).ready(function() {
 	    router.callback[data.answerid](JSON.parse(data.data))
 	    delete router.callback[data.answerid]
 	} else {
-	    console.log("function response received but there is no answerid.. ")
+//	    console.log("function response received but there is no answerid.. ")
 	}
     })
 
@@ -644,7 +624,7 @@ $(document).ready(function() {
     })
 
     router.subscribe("minefield","done",function(value,oldvalue,property,object) { 
-	if (value) { router.playsound('bomb')
+	if (value) { 
 		     $( ".mon" ).fadeOut(200,function() { 
 			 $( ".moff" ).fadeIn(200)
 		     })		     
@@ -708,14 +688,6 @@ $(document).ready(function() {
     $('#btnreferals').click( function() { selecttab(2) })
     $('#btnfaq').click( function() { selecttab(3) })
     $('#btnminefield').click()
-    $('#btnsound').click( function() {
-	if (sound) { sound = false
-		     $('#btnsound').html("Sound off")
-		   } else {
-		       sound = true
-		       $('#btnsound').html("Sound on")
-		   }
-    })
 
 
 
@@ -741,7 +713,6 @@ $(document).ready(function() {
 
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>
-    <span class='btn' id="btnsound">Sound on</span>
     <span class='btn' id="btnfaq">Faq</span>
     <span class='btn' id="btncontact"><a href="http://bitcoinlab.org" target="_blank"><font color="white">Contact</font></a></span>
     <span id="span_users"></span>
@@ -904,10 +875,6 @@ $(document).ready(function() {
 
 
     <div style="visibility: hidden;">
-    <audio id="snddig1" src="/snd/dig1.mp3" preload="auto">
-    <audio id="snddig2" src="/snd/dig2.mp3" preload="auto">
-    <audio id="snddig3" src="/snd/dig3.mp3" preload="auto">
-    <audio id="snddig4" src="/snd/dig4.mp3" preload="auto">
     <img src="/img/bomb.png">
     <img src="/img/dirt.png">
     <img src="/img/bomb_step.png">
