@@ -1280,13 +1280,13 @@ app.get('/', function(req, res, next){
 		     if (req.query && req.query.r) { 
 			 if (req.query.r == "dbppc") { 
 			     l.log("newuser","dbppc","Creating new user, dailybitcoins pay per click")
-			     spawn({})
+			     spawn({parent:"dbppc"})
 			     return
 			 }
 
 			 if (req.query.r == "dbpps") { 
 			     l.log("newuser","dbpps","Creating new user, dailybitcoins pay per show")
-			     spawn({})
+			     spawn({parent:"dbpps"})
 			     return
 			 }
 
