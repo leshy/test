@@ -3,8 +3,6 @@
 
 $(document).ready(function() { 
 
-
-    
     function pickone(a) {
 	return a[Math.floor(Math.random()*a.length)]
     }
@@ -521,8 +519,9 @@ $(document).ready(function() {
     socket.on('answer', function(data) { 
 	if (router.callback[data.answerid]) {
 	    router.callback[data.answerid](JSON.parse(data.data))
+	    delete router.callback[data.answerid]
 	} else {
-//	    console.log("function response received but there is no answerid.. ")
+	    console.log("function response received but there is no answerid.. ")
 	}
     })
 
@@ -540,7 +539,6 @@ $(document).ready(function() {
 	
 	    for (var objectname in data) {
 		updateobject(objectname,data[objectname])
-		//	    updateobject(objectname,jQuery.parseJSON(data[objectname]))
 	    }
 	})
 
@@ -559,21 +557,12 @@ $(document).ready(function() {
     })
     
     $("#btn_deposit_generate").click(function() {
-	user.generatedepositaddr()
+	user.generatedepositaddr(function(data) {} )
     })
-
-    $("#socketio").click(function() {
-	user.lalala(3,2)
-})
-
-
     
     $("#logout").click(function() {
-	
     })
     
-
-
     function updateobject(objectname,object) {
 	if (!router.remoteobjects[objectname]) {
 	    //console.log("created new remote object '" + objectname + "'",object,router )
@@ -586,6 +575,7 @@ $(document).ready(function() {
 	    router.remoteobjects[objectname].update(object)
 	}
     }
+
 
     function syncproperty(objectname,property,value) {
 	router.remoteobjects[objectname][property] = value
@@ -606,7 +596,6 @@ $(document).ready(function() {
 
 	    if (object1[property] != object2[property]) { return false }
 	}
-
 	return true   
     }
 
@@ -717,7 +706,7 @@ $(document).ready(function() {
     $('#btnminefield').click( function() { selecttab(0) })
     $('#btnballance').click( function() { selecttab(1) })
     $('#btnreferals').click( function() { selecttab(2) })
-    $('#btnfaq').click( function() { selecttab(4) })
+    $('#btnfaq').click( function() { selecttab(3) })
     $('#btnminefield').click()
     $('#btnsound').click( function() {
 	if (sound) { sound = false
@@ -735,17 +724,11 @@ $(document).ready(function() {
 	bets.forEach(function(bet) {
 	    var button = $("<button>" + bet + "</button>").button()
 	    button.click(function() {
-		user.newminefield($( "#minefieldslider" ).slider('value'),bet)
-		
+		user.newminefield($( "#minefieldslider" ).slider('value'),bet)		
 	    })
 	    container.append(button)
 	})
-	
-
-	
     }
-
-
 })
 
 
@@ -754,7 +737,7 @@ $(document).ready(function() {
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
   <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= Math.floor(user.cash / 1e4) / 10000 %></span>&nbsp;</span></span>
-<!--  <span class='btn' id="btnreferals" >Referals</span> -->
+    <span class='btn' id="btnreferals" >Referals<span id='small_referals'>&nbsp;<span class='referalcount sync_user_referalcount'><%= user.referalcount %></span>&nbsp;</span></span>
 
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>
@@ -769,15 +752,24 @@ $(document).ready(function() {
 <div class='subtab'> 
 <center>
 <h1>Referals</h1>
-    For every user you refer to this site, you'll forever receive 5% of that users losses<br><br>
-    your unique url is:<br>
-<h3>http://minefield.bitcoinlab.org/?r=4e2d00759d401a8652000005</h3>
+    For every new user you refer to this site, you'll forever receive 5% of that users losses.<br><br>
+    your unique link to use:<br>
+<h3>http://minefield.bitcoinlab.org/?r=<%= user.referalurl %></h3>
 
 </center>
 </div>
 <div class='subtab'> 
+<center>
+<h3>Users Refered</h3>
+<h2><span class='referalcount sync_user_referalcount'>0</span></h2>
+</center>
 </div>
 <div class='subtab'> 
+<center>
+<h3>Total Earnings</h3>
+(added to your balance)
+<h2><span class='cash sync_user_referalearnings'>0</span></h2>
+</center>
 </div>
 
 </div>

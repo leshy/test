@@ -173,7 +173,7 @@ RemoteObject.prototype.init = function(router,name) {
 		    
 		    if (self["_" + property] == value) { return }
 
-//		    self.l.log("obj","debug",self.objectname + " " + self + " updating " + property + " = " + value)     
+		    self.l.log("obj","debug",self.objectname + " " + self + " updating " + property + " = " + value)     
 
 		    var oldvalue = self["_" + property]
 		    self["_" + property] = value

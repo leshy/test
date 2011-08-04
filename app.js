@@ -3,7 +3,6 @@
 // {{{
 
 // require
-
 var hashlib = require('hashlib');
 var sys = require('sys');
 var mongo = require('mongodb');
@@ -20,11 +19,10 @@ var irc = require('irc')
 
 var remoteobject = require('./remoteobject2.js')
 var Logger = require('./logger.js');
+var uuid = require('./uuid.js');
+
 
 var BinaryParser = mongo.BinaryParser
-
-
-
 
 
 //console.log(IdAtTime(Date.now()))
@@ -172,6 +170,17 @@ function stickid(object) {
     object._id = generateid()
 }
 
+function argtoarray(arg) { ret = []; for (var i in arg) { ret.push(arg[i]) }; return ret }
+
+function mergeObjects() {
+    var ret = {}
+    argtoarray(arguments).forEach(function(obj) {
+	for (var property in obj) { 
+	    ret[property] = obj[property]
+	}
+    })
+    return ret
+}
 
 socketio.Socket.prototype.toString = function() { return this._id }
 
@@ -275,14 +284,16 @@ function sendMoney (address,amount,user,callback,callbackerr) {
     })
 }
 
-function spawnUser(req,callback) {
+function spawnUser(req,aditionaldata,callback) {
     l.log("db","debug",'creating new user')
-    spawnUserData(spawnSecret(), function(user) {req.session.uid = user._id; if (callback) { callback(user) } })
+    spawnUserData(spawnSecret(), aditionaldata, function(user) { 
+	req.session.uid = user._id
+	if (callback) { callback(user) } 
+    })
 }
 
 function RemoveFunctions(object) {
     var res = {}
-
     for (p in object) {
 	if (typeof(object[p]) != 'function') { res[p] = object[p] }
     }
@@ -321,8 +332,6 @@ function mybitcoinparse(data) {
 }
 
 function mybitcoin(file,callback,postdata) {
-
-
     if (!postdata) { var postdata = {} }
     postdata.sci_auto_key = "2a49d1185989fdda4851b8b76b96ada8"
     postdata.username = "DAp39A"
@@ -363,28 +372,48 @@ function mybitcoin(file,callback,postdata) {
 }
 
 
-function spawnSecret() {
-    return rbytes.randomBytes(20).toHex()
+function randomString(bits){
+    var chars,rand,i,ret
+    chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+'
+    ret=''
+    while(bits > 0){
+	rand=Math.floor(Math.random()*0x100000000)
+	for(i=26; i>0 && bits>0; i-=6, bits-=6) ret+=chars[0x3F & rand >>> i]}
+    return ret
 }
 
-function spawnUserData(secret,callback,callbackerr) {
+function spawnSecret() {
+    return uuid.uuid(16)
+}
+
+
+function spawnReferalUrl() {
+    return uuid.uuid(16)
+}
+
+
+function spawnUserData(secret,aditionaldata,callback,callbackerr) {
     var time = new Date().getTime()
 
-    //    console.log("SPECIAL INIT FOR A USER")
-    //    var adr = "1AhhdeSGY8TWVbSJb8oYfExhMrUqCT9sU7"
-    //    settings.collection_addresses.insert({ "address": adr, "creationdate": new Date().getTime(), "cash" : 0  })
-
-    settings.collection_users.insert({
+    var data = {
 	creationdate: time,
 	lastaccess: time,
 	secret: secret,
+	referalurl: spawnReferalUrl(),
+	referalearnings: 0,
+	referalcount: 0,
 	address_deposit_used: [],
 	address_deposit: [],
 //	transaction_history: [],
 	address_withdrawal: undefined,
 	cash: 0
-    }, function(err,doc) {
+    }
+
+    data = mergeObjects(data,aditionaldata)
+
+    settings.collection_users.insert(data, function(err,doc) {
 	if (err) { if(callbackerr) { callbackerr(); return }}
+	console.log(doc)
 	if (callback) { callback(doc[0]) }
     })
 }
@@ -480,7 +509,15 @@ MineField.prototype.step = function(callback,coords) {
     if (self.minefield[coords[0]][coords[1]]  == 3) {
 	getUserById(self.userid,function(user) { 
 	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', win: false , uid: self.userid, bet: self.bet, balance: user.cash })
+	    if ((self.bet != 0) && (user.parent)) { 
+		var award = (self.bet / 100) * 5
+		getUserById(user.parent,function(parent) {
+		    parent.cash += award
+		    parent.referalearnings += award
+		})
+	    }
 	})
+	
 	self.done = true
 	self.win = 0
 	self.sync()
@@ -583,13 +620,8 @@ MineField.prototype.filter_out = { minefield :
 					   })
 					   o.push(rowout)
 
-				       })
-				       
-				       
+				       })				       
 				       return o
-
-				       
-
 				   },
 				   multi: true,
 				   win: function(win) { return moneyOut(win) },
@@ -617,16 +649,19 @@ function adminUser() {
     this.name = "admin user"
     this.init(router,'user')
     this.balance = 0
+    this.test = 0
     this.refreshbalance()
 //    this.refreshtimer = setTimeout(this.refreshbalance,2000)
 }
 
 adminUser.prototype = new remoteobject.RemoteObject()
 adminUser.prototype.filter_in = { refreshbalance : function(arg) { return arg } }
-adminUser.prototype.filter_out = { logline: true, 
+adminUser.prototype.filter_out = { logline : true, 
 				   balance : true,
+				   test : true,
 				   refreshbalance : 'function',
 				   getlogstats: 'function'
+				   
 				 }
 
 adminUser.prototype.sleep = function() {
@@ -787,22 +822,20 @@ function ParseLogs(from,to,slicesize,datapoints,callback) {
 
 
 function User(user) {
-    //console.log(sys.inspect(user))
     var self = this
     self.objectname = 'user'
     self.lasttransaction = 0
-
     for (entry in user) {
 	self[entry] = user[entry]
     }
     if (!self.name) { self.name = "user-" + this._id }
+
 
     self.init(router,'user')
     //self.subscribe('*',function() { self.save() })
 }
 
 User.prototype = new remoteobject.RemoteObject()
-
 
 
 User.prototype.newminefield = function(callback,size,bet) {
@@ -819,8 +852,7 @@ User.prototype.newminefield = function(callback,size,bet) {
     if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
     minefield = new MineField(size,bet,this)
     minefield.addowner(this)
-    minefield.sync()
-    
+    minefield.sync()    
 }
 
 
@@ -868,7 +900,9 @@ User.prototype.filter_out = { name: true,
 			      newminefield: 'function',
 			      sendMoney: 'function',
 			      listTransactions: 'function',
-			      generatedepositaddr: 'function'
+			      generatedepositaddr: 'function',
+			      referalcount: true,
+			      referalearnings: function(referalearnings) { return moneyOut(referalearnings) }
 			    }
 
 User.prototype.filter_save = { name: true,
@@ -879,7 +913,11 @@ User.prototype.filter_save = { name: true,
 			       address_deposit: true,
 			       address_withdrawal: true,
 			       cash: true,
-			       blacklist: true
+			       blacklist: true,
+			       referalurl: true,
+			       referalcount: true,
+			       referalearnings: true,
+			       parent: true
 			     }
 
 
@@ -1034,10 +1072,12 @@ User.prototype.generatedepositaddr = function(callback,callbackerr) {
 	l.log("bitcoind","newdeposit","creating new deposit address " + address + " and linking it to user " + self._id, { uid: self._id, address: address })
 	self.address_deposit.push(address)
 	self.syncproperty('address_deposit')
-	//callback(self.address_deposit)
-	self.save(function() {if(callback) { callback(address) }})
+	self.save()
 	
 	settings.collection_addresses.insert({ "address": address, "creationdate": new Date().getTime(), "cash" : 0, "owner" : self._id  })
+
+	if(callback) { callback(address) }
+
     })
 }
 
@@ -1047,6 +1087,18 @@ function getUserBySecret(secret,callback,callbackerr) {
     if (router.secretuser[secret]) { callback( router.objects[router.secretuser[secret]] ); return  }
     l.log('db','debug','loading user from db (by secret)')
     settings.collection_users.findOne({secret: secret}, function(err,user) {
+	if (!user) { if(callbackerr) { callbackerr() }; return }	
+	user.lastaccess = new Date().getTime()
+	settings.collection_users.update({'_id' : user._id}, user,function (err,r) {
+	    if (err) { if(callbackerr) { callbackerr(err); return }}
+	    if (callback) { callback(new User(user)) }
+	})
+    })
+}
+
+
+function getUserByReferal(r,callback,callbackerr) {
+    settings.collection_users.findOne({referalurl: r}, function(err,user) {
 	if (!user) { if(callbackerr) { callbackerr() }; return }	
 	user.lastaccess = new Date().getTime()
 	settings.collection_users.update({'_id' : user._id}, user,function (err,r) {
@@ -1206,9 +1258,8 @@ app.get ('/paycancel',function(req, res, next){
     res.send("canceled")
 })
 
-
-
 app.get('/', function(req, res, next){
+
     getUserByReq(req,
 		 function(user) {
 		     if ((!user.password) && (!req.query.secret)) {
@@ -1218,9 +1269,29 @@ app.get('/', function(req, res, next){
 		     }
 		 },
 		 function() {
-		     spawnUser(req, function(user) {
-			 res.redirect('/?secret=' + user.secret)
-		     })
+
+		     function spawn(aditionaldata) {
+			 spawnUser(req,aditionaldata, function(user) {
+			     res.redirect('/?secret=' + user.secret)
+			 })
+		     }
+
+		     if (req.query && req.query.r) { 
+			 getUserByReferal(req.query.r,function(user) { 
+			     l.log("newuser","referal","Creating new user, with parent user", { parent: user._id })
+			     getUserById(user._id,function(user) { 
+				 user.referalcount ++;
+				 user.save()
+			     })
+			     spawn({ parent: user._id })
+			 }, function(err) {
+			     l.log("newuser","noreferal","Creating new user, this one has no referal")
+			     spawn({})
+			 })
+		     } else {
+			 l.log("newuser","noreferal","Creating new user, this one has no referal")
+			 spawn({})
+		     }
 		 })
 })
 
@@ -1260,14 +1331,14 @@ btc.getBalance(function(err, balance) {
 
 */
 
-
+/*
 l.outputs.push({push: function(logentry) {
     router.getLiveObject('adminuser',function(admin) {
 	admin.logline = logentry
     })
 }})
 
-
+*/
 function GlobalObject() {
     this.users = 0
     this.availiablebets = settings.availiablebets
@@ -1302,9 +1373,10 @@ io.sockets.on('connection', function (socket) {
 	    l.log("admin","loginsuccess","admin logged in.")
 	    admin.sync(socket)
 
-
-
-
+	    admin.test = [1,2,3]
+	    admin.test = ArrayRemove(admin.test,2)
+//	    admin.syncproperty('test')
+	    admin.test = function(bla) { bla = 3} ( admin.test  )
 
 	    socket.on('call',function (data) {
 		data = JSON.parse(data)
