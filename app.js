@@ -1278,6 +1278,7 @@ app.get('/', function(req, res, next){
 		     }
 
 		     if (req.query && req.query.r) { 
+/*
 			 if (req.query.r == "dbppc") { 
 			     l.log("newuser","dbppc","Creating new user, dailybitcoins pay per click")
 			     spawn({parent:"dbppc"})
@@ -1289,7 +1290,7 @@ app.get('/', function(req, res, next){
 			     spawn({parent:"dbpps"})
 			     return
 			 }
-
+*/
 			 getUserByReferal(req.query.r,function(user) { 
 			     l.log("newuser","referal","Creating new user, with parent user", { parent: user._id })
 			     getUserById(user._id,function(user) { 
