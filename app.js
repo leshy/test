@@ -188,7 +188,7 @@ socketio.Socket.prototype.toString = function() { return this._id }
 function systemcash(callback) {
     btc.getBalance(function(err, balance) {
 	if (err) return console.log(err);
-	callback(balance + 14)
+	callback(balance)
     })
 }
 
@@ -406,7 +406,12 @@ function spawnUserData(secret,aditionaldata,callback,callbackerr) {
 	address_deposit: [],
 //	transaction_history: [],
 	address_withdrawal: undefined,
-	cash: 0
+	cash: 0,
+	played: false,
+	payed: false,
+	loggedin: false,
+	useragent: undefined,
+	ips: []
     }
 
     data = mergeObjects(data,aditionaldata)
@@ -918,7 +923,12 @@ User.prototype.filter_save = { name: true,
 			       referalurl: true,
 			       referalcount: true,
 			       referalearnings: true,
-			       parent: true
+			       parent: true,
+			       played: true,
+			       payed: true,
+			       loggedin: true,
+			       useragent: true,
+			       ip: true
 			     }
 
 
@@ -991,15 +1001,13 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     //amount = moneyIn(amount)
     //console.log(amount)
   
-
+    if (amount < 100000) { self.message("amount too small"); return }
   
     self.transactions_confirmed(function(confirmed) {
 	if (!confirmed) { self.message("transactions unconfirmed"); return }
 
 
-    if ((self.cash - amount) >= 0) {
-
-
+	if ((self.cash - amount) >= 0) {
 
 	var oldcash = self.cash
 	self.cash -= amount
@@ -1044,17 +1052,14 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
 		      self.cash = oldcash
 		      self.save()
 		      self.message("Error: " + err.message )
+		      l.log("payment","error", err.message, { uid: self._id })
 		      if (callbackerr) {callbackerr(err)}
 		  })
     } else {
 	if (callbackerr) { callbackerr ('Not enough money on account') }
 	self.message("Not enough money on account")
     }
-	
-
     })
-    
-    
 }
 
 

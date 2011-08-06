@@ -170,10 +170,6 @@ $(document).ready(function() {
     })
 
 
-    $("#edit_mybitcoin_amount").bind('editstart',function(e,node,data) {
-	$("#mybitcoin_link").html("")	    
-    })
-
     $("#user_withdrawal_amount").bind('edited',function(e,node,data) {
 	var amount = parseFloat(data)
 	if (!amount) {
@@ -463,29 +459,7 @@ $(document).ready(function() {
 	}
 	$("#transaction_history").html(code)
     }
-    
-    $("#edit_mybitcoin_amount").bind('edited',function(e,node,data,olddata) {
-
-	var amount = parseFloat(data)
-	//console.log("amount",amount)
-
-	if (!amount) {
-	    message("invalid amount")
-	    //$("#mybitcoin_link").html( "invalid amount :(")
-	    return
-	}
-	
-	$("#mybitcoin_link").html("communicating with mybitcoin...")
-	$.post("/ajax/mybitcoinlink",{ secret: secret, amount: amount }, function (data) {
-	    data = $.parseJSON(data)
-	    if (data.responsecode == 0) {
-		$("#mybitcoin_link").html ("<a href='https://www.mybitcoin.com/sci/paypage.php?t=" + data.message + "'>pay</a>" )
-	    } else {
-		$("#mybitcoin_link").html( data.message)
-	    }
-	})
-    })
-    
+        
 
     var socket = io.connect('http://bitcoinlab.org:<%= port %>');
     socket.emit('hello', { uid: uid, secret: secret });
@@ -836,16 +810,6 @@ $(document).ready(function() {
     <span class='btn blackborder' id="btn_deposit_generate">generate</span>
 </center>
 </div>
-<!--
-<div class='subtab'> 
-<center>
-    <h3><a href="https://www.mybitcoin.com">Mybitcoin.com</a> Transfer</h3>
-    (<font color='#660000'>mybitcoin is known to be unstable, use this at your own risk</font>)<br><br>
-    I'd like to deposit <b><span id='edit_mybitcoin_amount' class='editable'>[ amount ]</span></b> BTC with <a href="https://www.mybitcoin.com">mybitcoin.com</a>
-<div id="mybitcoin_link"></div>
-</center>
-</div>
--->
 <div class='subtab'> 
 <center>
     <h3>Withdrawal</h3>
