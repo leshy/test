@@ -1105,12 +1105,8 @@ function getUserBySecret(secret,callback,callbackerr) {
 
 function getUserByReferal(r,callback,callbackerr) {
     settings.collection_users.findOne({referalurl: r}, function(err,user) {
-	if (!user) { if(callbackerr) { callbackerr() }; return }	
-	user.lastaccess = new Date().getTime()
-	settings.collection_users.update({'_id' : user._id}, user,function (err,r) {
-	    if (err) { if(callbackerr) { callbackerr(err); return }}
-	    if (callback) { callback(new User(user)) }
-	})
+	if (!user) { if(callbackerr) { callbackerr() }; return }		
+	if (callback) { getUserById(user._id,callback) }
     })
 }
 
