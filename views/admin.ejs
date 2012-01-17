@@ -14,128 +14,128 @@ $(document).ready(function() {
 
 
     function Router() { 
-	this.subscriptions = {}
-	this.remoteobjects = {}
-	this.callback = {}
-	this.onobject = {}
+	    this.subscriptions = {}
+	    this.remoteobjects = {}
+	    this.callback = {}
+	    this.onobject = {}
     }
 
     Router.prototype.subscribe = function(object,property,callback) {
-	var self = this
-	if (!self.subscriptions[object]) { self.subscriptions[object] = {} }
-	if (!self.subscriptions[object][property]) { self.subscriptions[object][property] = [] }
-	self.subscriptions[object][property].push(callback)
-	for (var prop in self.subscriptions[object]) {  console.log(prop) }
+	    var self = this
+	    if (!self.subscriptions[object]) { self.subscriptions[object] = {} }
+	    if (!self.subscriptions[object][property]) { self.subscriptions[object][property] = [] }
+	    self.subscriptions[object][property].push(callback)
+	    for (var prop in self.subscriptions[object]) {  console.log(prop) }
     }
 
 
     Router.prototype.onobjectcallback = function(objectname,callback) {
-	var self = this
-	if (!self.onobject[objectname]) { self.onobject[objectname] = [] }
-	self.onobject[objectname].push(callback)
+	    var self = this
+	    if (!self.onobject[objectname]) { self.onobject[objectname] = [] }
+	    self.onobject[objectname].push(callback)
     }
 
 
     Router.prototype.event = function(object,property,value,oldvalue) {
-	var self = this
-	var objectname = object.objectname
-	console.log("event",objectname,object,property,value)
+	    var self = this
+	    var objectname = object.objectname
+	    console.log("event",objectname,object,property,value)
 
-	if (self.subscriptions["*"]["*"]) {
-	    self.subscriptions["*"]["*"].forEach( function(callback) {
-		callback(value,oldvalue,property,object)
+	    if (self.subscriptions["*"]["*"]) {
+	        self.subscriptions["*"]["*"].forEach( function(callback) {
+		        callback(value,oldvalue,property,object)
+	        })
+	    }
+
+	    if (self.subscriptions["*"][property]) {
+	        self.subscriptions["*"][property].forEach( function(callback) {
+		        callback(value,oldvalue,property,object)
+	        })
+	    }
+
+
+	    if (self.subscriptions[objectname]["*"]) {
+	        self.subscriptions[objectname]["*"].forEach( function(callback) {
+		        callback(value,oldvalue,property,object)
+	        })
+	    }
+
+	    if (!self.subscriptions[objectname]) { return }
+	    if (!self.subscriptions[objectname][property]) { return }
+	    self.subscriptions[objectname][property].forEach( function(callback) {
+	        callback(value,oldvalue,property,object)
 	    })
-	}
-
-	if (self.subscriptions["*"][property]) {
-	    self.subscriptions["*"][property].forEach( function(callback) {
-		callback(value,oldvalue,property,object)
-	    })
-	}
-
-
-	if (self.subscriptions[objectname]["*"]) {
-	    self.subscriptions[objectname]["*"].forEach( function(callback) {
-		callback(value,oldvalue,property,object)
-	    })
-	}
-
-	if (!self.subscriptions[objectname]) { return }
-	if (!self.subscriptions[objectname][property]) { return }
-	self.subscriptions[objectname][property].forEach( function(callback) {
-	    callback(value,oldvalue,property,object)
-	})
     }
 
 
     router = new Router()
 
     function RemoteObject(name,obj) {
-	this.objectname = name
-	if (name == 'user') { admin = this }
-	router.remoteobjects[name] = this
-	if (!router.subscriptions[name]) {
-	    router.subscriptions[name] = {}
-	}
-	this.update(obj)
+	    this.objectname = name
+	    if (name == 'user') { admin = this }
+	    router.remoteobjects[name] = this
+	    if (!router.subscriptions[name]) {
+	        router.subscriptions[name] = {}
+	    }
+	    this.update(obj)
     }
 
 
     RemoteObject.prototype.update = function(obj) {
-	//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
+	    //	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
 
 
 
-	var self = this
-	//console.log("update",router,obj)
-	for (var property in obj) {
-	    function c(property,value) {
-		if (value == "function") {
-		    self[property] = function() { 
-			var data = {}
-			data['object'] = self.objectname
-			data['function'] = property
-			var args = Array.prototype.slice.call(arguments);
+	    var self = this
+	    //console.log("update",router,obj)
+	    for (var property in obj) {
+	        function c(property,value) {
+		        if (value == "function") {
+		            self[property] = function() { 
+			            var data = {}
+			            data['object'] = self.objectname
+			            data['function'] = property
+			            var args = Array.prototype.slice.call(arguments);
 
-			//	console.log ("calling remote function " + property,args) 
+			            //	console.log ("calling remote function " + property,args) 
 
-			if (typeof(args[args.length - 1]) == 'function') {
-			    var answerid = property + new Date().getTime()
-			    data['answerid'] = answerid
-			    router.callback[answerid] = args.pop()
-			    setTimeout(function() { delete router[answerid] },10000)
-			}
-			
-			data['arguments'] = args
+			            if (typeof(args[args.length - 1]) == 'function') {
+			                var answerid = property + new Date().getTime()
+			                data['answerid'] = answerid
+			                router.callback[answerid] = args.pop()
+			                setTimeout(function() { delete router[answerid] },10000)
+			            }
+			            
+			            data['arguments'] = args
 
-			console.log('calling',data)
-			socket.emit('call',JSON.stringify(data))
-		    }
-		    router.event(self,property)
-		    return
-		}
+			            console.log('calling',data)
+			            socket.emit('call',JSON.stringify(data))
+		            }
+		            router.event(self,property)
+		            return
+		        }
 
-		if (!self["_" + property]) { 
-		    self.__defineSetter__(property, function (value) { 
-			var data = {objects: {}, secret: secret}
-			data.objects[self.objectname] = {}
-			data.objects[self.objectname][property] = value
-			//			console.log("emiting objectsync")
-			socket.emit ('objectsync',JSON.stringify(data))
-		    })
-		    self.__defineGetter__(property, function () { return self["_" + property] })
-		} else {
-		    if (self["_" + property] == value ) { return }
-		}
-		
-		var oldvalue = self["_" + property]
-		self["_" + property] = value
-		if (oldvalue != value) {
-		    router.event(self,property,value,oldvalue)
-		}
+		        if (!self["_" + property]) { 
+		            self.__defineSetter__(property, function (value) { 
+			            var data = {objects: {}, secret: secret}
+			            data.objects[self.objectname] = {}
+			            data.objects[self.objectname][property] = value
+			            //			console.log("emiting objectsync")
+			            socket.emit ('objectsync',JSON.stringify(data))
+		            })
+		            self.__defineGetter__(property, function () { return self["_" + property] })
+		        } else {
+		            if (self["_" + property] == value ) { return }
+		        }
+		        
+		        var oldvalue = self["_" + property]
+		        self["_" + property] = value
+		        if (oldvalue != value) {
+		            router.event(self,property,value,oldvalue)
+		        }
+	        }
+	        c(property,obj[property])
 	    }
-	    c(property,obj[property])
-	}
     }
 
 
@@ -143,464 +143,467 @@ $(document).ready(function() {
     var socket = io.connect('<%= host %>:<%= port %>');
     socket.emit('adminlogin', { secret: "<%= secret %>" });
     socket.on('connection', function () {
-	console.log('websocket connected.')
+	    console.log('websocket connected.')
     })
 
     socket.on('answer', function(data) { 
-	if (router.callback[data.answerid]) {
-	    router.callback[data.answerid](JSON.parse(data.data))
-	} else {
-	    console.log("function response received but there is no answerid.. ")
-	}
+	    if (router.callback[data.answerid]) {
+	        router.callback[data.answerid](JSON.parse(data.data))
+	    } else {
+	        console.log("function response received but there is no answerid.. ")
+	    }
     })
 
     socket.on('objectsync', function(data) {
-	data = JSON.parse(data)
-	
-	for (var objectname in data) {
-	    console.log("objectsync",objectname,data[objectname])
-	    updateobject(objectname,data[objectname])
-	}
+	    data = JSON.parse(data)
+	    
+	    for (var objectname in data) {
+	        console.log("objectsync",objectname,data[objectname])
+	        updateobject(objectname,data[objectname])
+	    }
     })
 
     socket.on('disconnect', function(data) {
-	location.reload(true)
+	    location.reload(true)
     })
 
 
     function updateobject(objectname,object) {
 
 
-	if (!router.remoteobjects[objectname]) {
-	    //console.log("created new remote object '" + objectname + "'",object,router )
-	    var newobj = new RemoteObject(objectname,object)
-	    //console.log(newobj)
-	    router.remoteobjects[objectname] = newobj
-	    router.event(newobj,'created')
-	} else {
-	    //console.log("updating remote object '" + objectname + "'",object,router )
-	    router.remoteobjects[objectname].update(object)
-	}
+	    if (!router.remoteobjects[objectname]) {
+	        //console.log("created new remote object '" + objectname + "'",object,router )
+	        var newobj = new RemoteObject(objectname,object)
+	        //console.log(newobj)
+	        router.remoteobjects[objectname] = newobj
+	        router.event(newobj,'created')
+	    } else {
+	        //console.log("updating remote object '" + objectname + "'",object,router )
+	        router.remoteobjects[objectname].update(object)
+	    }
     }
 
     function syncproperty(objectname,property,value) {
-	router.remoteobjects[objectname][property] = value
+	    router.remoteobjects[objectname][property] = value
     }
 
 
     function equal(object1, object2) {
-	if (!object2) { return false }
+	    if (!object2) { return false }
 
-	if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
-	    return (object1 == object2)
-	}
+	    if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
+	        return (object1 == object2)
+	    }
 
-	
-	if (object1.length != object2.length) { return false }
-	
-	for (var property in object1) { 
+	    
+	    if (object1.length != object2.length) { return false }
+	    
+	    for (var property in object1) { 
 
-	    if (object1[property] != object2[property]) { return false }
-	}
+	        if (object1[property] != object2[property]) { return false }
+	    }
 
-	return true   
+	    return true   
     }
 
     
 
     router.subscribe("*","*",function(value,oldvalue,property,object) {
-	//console.log(object.objectname, "PROPERTY UPDATED", property,value)
-	if ((object[property] != undefined) && (object[property] != null)) {
-	    $("#sync_" + object.objectname + "_" + property).html(object[property])
-	    $(".sync_" + object.objectname + "_" + property).html(object[property])
-	}
-	//console.log(property,$(".sync_user_" + property))
+	    //console.log(object.objectname, "PROPERTY UPDATED", property,value)
+	    if ((object[property] != undefined) && (object[property] != null)) {
+	        $("#sync_" + object.objectname + "_" + property).html(object[property])
+	        $(".sync_" + object.objectname + "_" + property).html(object[property])
+	    }
+	    //console.log(property,$(".sync_user_" + property))
     })
-
 
     router.subscribe("user","balance",function(value) {
-	value = parseFloat(value)
-
-	//value = value - 4
-	$("#btcbalance").html("<span class='minefieldcash'>" + (Math.round(value * 1000) / 1000) + "</span> BTC")
-	
-	var btctousd = 14
-	var btctohrk = btctousd * 5.25
-
-
-	$("#othevalutes").html ( Math.round(value * btctousd) + " USD, " + Math.round(value * btctohrk) + " HRK"  )
+	    value = parseFloat(value)
+	    $("#btcbalance").html("<span class='minefieldcash'>" + (Math.round(value * 1000) / 1000) + "</span> BTC")
+        calculateusd()
     })
 
+    router.subscribe("user","usdvalue",calculateusd)
+
+    function calculateusd() {
+        var usdtohrk = 5.9
+        $("#othevalutes").html ( "(" + admin.usdvalue + ") " + Math.round(admin.usdvalue * admin.balance) + " USD, " + Math.round(admin.usdvalue * admin.balance * usdtohrk) + " HRK")
+
+    }
+
+
+
+/*
     router.subscribe("user","logline",function(value) {
-	t = new Date(value.time)
-	var time = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds()
-	var line = $("<span><font color='blue'>" + time + "</font> - " + value.message + "</span>")
+	    t = new Date(value.time)
+	    var time = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds()
+	    var line = $("<span><font color='blue'>" + time + "</font> - " + value.message + "</span>")
 
-	loglines.unshift(line)
-	if (loglines.length > 10) {
-	    loglines.pop()
-	}
+	    loglines.unshift(line)
+	    if (loglines.length > 10) {
+	        loglines.pop()
+	    }
 
 
-	$("#log").append( $("<span><font color='blue'>" + time + "</font> - " + value.area + " " + value.loglevel + " - " + value.message + "</span>"))
-	$("#log").append("<br>")
+	    $("#log").append( $("<span><font color='blue'>" + time + "</font> - " + value.area + " " + value.loglevel + " - " + value.message + "</span>"))
+	    $("#log").append("<br>")
     })
-
+*/
 
 
     router.subscribe("user","getlogstats",function(value,oldvalue,property,object) {
-	
-//	admin.getlogstats(900000 * 2 * 2 * 2   ,new Date().getTime() - (24 * 60 * 60 * 1000 * 8),new Date().getTime() ,
-	admin.getlogstats(900000   ,new Date().getTime() - (24 * 60 * 60 * 1000 * 2),new Date().getTime() ,
-			  function(response) { 
-			      console.log("GOT RESPONSE",response) 
-			      graphdata(response)
-			  })
+	    
+	    admin.getlogstats(900000 * 2 * 2 * 2 * 2  ,new Date().getTime() - (24 * 60 * 60 * 1000 * 40),new Date().getTime() ,
+                          //  	admin.getlogstats(900000   ,new Date().getTime() - (24 * 60 * 60 * 1000 * 2),new Date().getTime() ,
+			              function(response) { 
+			                  console.log("GOT RESPONSE",response) 
+			                  graphdata(response)
+			              })
 
     })
 
 
     function graphdata(data) {
-	
+	    
 
-	function addlegend(chart,down) {
+	    function addlegend(chart,down) {
 
-	    if (!down) { down = false }
+	        if (!down) { down = false }
 
-	    var text = chart.selectAll("textx")
-		.data(x.ticks(15))
-		.enter().append("svg:text")
-		.attr("class", "rule")
-		.attr("x", x)
-		.attr("dx", 0) // padding-right
-		.attr("text-anchor", "middle") // text-align: right
-		.text(function(x) { 
-		    var t = new Date(x) 
-		    return t.getDate() + " " + t.getHours() + ":" + t.getMinutes()
-		})
-
-
-
-	    var linex = chart.selectAll("linex")
-		.data(x.ticks(15))
-		.enter().append("svg:line")
-		.attr("x1", x)
-		.attr("x2", x)
-		.style('opacity',0.5)
-		.attr("stroke", "steelblue")
+	        var text = chart.selectAll("textx")
+		        .data(x.ticks(15))
+		        .enter().append("svg:text")
+		        .attr("class", "rule")
+		        .attr("x", x)
+		        .attr("dx", 0) // padding-right
+		        .attr("text-anchor", "middle") // text-align: right
+		        .text(function(x) { 
+		            var t = new Date(x) 
+		            return t.getDate() + " " + t.getHours() + ":" + t.getMinutes()
+		        })
 
 
-	    if (down) { 
-		text.attr("y", h - 10)
-		linex.attr("y1", h - 25)
-		linex.attr("y2", 0)
 
-	    } else {
-		text.attr("y", 10)
-		linex.attr("y1", h)
-		linex.attr("y2", 20)
+	        var linex = chart.selectAll("linex")
+		        .data(x.ticks(15))
+		        .enter().append("svg:line")
+		        .attr("x1", x)
+		        .attr("x2", x)
+		        .style('opacity',0.5)
+		        .attr("stroke", "steelblue")
+
+
+	        if (down) { 
+		        text.attr("y", h - 10)
+		        linex.attr("y1", h - 25)
+		        linex.attr("y2", 0)
+
+	        } else {
+		        text.attr("y", 10)
+		        linex.attr("y1", h)
+		        linex.attr("y2", 20)
+	        }
+
+
+	        chart.append("svg:line")
+		        .attr("x1", 0)
+		        .attr("x2", graphwidth)
+		        .attr("y1", h / 2)
+		        .attr("y2", h / 2)
+		        .style('opacity',0.5)
+		        .attr("stroke", "#000")
+
+
+	        chart.append("svg:line")
+		        .attr("x1", 0)
+		        .attr("x2", graphwidth)
+		        .attr("y1", h)
+		        .attr("y2", h)
+		        .attr("stroke", "#000")
+
+
+	        chart.append("svg:line")
+		        .attr("x1", 0)
+		        .attr("x2", 0)
+		        .attr("y1", 0)
+		        .attr("y2", h)
+		        .attr("stroke", "#000")
+
+
+	    }
+
+	    function moneychart(data,selector) {
+	        var field1 = "systemcash"
+	        var field2 = "usercash"
+
+	        var field3 = "pay_in"
+	        var field4 = "pay_out"
+
+
+	        var systemcashmax = d3.max(data,function(data) { return parseInt(data[field1])} )
+	        var paymoneymax = 3 * 100000000
+
+	        line1y = d3.scale.linear().domain([0, systemcashmax]).range([h/2 , 20]),
+	        line2y = d3.scale.linear().domain([0, systemcashmax]).range([h/2 , h]),
+	        line3y = d3.scale.linear().domain([0, paymoneymax]).range([h/2 , 0]),
+	        line4y = d3.scale.linear().domain([0, paymoneymax]).range([h/2 , h]),
+
+	        chart = d3.select(selector)
+		        .append("svg:svg")
+		        .attr("class", "chart")
+		        .attr("width", graphwidth)
+		        .attr("height", h);
+
+
+	        chart.selectAll('cash_in')
+		        .data([data])
+		        .enter().append("svg:path")
+		        .style("stroke", "green")
+	        //	    .style("fill", "lightgreen")
+		        .style("stroke-width",2)
+		        .attr("opacity",0.5)
+		        .attr("d", d3.svg.line()
+		              //		  .interpolate("cardinal")
+		              .x( function(d,i) { return linex(i)})
+		              .y( function(d) {  val = line3y(d[field3])
+					                     if (!val) { return h/2 } else {return val}}))
+
+
+	        chart.selectAll('cash_out')
+		        .data([data])
+		        .enter().append("svg:path")
+		        .style("stroke", "#800")
+	        //	    .style("fill", "red")
+		        .style("stroke-width",2)
+		        .attr("opacity",0.5)
+		        .attr("d", d3.svg.line()
+		              //		  .interpolate("cardinal")
+		              .x( function(d,i) { return linex(i)})
+		              .y( function(d) {  val = line4y(d[field4])
+					                     if (!val) { return h/2 } else {return val}}))
+
+
+
+	        chart.selectAll('system_cash')
+		        .data([data])
+		        .enter().append("svg:path")
+		        .style("stroke", "steelblue")
+		        .style("stroke-width",2)
+		        .attr("opacity",1)
+		        .attr("d", d3.svg.line()
+		              //.interpolate("cardinal")
+		              .x( function(d,i) { return linex(i)})
+		              .y( function(d) {  val = line1y(parseInt(d[field1]))
+					                     if (!val) { return h/2 } else {return val}}))
+
+
+	        chart.selectAll('point_system_cash')
+		        .data(data)
+		        .enter().append("svg:circle")
+		        .attr("class","point")
+		        .attr("cx", function(d,i) { return linex(i)})
+		        .attr("cy", function(d) {  val = line1y(d[field1])
+					                       if (!val) { return h/2 } else {return val}})
+		        .attr("r", 3)
+		        .on('mouseover', function(d) { 
+		            d3.select(this).transition().attr('r', 8) 
+		            $.cursorMessage(field1 + ": " + Math.round(d[field1] / 1000000) / 100)
+		        })
+		        .on('mouseout',  function() { 
+		            d3.select(this).transition().attr('r', 3) 
+		            $.hideCursorMessage
+		        })
+
+	        chart.selectAll('user_cash')
+		        .data([data])
+		        .enter().append("svg:path")
+		        .style("stroke", "steelblue")
+		        .style("stroke-width",2)
+		        .attr("opacity",1)
+		        .attr("d", d3.svg.line()
+		              //.interpolate("cardinal")
+		              .x( function(d,i) { return linex(i)})
+		              .y( function(d) {  val = line2y(parseInt(d[field2]))
+					                     if (!val) { return h/2 } else {return val}}))
+
+
+
+	        chart.selectAll('point_user_cash')
+		        .data(data)
+		        .enter().append("svg:circle")
+		        .attr("class","point")
+		        .attr("cx", function(d,i) { return linex(i)})
+		        .attr("cy", function(d) {  val = line2y(d[field2])
+					                       if (!val) { return h/2 } else {return val}})
+		        .attr("r", 3)
+		        .on('mouseover', function(d) { 
+		            d3.select(this).transition().attr('r', 8) 
+		            $.cursorMessage(field2 + ": " + Math.round(d[field2] / 1000000) / 100)
+		        })
+		        .on('mouseout',  function() { 
+		            d3.select(this).transition().attr('r', 3) 
+		            $.hideCursorMessage
+		        })
+
+
+	        addlegend(chart,true)
+	    }
+
+	    function usagechart(data,selector) {
+	        var field = "httpreq"
+	        var field_line1 = "cashplays"
+	        var field_line2 = "nocashplays"
+
+
+	        var maxdata = d3.max(data,function(data) { return data[field]} )
+
+
+	        var y = d3.scale.linear()
+	            .domain([0, maxdata])
+	            .rangeRound([0, h - 40]);
+
+
+
+	        var chart = d3.select(selector)
+		        .append("svg:svg")
+		        .attr("class", "chart")
+		        .attr("width", graphwidth)
+	        //	    .attr("width", w * data.length - 1)
+		        .attr("height", h);
+
+
+
+	        chart.selectAll("rect")
+		        .data(data)
+		        .enter().append("svg:rect")
+		        .attr("fill","steelblue")
+		        .style('opacity',0.3)
+		        .attr("x", function(d, i) { return x(d.time)})
+		        .attr("y", function(d) { return h - y(d[field]) })
+		        .attr("width", (graphwidth / data.length) - 1)
+		        .attr("height", function(d) { return y(d[field]); })
+		        .on("mouseover", 
+		            function(d) {
+			            $.cursorMessage(field + ": " + parseInt(d[field]))
+			            d3.select(this).transition()
+			                .attr('fill', 'red') 
+			                .attr("x", function(d, i) { return x(d.time) - ((graphwidth / data.length) / 2) })
+			                .attr("width",(graphwidth / data.length) * 2)
+
+
+		            })
+		        .on("mouseout", function() { 
+		            $.hideCursorMessage
+			        d3.select(this).transition()
+			            .attr('fill', 'steelblue')
+			            .attr("x", function(d, i) { return x(d.time)})
+			            .attr("width",(graphwidth / data.length))
+		        })
+
+
+	        var playmax = d3.max(data,function(data) { return data[field_line1]} )
+	        var play2max = d3.max(data,function(data) { return data[field_line2]} )
+	        if (play2max > playmax) { playmax = play2max }
+
+
+
+	        line1y = d3.scale.linear().domain([0, playmax]).range([h/2 , 0])
+	        line2y = d3.scale.linear().domain([0, playmax]).range([h/2 , h])
+
+
+
+	        chart.selectAll('line1')
+		        .data([data])
+		        .enter().append("svg:path")
+		        .style("stroke", "steelblue")
+		        .attr("d", d3.svg.line()
+		              //		  .interpolate("cardinal")
+		              .x( function(d,i) { return linex(i)})
+		              .y( function(d) {  val = line1y(d[field_line1])
+					                     if (!val) { return h/2 } else {return val}}))
+
+
+
+	        chart.selectAll('line2')
+		        .data([data])
+		        .enter().append("svg:path")
+		        .style("stroke", "steelblue")
+	        //	    .style("opacity", 0.8)	
+		        .attr("d", d3.svg.line()
+		              //		  .interpolate("cardinal")
+		              .x( function(d,i) { return linex(i)})
+		              .y( function(d) {  val = line2y(d[field_line2])
+					                     if (!val) { return h/2 } else {return val}}))
+
+
+
+	        chart.selectAll('point1')
+		        .data(data)
+		        .enter().append("svg:circle")
+		        .attr("class","point")
+		        .attr("cx", function(d,i) { return linex(i)})
+		        .attr("cy", function(d) {  val = line1y(d[field_line1])
+					                       if (!val) { return h/2 } else {return val}})
+		        .attr("r", 3)
+		        .on('mouseover', function(d) { 
+		            d3.select(this).transition().attr('r', 8) 
+		            $.cursorMessage(field_line1 + ": " + d[field_line1])
+		        })
+		        .on('mouseout',  function() { 
+		            d3.select(this).transition().attr('r', 3) 
+		            $.hideCursorMessage
+		        })
+
+
+	        chart.selectAll('point2')
+		        .data(data)
+		        .enter().append("svg:circle")
+		        .attr("class","point")
+		        .attr('cx',( function(d,i) { return linex(i)}))
+		        .attr('cy',( function(d) {  val = line2y(d[field_line2])
+					                        if (!val) { return h/2 } else {return val}}))
+
+		        .attr("r", 3)
+		        .on('mouseover', function(d) { 
+		            $.cursorMessage(field_line2 + ": " + d[field_line2])
+		            d3.select(this).transition()
+			            .attr('r', 8) 
+			            .attr("x", function(d, i) { return x(d.time)})
+			            .attr("width",(graphwidth / data.length))
+
+		        })
+		        .on('mouseout',  function() { 
+		            d3.select(this).transition().attr('r', 3)
+		            $.hideCursorMessage
+		        })
+
+
+	        addlegend(chart)
+
+
+
 	    }
 
 
-	    chart.append("svg:line")
-		.attr("x1", 0)
-		.attr("x2", graphwidth)
-		.attr("y1", h / 2)
-		.attr("y2", h / 2)
-		.style('opacity',0.5)
-		.attr("stroke", "#000")
 
+	    
 
-	    chart.append("svg:line")
-		.attr("x1", 0)
-		.attr("x2", graphwidth)
-		.attr("y1", h)
-		.attr("y2", h)
-		.attr("stroke", "#000")
 
+	    var graphwidth = 1100
+	    var w = 10, h = 350;
 
-	    chart.append("svg:line")
-		.attr("x1", 0)
-		.attr("x2", 0)
-		.attr("y1", 0)
-		.attr("y2", h)
-		.attr("stroke", "#000")
+	    var linex = d3.scale.linear().domain([0, data.length]).range([0, graphwidth])
 
+	    var maxdatatime = d3.max(data,function(data) { return data.time} )
+	    var mindatatime = d3.min(data,function(data) { return data.time} )
 
-	}
+	    var x = d3.scale.linear()
+	        .domain([mindatatime, maxdatatime])
+	        .rangeRound([0, graphwidth]);
 
-	function moneychart(data,selector) {
-	    var field1 = "systemcash"
-	    var field2 = "usercash"
 
-	    var field3 = "pay_in"
-	    var field4 = "pay_out"
-
-
-	    var systemcashmax = d3.max(data,function(data) { return parseInt(data[field1])} )
-	    var paymoneymax = 3 * 100000000
-
-	    line1y = d3.scale.linear().domain([0, systemcashmax]).range([h/2 , 20]),
-	    line2y = d3.scale.linear().domain([0, systemcashmax]).range([h/2 , h]),
-	    line3y = d3.scale.linear().domain([0, paymoneymax]).range([h/2 , 0]),
-	    line4y = d3.scale.linear().domain([0, paymoneymax]).range([h/2 , h]),
-
-	    chart = d3.select(selector)
-		.append("svg:svg")
-		.attr("class", "chart")
-		.attr("width", graphwidth)
-		.attr("height", h);
-
-
-	    chart.selectAll('cash_in')
-		.data([data])
-		.enter().append("svg:path")
-		.style("stroke", "green")
-	    //	    .style("fill", "lightgreen")
-		.style("stroke-width",2)
-		.attr("opacity",0.5)
-		.attr("d", d3.svg.line()
-		      //		  .interpolate("cardinal")
-		      .x( function(d,i) { return linex(i)})
-		      .y( function(d) {  val = line3y(d[field3])
-					 if (!val) { return h/2 } else {return val}}))
-
-
-	    chart.selectAll('cash_out')
-		.data([data])
-		.enter().append("svg:path")
-		.style("stroke", "#800")
-	    //	    .style("fill", "red")
-		.style("stroke-width",2)
-		.attr("opacity",0.5)
-		.attr("d", d3.svg.line()
-		      //		  .interpolate("cardinal")
-		      .x( function(d,i) { return linex(i)})
-		      .y( function(d) {  val = line4y(d[field4])
-					 if (!val) { return h/2 } else {return val}}))
-
-
-
-	    chart.selectAll('system_cash')
-		.data([data])
-		.enter().append("svg:path")
-		.style("stroke", "steelblue")
-		.style("stroke-width",2)
-		.attr("opacity",1)
-		.attr("d", d3.svg.line()
-		      //.interpolate("cardinal")
-		      .x( function(d,i) { return linex(i)})
-		      .y( function(d) {  val = line1y(parseInt(d[field1]))
-					 if (!val) { return h/2 } else {return val}}))
-
-
-	    chart.selectAll('point_system_cash')
-		.data(data)
-		.enter().append("svg:circle")
-		.attr("class","point")
-		.attr("cx", function(d,i) { return linex(i)})
-		.attr("cy", function(d) {  val = line1y(d[field1])
-					   if (!val) { return h/2 } else {return val}})
-		.attr("r", 3)
-		.on('mouseover', function(d) { 
-		    d3.select(this).transition().attr('r', 8) 
-		    $.cursorMessage(field1 + ": " + Math.round(d[field1] / 1000000) / 100)
-		})
-		.on('mouseout',  function() { 
-		    d3.select(this).transition().attr('r', 3) 
-		    $.hideCursorMessage
-		})
-
-	    chart.selectAll('user_cash')
-		.data([data])
-		.enter().append("svg:path")
-		.style("stroke", "steelblue")
-		.style("stroke-width",2)
-		.attr("opacity",1)
-		.attr("d", d3.svg.line()
-		      //.interpolate("cardinal")
-		      .x( function(d,i) { return linex(i)})
-		      .y( function(d) {  val = line2y(parseInt(d[field2]))
-					 if (!val) { return h/2 } else {return val}}))
-
-
-
-	    chart.selectAll('point_user_cash')
-		.data(data)
-		.enter().append("svg:circle")
-		.attr("class","point")
-		.attr("cx", function(d,i) { return linex(i)})
-		.attr("cy", function(d) {  val = line2y(d[field2])
-					   if (!val) { return h/2 } else {return val}})
-		.attr("r", 3)
-		.on('mouseover', function(d) { 
-		    d3.select(this).transition().attr('r', 8) 
-		    $.cursorMessage(field2 + ": " + Math.round(d[field2] / 1000000) / 100)
-		})
-		.on('mouseout',  function() { 
-		    d3.select(this).transition().attr('r', 3) 
-		    $.hideCursorMessage
-		})
-
-
-	    addlegend(chart,true)
-	}
-
-	function usagechart(data,selector) {
-	    var field = "httpreq"
-	    var field_line1 = "cashplays"
-	    var field_line2 = "nocashplays"
-
-
-	var maxdata = d3.max(data,function(data) { return data[field]} )
-
-
-	var y = d3.scale.linear()
-	    .domain([0, maxdata])
-	    .rangeRound([0, h - 40]);
-
-
-
-	    var chart = d3.select(selector)
-		.append("svg:svg")
-		.attr("class", "chart")
-		.attr("width", graphwidth)
-	    //	    .attr("width", w * data.length - 1)
-		.attr("height", h);
-
-
-
-	    chart.selectAll("rect")
-		.data(data)
-		.enter().append("svg:rect")
-		.attr("fill","steelblue")
-		.style('opacity',0.3)
-		.attr("x", function(d, i) { return x(d.time)})
-		.attr("y", function(d) { return h - y(d[field]) })
-		.attr("width", (graphwidth / data.length) - 1)
-		.attr("height", function(d) { return y(d[field]); })
-		.on("mouseover", 
-		    function(d) {
-			$.cursorMessage(field + ": " + parseInt(d[field]))
-			d3.select(this).transition()
-			    .attr('fill', 'red') 
-			    .attr("x", function(d, i) { return x(d.time) - ((graphwidth / data.length) / 2) })
-			    .attr("width",(graphwidth / data.length) * 2)
-
-
-		    })
-		.on("mouseout", function() { 
-		    $.hideCursorMessage
-			d3.select(this).transition()
-			.attr('fill', 'steelblue')
-			.attr("x", function(d, i) { return x(d.time)})
-			.attr("width",(graphwidth / data.length))
-		})
-
-
-	    var playmax = d3.max(data,function(data) { return data[field_line1]} )
-	    var play2max = d3.max(data,function(data) { return data[field_line2]} )
-	    if (play2max > playmax) { playmax = play2max }
-
-
-
-	    line1y = d3.scale.linear().domain([0, playmax]).range([h/2 , 0])
-	    line2y = d3.scale.linear().domain([0, playmax]).range([h/2 , h])
-
-
-
-	    chart.selectAll('line1')
-		.data([data])
-		.enter().append("svg:path")
-		.style("stroke", "steelblue")
-		.attr("d", d3.svg.line()
-		      //		  .interpolate("cardinal")
-		      .x( function(d,i) { return linex(i)})
-		      .y( function(d) {  val = line1y(d[field_line1])
-					 if (!val) { return h/2 } else {return val}}))
-
-
-
-	    chart.selectAll('line2')
-		.data([data])
-		.enter().append("svg:path")
-		.style("stroke", "steelblue")
-	    //	    .style("opacity", 0.8)	
-		.attr("d", d3.svg.line()
-		      //		  .interpolate("cardinal")
-		      .x( function(d,i) { return linex(i)})
-		      .y( function(d) {  val = line2y(d[field_line2])
-					 if (!val) { return h/2 } else {return val}}))
-
-
-
-	    chart.selectAll('point1')
-		.data(data)
-		.enter().append("svg:circle")
-		.attr("class","point")
-		.attr("cx", function(d,i) { return linex(i)})
-		.attr("cy", function(d) {  val = line1y(d[field_line1])
-					   if (!val) { return h/2 } else {return val}})
-		.attr("r", 3)
-		.on('mouseover', function(d) { 
-		    d3.select(this).transition().attr('r', 8) 
-		    $.cursorMessage(field_line1 + ": " + d[field_line1])
-		})
-		.on('mouseout',  function() { 
-		    d3.select(this).transition().attr('r', 3) 
-		    $.hideCursorMessage
-		})
-
-
-	    chart.selectAll('point2')
-		.data(data)
-		.enter().append("svg:circle")
-		.attr("class","point")
-		.attr('cx',( function(d,i) { return linex(i)}))
-		.attr('cy',( function(d) {  val = line2y(d[field_line2])
-					    if (!val) { return h/2 } else {return val}}))
-
-		.attr("r", 3)
-		.on('mouseover', function(d) { 
-		    $.cursorMessage(field_line2 + ": " + d[field_line2])
-		    d3.select(this).transition()
-			.attr('r', 8) 
-			.attr("x", function(d, i) { return x(d.time)})
-			.attr("width",(graphwidth / data.length))
-
-		})
-		.on('mouseout',  function() { 
-		    d3.select(this).transition().attr('r', 3)
-		    $.hideCursorMessage
-		})
-
-
-	    addlegend(chart)
-
-
-
-	}
-
-
-
-	
-
-
-	var graphwidth = 1100
-	var w = 10, h = 350;
-
-	var linex = d3.scale.linear().domain([0, data.length]).range([0, graphwidth])
-
-	var maxdatatime = d3.max(data,function(data) { return data.time} )
-	var mindatatime = d3.min(data,function(data) { return data.time} )
-
-	var x = d3.scale.linear()
-	    .domain([mindatatime, maxdatatime])
-	    .rangeRound([0, graphwidth]);
-
-
-	moneychart(data,"#chartmoney")
-	usagechart(data,"#chartusage")
+	    moneychart(data,"#chartmoney")
+	    usagechart(data,"#chartusage")
 
 
     }
@@ -631,8 +634,8 @@ $(document).ready(function() {
     <div class='subtab'> 
     <center>
     <h3>Log</h3>
-</center>
+    </center>
 
-<div id="log"></div>
+    <div id="log"></div>
 
 </div>

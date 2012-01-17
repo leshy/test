@@ -3,7 +3,8 @@
 // {{{
 
 // require
-var hashlib = require('hashlib');
+//var hashlib = require('hashlib');
+var sechash = require('sechash');
 var sys = require('sys');
 var mongo = require('mongodb');
 var express = require('express');
@@ -11,6 +12,7 @@ var mongostore = require('connect-mongo');
 var bitcoin = require('bitcoin');
 var BSON = mongo.BSONPure
 var https = require('https');
+var http = require('http');
 var querystring = require('querystring');
 var tls = require('tls');
 var socketio = require('socket.io')
@@ -42,7 +44,7 @@ settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 settings.admin_secret = generateid()
 
-settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0 ]
+settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
 if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 1 }
@@ -463,7 +465,8 @@ function MineField(size,bet,parent) {
     self.generateminefield(size) 
 
     self.crypted = JSON.stringify(self.minefield) + " " + rbytes.randomBytes(16).toHex()
-    self.hash = hashlib.sha256(self.crypted)
+//    self.hash = hashlib.sha256(self.crypted)
+    self.hash = sechash.basicHash('md5', self.crypted);
     self.done = false
     self.init(router,'minefield')
 }
@@ -515,7 +518,7 @@ MineField.prototype.step = function(callback,coords) {
 	getUserById(self.userid,function(user) { 
 	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', win: false , uid: self.userid, bet: self.bet, balance: user.cash })
 	    if ((self.bet != 0) && (user.parent)) { 
-		var award = (self.bet / 100) * 5
+		var award = (self.bet / 100) * 10
 		getUserById(user.parent,function(parent) {
 		    parent.cash += award
 		    parent.referalearnings += award
@@ -654,31 +657,62 @@ function adminUser() {
     this.name = "admin user"
     this.init(router,'user')
     this.balance = 0
+    this.balanceusd = 0
     this.test = 0
     this.refreshbalance()
+    this.usdvalue = 0
+    var self = this
+    this.getusdvalue(function(value) { console.log('usdvalue',value); self.usdvalue = value })
+
 //    this.refreshtimer = setTimeout(this.refreshbalance,2000)
 }
 
 adminUser.prototype = new remoteobject.RemoteObject()
 adminUser.prototype.filter_in = { refreshbalance : function(arg) { return arg } }
 adminUser.prototype.filter_out = { logline : true, 
-				   balance : true,
-				   test : true,
-				   refreshbalance : 'function',
-				   getlogstats: 'function'
-				   
-				 }
+				                   balance : true,
+                                   usdvalue : true,
+				                   test : true,
+				                   refreshbalance : 'function',
+				                   getlogstats: 'function' 
+				                 }
 
 adminUser.prototype.sleep = function() {
     clearTimeout(this.refreshtimer)
 }
 
+
+adminUser.prototype.getusdvalue = function(callback) {
+
+    var options = {
+        host: 'bitcoincharts.com',
+        path: '/t/weighted_prices.json',
+        method: 'GET'
+    };
+    
+    var req = http.request(options, function(res) {
+        res.on('data', function(d) {
+            try {
+                callback(JSON.parse(d).USD['24h'])
+            } catch(err) {
+                callback(0)
+            }
+        });
+    });
+    req.end();
+
+    req.on('error', function(e) {
+        console.error(e);
+        callback(0)
+    });
+}
+
 adminUser.prototype.refreshbalance = function() {
     var self = this;
     btc.getBalance(function(err, balance) {
-	if (err) return console.log(err);
-	self.balance = balance
-	self.refreshtimer = setTimeout(function() {self.refreshbalance.apply(self)},10000)
+	    if (err) { return console.log(err) };
+	    self.balance = balance
+	    self.refreshtimer = setTimeout(function() {self.refreshbalance.apply(self)},10000)
     })
 }
 

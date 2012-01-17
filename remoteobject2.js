@@ -141,7 +141,6 @@ Router.removeObject = function(object) {
 }
 
 // }}}
-
 // remoteobject
 // {{{
 
