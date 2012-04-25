@@ -1127,12 +1127,16 @@ function getUserBySecret(secret,callback,callbackerr) {
     if (router.secretuser[secret]) { callback( router.objects[router.secretuser[secret]] ); return  }
     l.log('db','debug','loading user from db (by secret)')
     settings.collection_users.findOne({secret: secret}, function(err,user) {
-	if (!user) { if(callbackerr) { callbackerr() }; return }	
-	user.lastaccess = new Date().getTime()
-	settings.collection_users.update({'_id' : user._id}, user,function (err,r) {
-	    if (err) { if(callbackerr) { callbackerr(err); return }}
-	    if (callback) { callback(new User(user)) }
-	})
+	if (!user) { if(callbackerr) { callbackerr() }; return }
+        var id = String(user._id)
+        if (router.objects[id]) {
+            user = router.objects[id]
+        } else {
+            user = new User(user)
+        }
+        user.lastaccess = new Date().getTime()
+        user.save()
+        callback(user)
     })
 }
 
