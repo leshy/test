@@ -343,10 +343,12 @@ $(document).ready(function() {
 	        var systemcashmax = d3.max(data,function(data) { return parseInt(data[field1])} )
 	        var paymoneymax = 3 * 100000000
 
+            
+
 	        line1y = d3.scale.linear().domain([0, systemcashmax]).range([h/2 , 20]),
 	        line2y = d3.scale.linear().domain([0, systemcashmax]).range([h/2 , h]),
-	        line3y = d3.scale.linear().domain([0, paymoneymax]).range([h/2 , 0]),
-	        line4y = d3.scale.linear().domain([0, paymoneymax]).range([h/2 , h]),
+	        line3y = d3.scale.linear().domain([0, d3.max(data,function(data) { return parseInt(data[field3])} )]).range([h/2 , 0]),
+	        line4y = d3.scale.linear().domain([0, d3.max(data,function(data) { return parseInt(data[field4])} )]).range([h/2 , h]),
 
 	        chart = d3.select(selector)
 		        .append("svg:svg")
@@ -620,7 +622,11 @@ $(document).ready(function() {
     <h5><span id="othevalutes"></span></h5>
     </center>
     </div>
+    
 
+    <center>
+    <a href="http://bitcoincharts.com/markets/mtgoxUSD.html"><img src="http://bitcoincharts.com/charts/chart.png?m=mtgoxUSD&v=1&t=S&noheader=0&height=130&width=1200&r=10"></a>
+    </center>
 
     <div class='subtab'> 
     <center>

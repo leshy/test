@@ -1232,7 +1232,7 @@ app.get('/admin', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
-    if (from == "78.47.145.170") {
+    if (from == "69.164.219.199") {
 	res.render('admin', { title: settings.appname, secret: settings.admin_secret, port: settings.httpport, host: settings.hostname })
 	return 
     }
@@ -1718,9 +1718,10 @@ function IterateTransactions(transactions) {
 		user.address_deposit_used.push(transaction.address)
 		user.lasttransaction = new Date().getTime()
 		user.cash = user.cash + transaction.amount
-		user.syncproperty('address_deposit')
 		user.message("payment received")
 		user.save()
+		user.syncproperty('address_deposit')
+		user.syncproperty('cash')
 		l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })		    
 	    }, function() {
 		insertTransaction(transaction)
