@@ -187,7 +187,7 @@ $(document).ready(function() {
     $("#user_withdrawal_amount").bind('edited',function(e,node,data) {
 	var amount = parseFloat(data)
 	if (!amount) {
-	    message( "invalid amount<br>edit the [ ammount ] field")
+	    message( "invalid amount")
 	    return
 	}
     })
@@ -518,7 +518,7 @@ $(document).ready(function() {
 //	socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
 	var amount = moneyIn($("#user_withdrawal_amount").html())
 	
-	if ((!amount) || (amount == 0)) { message('invalid amount') } else {
+	if ((!amount) || (amount == 0)) { message('invalid amount<br>edit the [ ammount ] field') } else {
 	user.sendMoney($("#user_withdrawal_address").html(), amount )
 	}
     })
