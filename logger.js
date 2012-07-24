@@ -69,6 +69,7 @@ function ConsoleOutput() {
     this.loglevel['default'] = 'cyan'
     this.loglevel['info'] = 'green'
     this.loglevel['important'] = 'red'
+    this.loglevel['error'] = 'red'
     
 
 }
