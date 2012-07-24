@@ -27,6 +27,8 @@ var uuid = require('./uuid.js');
 var BinaryParser = mongo.BinaryParser
 
 
+var _ = require('underscore')
+
 //console.log(IdAtTime(Date.now()))
 
 var settings = {}
@@ -47,7 +49,7 @@ settings.admin_secret = generateid()
 settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
-if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 1 }
+if (!settings.staging) { settings.confirmations = 4 } else { settings.confirmations = 1 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
 
@@ -508,7 +510,8 @@ MineField.prototype.blacklistowner = function() {
 MineField.prototype.step = function(callback,coords) {
     var self = this
     if(typeof(coords) != 'object') { return }
-    if(self.minefield[coords[0]][coords[1]] > 1) { self.blacklistowner() }
+//    if(self.minefield[coords[0]][coords[1]] > 1) { self.blacklistowner() }
+    if(self.minefield[coords[0]][coords[1]] > 1) { return }
     if((coords[0] > 4) || (coords[0] < 0)) { return }
     if((coords[1] > 4) || (coords[1] < 0)) { return }
 
@@ -1348,14 +1351,14 @@ app.get('/', function(req, res, next){
 		 })
 })
 
-
-
 app.get('/', function(req, res, next){
     var user = req.user
-    res.render('index', {title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
-
+    if (req.query.alt) {
+        res.render('index_alt', {layout: 'layout_alt.ejs', title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
+    } else {
+        res.render('index', {title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
+    }
 })
-
 
 // }}}
 
@@ -1460,67 +1463,68 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('hello', function (data) {	
-	getUserBySecret(data.secret,function(user) { 
-	    stickid(socket)
-	    router.login(user,socket)
-	    user.sync(socket)
-	    globalobject.addowner(user)
-	    globalobject.sync(socket)
+	    getUserBySecret(data.secret,function(user) { 
+	        stickid(socket)
+	        router.login(user,socket)
+	        user.sync(socket)
+	        globalobject.addowner(user)
+	        globalobject.sync(socket)
+            
+	        globalobject.users = Object.keys(router.secretuser).length
+            
+	        //	    setTimeout(function() { console.log("message!"); user.message('test message') },2000)
+	        //	    setTimeout(function() { console.log("dolur!"); console.log(user); user.cash = 10 },2300)
+            
+	        //	    setTimeout(function() { console.log("new payment!"); user.cash = 60 },4000)
+	        
 
-	    globalobject.users = Object.keys(router.secretuser).length
+	        socket.on('disconnect', function () { 
+		        globalobject.users = Object.keys(router.secretuser).length		
+		        router.logout(user,socket)
+	        })
 
-	    //	    setTimeout(function() { console.log("message!"); user.message('test message') },2000)
-	    //	    setTimeout(function() { console.log("dolur!"); console.log(user); user.cash = 10 },2300)
 
-	    //	    setTimeout(function() { console.log("new payment!"); user.cash = 60 },4000)
-	    
+	        socket.on('call',function (data) {
+		        data = JSON.parse(data)
 
-	    socket.on('disconnect', function () { 
-		globalobject.users = Object.keys(router.secretuser).length		
-		router.logout(user,socket)
+		        var object = router.getObjectFromUser(user,data.object)
+		        l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, uid : user._id })
+                
+                if (!data.arguments) { return }
+                
+		        function callback(response) {
+		            if (data.answerid) {
+			            user.emit('answer',{ answerid: data.answerid, data: JSON.stringify(response) })
+		            }
+		        }
+                
+		        data.arguments.unshift(callback)
+                
+		        if (object && object[data.function]) {
+		            object[data.function].apply(object,data.arguments)
+		        }
+	        })
+
+
+
+	        socket.on('objectsync',function (data) {
+		        data = JSON.parse(data)
+		        if (data.objects) {
+		            //getUserBySecret(data.secret, function(user) {
+		            for ( var objectname in data.objects) {
+			            var obj = router.getObjectFromUser(user,objectname)
+			            //console.log(obj)
+			            //console.log("resolved object '" + obj.objectname + "', updating...")
+			            //console.log(data.objects[objectname])
+			            if (!obj) { l.log('obj','error','unable to resolve requested object (' + obj.objectname + ')'); return;}
+			            obj.update(data.objects[objectname])
+		            }
+		            //})
+		        } else {
+		            console.log( "ERROR invalid sync data received" )
+		        }
+	        })
 	    })
-
-
-	    socket.on('call',function (data) {
-		data = JSON.parse(data)
-
-		var object = router.getObjectFromUser(user,data.object)
-		l.log('obj','call',data.function + " " + data.arguments, { function: data.function, arguments: data.arguments, uid : user._id })
-
-
-		function callback(response) {
-		    if (data.answerid) {
-			user.emit('answer',{ answerid: data.answerid, data: JSON.stringify(response) })
-		    }
-		}
-
-		data.arguments.unshift(callback)
-
-		if (object && object[data.function]) {
-		    object[data.function].apply(object,data.arguments)
-		}
-	    })
-
-
-
-	    socket.on('objectsync',function (data) {
-		data = JSON.parse(data)
-		if (data.objects) {
-		    //getUserBySecret(data.secret, function(user) {
-		    for ( var objectname in data.objects) {
-			var obj = router.getObjectFromUser(user,objectname)
-			//console.log(obj)
-			//console.log("resolved object '" + obj.objectname + "', updating...")
-			//console.log(data.objects[objectname])
-			if (!obj) { l.log('obj','error','unable to resolve requested object (' + obj.objectname + ')'); return;}
-			obj.update(data.objects[objectname])
-		    }
-		    //})
-		} else {
-		    console.log( "ERROR invalid sync data received" )
-		}
-	    })
-	})
     })
 })
 
@@ -1663,14 +1667,14 @@ function IterateTransactions(transactions) {
     var transaction = transactions.pop()
 
     function next() {
-	if (transactions.length > 0) {
-	    IterateTransactions(transactions)
-	}
+	    if (transactions.length > 0) {
+	        IterateTransactions(transactions)
+	    }
     }
 
     //if (transaction.category != 'receive') { next(); return }
-//    console.log(transaction)
-
+    //console.log(transaction)
+    
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
 	if (dbtransaction) {
 
@@ -1755,9 +1759,12 @@ function insertTransaction(transaction) {
 }
 
 function checkTransactions() {
-    btc.listTransactions( "", 50, function (err,transactions)  {
-//	console.log("transactions ping")
-	IterateTransactions (transactions)
+    btc.listTransactions( "", 500, function (err,transactions)  {
+        //	console.log("transactions ping")
+        //  var transactions = _.filter(transactions, function (transaction) { return boolean(transaction) })
+        if (transactions.length) {
+	        IterateTransactions (transactions)
+        }
     })
 
     setTimeout(checkTransactions,30000)   
