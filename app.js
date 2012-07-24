@@ -469,7 +469,7 @@ function MineField(size,bet,parent) {
     self.crypted = JSON.stringify(self.minefield) + " " + uuid.uuid(16)
 
 //    self.hash = hashlib.sha256(self.crypted)
-    self.hash = sechash.basicHash('md5', self.crypted);
+    self.hash = sechash.basicHash('sha256', self.crypted);
     self.done = false
     self.init(router,'minefield')
 }
@@ -1762,6 +1762,7 @@ function checkTransactions() {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
+                l.log('bitcoind','staging',"backing out, I'm on staging...")
                 return
             } else {
                 throw "bitcoind connection failed"
@@ -1773,9 +1774,11 @@ function checkTransactions() {
 	        IterateTransactions (transactions)
         }
 
+        setTimeout(checkTransactions,30000)
+
     })
 
-    setTimeout(checkTransactions,30000)   
+
 }
 
 

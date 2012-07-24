@@ -1,4 +1,5 @@
 var sys = require('sys');
+var uuid = require('./uuid.js');
 
 function Length(object) {
     return Object.keys(object).length

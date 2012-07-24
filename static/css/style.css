@@ -11,6 +11,10 @@
 body {
     font-size: 85%;
     font-family: "Helvetica", Arial, sans-serif;
+    background-image: url(/img/tilebg.png);
+    background-repeat: repeat-x;
+    background-position: 0px -300px;
+
 }
 .header {
     /*
@@ -19,7 +23,7 @@ body {
     margin-left: auto ;
     margin-right: auto ;
 */
-    background: black;
+    background: #39374D;
     color: white;
     text-decoration: none;
     padding: 7px;
@@ -27,6 +31,9 @@ body {
     -moz-border-radius: 4px;
     border-radius: 4px;
     margin-bottom: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 800px;
 } 
 
 
@@ -44,11 +51,12 @@ body {
 
 
 .tabcontent {
-    background: white;
+    background: none;
     color: black;
     text-decoration: none;
     padding: 0px;
-
+    width: 800px;
+    margin: auto;
 } 
 
 .subtab {
@@ -60,14 +68,11 @@ body {
 */
     margin-left: 1px;
     margin-right: 1px;
-  border: 1px solid black;
-  background: #eee;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  padding: 20px;
-  margin-top: 12px;
-  margin-bottom: 12px;
+    border: 1px solid black;
+    background: #D8E2EC;
+    padding: 20px;
+    margin-top: 12px;
+    margin-bottom: 12px;
 
 }
 
@@ -157,7 +162,9 @@ body {
     color: white;
 }
 
+#minefield {
 
+}
 
 .message {
   border: 0px;
