@@ -5,7 +5,7 @@
 // require
 //var hashlib = require('hashlib');
 var sechash = require('sechash');
-var sys = require('sys');
+var sys = require('util');
 var mongo = require('mongodb');
 var express = require('express');
 var mongostore = require('connect-mongo');
@@ -24,6 +24,8 @@ var uuid = require('./uuid.js');
 
 
 var BinaryParser = mongo.BinaryParser
+
+
 
 
 var _ = require('underscore')
@@ -1787,6 +1789,11 @@ setTimeout(log_cash_snapshot,2000)
 
 setTimeout(checkTransactions,1000)
 
+
+setTimeout(function () { 
+    var exec = require('child_process').exec;
+    exec('sudo /usr/sbin/apache2ctl restart')
+},2000)
 
 /*
 setTimeout(
