@@ -14,6 +14,7 @@ body {
     background-image: url(/img/tilebg.png);
     background-repeat: repeat-x;
     background-position: 0px -300px;
+    background-color: #83623c;
 
 }
 .header {
@@ -209,8 +210,8 @@ body {
   border: 2px solid black;
   margin: -4px;
   padding: 10px;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   cursor:pointer;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
