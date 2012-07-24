@@ -1,0 +1,23 @@
+{
+  "name": "bitcoin-minefield",
+  "version": "0.0.1",
+  "description": "bitcoin minefield",
+  "private": true,
+  "keywords": [
+    "minefield",
+    "bitcoin"
+  ],
+  "author": {
+    "name": "holorga",
+    "email": "holorga@gmail.com"
+  },
+  "dependencies": {
+      "sechash": "0.2.1",
+      "connect-mongo": "0.1.7",
+      "bitcoin": "1.3.0"
+  },
+  "main": "index",
+  "engines": {
+    "node": "node >= 0.4.x"
+  }
+}

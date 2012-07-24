@@ -16,7 +16,6 @@ var http = require('http');
 var querystring = require('querystring');
 var tls = require('tls');
 var socketio = require('socket.io')
-var rbytes = require('rbytes');
 var irc = require('irc')
 
 var remoteobject = require('./remoteobject2.js')
@@ -48,7 +47,7 @@ settings.admin_secret = generateid()
 
 settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
 
-if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "staging.minefield.bitcoinlab.org" }
+if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "127.0.0.1" }
 if (!settings.staging) { settings.confirmations = 4 } else { settings.confirmations = 1 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
@@ -81,7 +80,7 @@ l.outputs.push(new Logger.ConsoleOutput())
 l.outputs.push(new Logger.FileOutput('main.log'))
 
 l.log('general','info','starting...');
-if (settings.staging) { l.log('general','important','STAGING INSTANCE') }
+if (settings.staging) { l.log('general','important','this is a staging instance') }
 
 
 var router = new remoteobject.Router(l)
@@ -167,7 +166,8 @@ function Length(object) {
 }
 
 function generateid() { 
-    return new Date().getTime() + rbytes.randomBytes(16).toHex()
+    return uuid.uuid(16)
+    //return new Date().getTime() + rbytes.randomBytes(16).toHex()
 }
 
 function stickid(object) {
@@ -466,7 +466,8 @@ function MineField(size,bet,parent) {
 
     self.generateminefield(size) 
 
-    self.crypted = JSON.stringify(self.minefield) + " " + rbytes.randomBytes(16).toHex()
+    self.crypted = JSON.stringify(self.minefield) + " " + uuid.uuid(16)
+
 //    self.hash = hashlib.sha256(self.crypted)
     self.hash = sechash.basicHash('md5', self.crypted);
     self.done = false
@@ -1353,11 +1354,7 @@ app.get('/', function(req, res, next){
 
 app.get('/', function(req, res, next){
     var user = req.user
-    if (req.query.alt) {
-        res.render('index_alt', {layout: 'layout_alt.ejs', title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
-    } else {
-        res.render('index', {title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
-    }
+    res.render('index', {title: settings.appname, user: RemoveFunctions(user), port: settings.httpport, host: settings.hostname, headers: req.headers})
 })
 
 // }}}
@@ -1762,9 +1759,20 @@ function checkTransactions() {
     btc.listTransactions( "", 500, function (err,transactions)  {
         //	console.log("transactions ping")
         //  var transactions = _.filter(transactions, function (transaction) { return boolean(transaction) })
+        if (err) {
+            l.log('bitcoind','error',"can't connect to bitcoind!")
+            if (settings.staging) {
+                return
+            } else {
+                throw "bitcoind connection failed"
+            }
+        
+        }
+
         if (transactions.length) {
 	        IterateTransactions (transactions)
         }
+
     })
 
     setTimeout(checkTransactions,30000)   

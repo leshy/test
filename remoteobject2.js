@@ -1,6 +1,4 @@
 var sys = require('sys');
-var rbytes = require('rbytes');
-
 
 function Length(object) {
     return Object.keys(object).length
@@ -194,7 +192,7 @@ RemoteObject.prototype.generateid = function() {
     if (this.id) { this._id = this.id; return }
 
     if (!this._id) {
-	this._id = new Date().getTime() + rbytes.randomBytes(16).toHex()
+	this._id = new Date().getTime() + uuid.uuid(16)
     }
 
     this.id = this._id 

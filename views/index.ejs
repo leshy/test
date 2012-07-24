@@ -473,9 +473,8 @@ $(document).ready(function() {
 	}
 	$("#transaction_history").html(code)
     }
-        
 
-    var socket = io.connect('http://bitcoinlab.org:<%= port %>');
+    var socket = io.connect('<%= host %>:<%= port %>');
     socket.emit('hello', { uid: uid, secret: secret });
     socket.on('connection', function () {
 //	console.log('websocket connected.')
