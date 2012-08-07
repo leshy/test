@@ -47,7 +47,7 @@ settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 settings.admin_secret = generateid()
 
-settings.availiablebets = [0,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
+settings.availiablebets = [0,0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "127.0.0.1" }
 if (!settings.staging) { settings.confirmations = 4 } else { settings.confirmations = 1 }
@@ -155,7 +155,8 @@ db.open( function (err) {
     })
 })
 
-var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
+//var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
+var btc = new bitcoin.Client('beefcake', 8332, 'bitcoin', 'MRrfhN7sdM3L++FerDMm');
 
 // }}}
 
@@ -1238,6 +1239,22 @@ app.get ('*', function (req, res, next) {
     next()
 })
 
+app.get('/admin/balance', function(req, res){
+    var from = req.socket.remoteAddress
+    if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
+
+    if (from == "69.164.219.199") {
+        usercash(function(usercash) {
+	        systemcash(function(systemcash) {
+                res.send(JSON.stringify({system: moneyOut(moneyIn(systemcash)), user: moneyOut(usercash)}))
+            })
+        })
+        return
+    }
+    res.send("access denied")
+})
+
+
 app.get('/admin', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
@@ -1249,6 +1266,8 @@ app.get('/admin', function(req, res){
     res.send("access denied")
 
 })
+
+
 
 
 function getUserByReq(req,callback,callbackerr) {
