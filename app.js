@@ -537,6 +537,7 @@ MineField.prototype.step = function(callback,coords) {
 	self.win = 0
 	self.sync()
     } else {
+        if (self.done) { return }
 	l.log('minefield','pass',"user " + self.userid + " pass, (" + moneyOut(self.win) + " BTC from bet of " + moneyOut(self.bet) + " BTC)",{ uid: self.userid, bet: self.bet, win: self.win })
 	self.win = self.win * self.multi
 	self.openfields += 1;
@@ -866,7 +867,6 @@ function ParseLogs(from,to,slicesize,datapoints,callback) {
 
 
 
-
 function User(user) {
     var self = this
     self.objectname = 'user'
@@ -887,15 +887,16 @@ User.prototype = new remoteobject.RemoteObject()
 
 User.prototype.newminefield = function(callback,size,bet) {
     if (!bet) { bet = 0 }
+    if (bet.constructor != Number) { bet = 0 }
     if (!ArrayContains(settings.availiablebets,bet)) { l.log("hackattempt","invalidbet", "invalid bet"); return }
+    if (size.constructor != Number) { size = 10 }
     if (size < 3) { size =  10 }
     if (size > 24) { size =  10 }
     if (!size) { size =  10 }
 
-    
-
     bet = moneyIn(bet)
     if (!size) { console.log('err, size not set'); return }
+    if (bet.constructor != Number) { console.log('err, bet not set'); return }
     if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
     minefield = new MineField(size,bet,this)
     minefield.addowner(this)
@@ -1041,14 +1042,14 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
 
     //amount = moneyIn(amount)
     //console.log(amount)
-  
+
     if (amount < 100000) { self.message("amount too small"); return }
-  
+    
     self.transactions_confirmed(function(confirmed) {
 	if (!confirmed) { self.message("transactions unconfirmed"); return }
-
-
-	if ((self.cash - amount) >= 0) {
+        
+        
+	if ((self.cash.constructor == Number) && (self.cash - amount) >= 0) {
 
 	var oldcash = self.cash
 	self.cash -= amount
@@ -1243,7 +1244,7 @@ app.get('/admin/balance', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
-    if (from == "69.164.219.199") {
+    if (from == "176.58.123.25") {
         usercash(function(usercash) {
 	        systemcash(function(systemcash) {
                 res.send(JSON.stringify({system: moneyOut(moneyIn(systemcash)), user: moneyOut(usercash)}))
@@ -1259,7 +1260,7 @@ app.get('/admin', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
-    if (from == "69.164.219.199") {
+    if (from == "176.58.123.25") {
 	res.render('admin', { title: settings.appname, secret: settings.admin_secret, port: settings.httpport, host: settings.hostname })
 	return 
     }
@@ -1681,13 +1682,15 @@ setTimeout(function() {
 
 */
 
-function IterateTransactions(transactions) {
+function IterateTransactions(transactions,callback) {
     var transaction = transactions.pop()
 
     function next() {
 	    if (transactions.length > 0) {
-	        IterateTransactions(transactions)
-	    }
+	        IterateTransactions(transactions,callback)
+	    } else {
+            callback()
+        }
     }
 
     //if (transaction.category != 'receive') { next(); return }
@@ -1776,26 +1779,39 @@ function insertTransaction(transaction) {
     settings.collection_transactions.insert(transaction)
 }
 
+var checktimeout = undefined
+
 function checkTransactions() {
-    btc.listTransactions( "", 500, function (err,transactions)  {
-        //	console.log("transactions ping")
+
+    function hitme(time) {
+        if (checktimeout) (clearTimeout(checktimeout))
+        checktimeout = setTimeout(checkTransactions,time)
+    }
+
+    btc.listTransactions( "", 600, function (err,transactions)  {
         //  var transactions = _.filter(transactions, function (transaction) { return boolean(transaction) })
+
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
                 l.log('bitcoind','staging',"backing out, I'm on staging...")
                 return
             } else {
-                throw "bitcoind connection failed"
+                //l.log('bitcoind','restart',"will restart")
+                //throw "bitcoind connection failed"
+                hitme(3000)
+                return
             }
         
         }
 
         if (transactions.length) {
-	        IterateTransactions (transactions)
+	        IterateTransactions (transactions,function () {  
+                hitme(30000)
+            })
+        } else {
+            hitme(30000)
         }
-
-        setTimeout(checkTransactions,30000)
 
     })
 

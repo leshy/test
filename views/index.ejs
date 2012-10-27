@@ -90,7 +90,7 @@ $(document).ready(function() {
 	//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
 
 	var self = this
-	console.log("update",router,obj)
+//	console.log("update",router,obj)
 	for (var property in obj) {
 	    function c(property,value) {
 		if (value == "function") {
@@ -111,7 +111,7 @@ $(document).ready(function() {
 			
 			data['arguments'] = args
 
-			console.log('calling',data)
+			//console.log('calling',data)
 			socket.emit('call',JSON.stringify(data))
 		    }
 		    router.event(self,property)
@@ -350,7 +350,7 @@ $(document).ready(function() {
     
 
     function moneyOut(money) {
-	return Math.floor(money / 1e4) / 10000
+	return Math.floor(money / 1e3) / 100000
     }
 
     function update_transaction_history(data) {
@@ -379,11 +379,8 @@ $(document).ready(function() {
 
 	    data.forEach(function(row) {
 		var time = new Date(parseInt(row.time))
-		//console.log(parseInt(row.time))
-		var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
-		
 
-
+		var now = time.getDate() + "." + (time.getMonth() + 1) + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
 
 		if (darkflip) {
 		    code += "<tr bgcolor='#ddd'>"
@@ -393,10 +390,7 @@ $(document).ready(function() {
 		    darkflip = true
 		}
 
-
-
 		code +="<td class='transactionhistory'>" +  now  + "</td>"
-
 
 		code +="<td class='transactionhistory'>" +  row.address + "</td>"
 		if (row.amount > 0) {
