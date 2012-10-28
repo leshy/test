@@ -264,9 +264,24 @@ function moneyIn(money) {
     return Math.floor(money * 1e8)
 }
 
-
 function moneyOutFull(money) {
-    return (money / 1e8)
+	money = String(money)
+    while (money.length < 9) {
+        money = "0" + money
+    }
+    
+    cutpoint = money.length - 8
+    money = money.substr(0,cutpoint) + '.' + money.substr(cutpoint)
+
+    while (money[money.length-1] == '0') {
+        money = money.substr(0,money.length - 1)
+    }
+
+    if (money[money.length-1] == '.') {
+        money = money.substr(0,money.length - 1)
+    }
+
+    return money
 }
 
 function moneyOut(money) {
@@ -940,8 +955,10 @@ User.prototype.filter_in = { name: function(name,self) { settings.collection_use
 			     ping: function(arg) { return arg },
 			   }
 
+
+
 User.prototype.filter_out = { name: true,
-			      cash: function(cash) { return moneyOut(cash) },
+			      cash: true,
 			      address_deposit: true ,
 			      address_withdrawal: true ,
 			      lasttransaction: true,

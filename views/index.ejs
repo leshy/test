@@ -350,8 +350,31 @@ $(document).ready(function() {
     
 
     function moneyOut(money) {
-	return Math.floor(money / 1e3) / 100000
+	    return Math.floor(money / 1e3) / 100000
     }
+
+    function moneyOutFull(money) {
+	    money = String(money)
+        while (money.length < 9) {
+            money = "0" + money
+        }
+        
+        cutpoint = money.length - 8
+
+        money = money.substr(0,cutpoint) + '.' + money.substr(cutpoint)
+
+        while (money[money.length-1] == '0') {
+            money = money.substr(0,money.length - 1)
+        }
+
+        if (money[money.length-1] == '.') {
+            money = money.substr(0,money.length - 1)
+        }
+
+        return money
+    }
+
+
 
     function update_transaction_history(data) {
 
@@ -393,13 +416,15 @@ $(document).ready(function() {
 		code +="<td class='transactionhistory'>" +  now  + "</td>"
 
 		code +="<td class='transactionhistory'>" +  row.address + "</td>"
+
 		if (row.amount > 0) {
 		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
 		} else {
 		    row.amount *= -1
 		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
 		}
-		code +="<td class='transactionhistory'>" +  moneyOut(row.amount) + "</td>"
+
+		code +="<td class='transactionhistory'>" +  moneyOutFull(row.amount) + "</td>"
 		if (row.confirmed) { row.confirmations = "<font color='green'>confirmed</font>" }
 		code +="<td class='transactionhistory'>" +  row.confirmations + "</td>"
 		code +="<td class='transactionhistory'>" + "<a href='http://blockexplorer.com/tx/" + row.txid  + "'><img width='20px' src='/img/info.png'></a></td>"
@@ -553,11 +578,10 @@ $(document).ready(function() {
 	
 	if (object1.length != object2.length) { return false }
 	
-	for (var property in object1) { 
-
+	for (var property in object1) {
 	    if (object1[property] != object2[property]) { return false }
 	}
-	return true   
+	    return true
     }
 
     
@@ -577,6 +601,13 @@ $(document).ready(function() {
     })
 
 */
+
+    router.subscribe("user","cash", function (value) {
+        $('#user_cash').html(moneyOutFull(value))
+        $('#user_cash_small').html(moneyOut(value))
+    })
+
+
     router.subscribe("user","created",function(value,oldvalue,property) {
 	update_transaction_history()
 	router.subscribe("user","lasttransaction",function(value,oldvalue,property) {
@@ -673,14 +704,20 @@ $(document).ready(function() {
 
 
     function addbetbuttons(bets) {
-	var container = $("#betbuttons")
-	bets.forEach(function(bet) {
-	    var button = $("<button>" + bet + "</button>").button()
-	    button.click(function() {
-		user.newminefield($( "#minefieldslider" ).slider('value'),bet)		
-	    })
-	    container.append(button)
-	})
+	    var container = $("#betbuttons")
+        container.fadeOut(30,function () {
+
+
+            container.html("")
+	        bets.forEach(function(bet) {
+	            var button = $("<button>" + bet + "</button>").button()
+	            button.click(function() {
+		            user.newminefield($( "#minefieldslider" ).slider('value'),bet)		
+	            })            
+	            container.append(button)
+	        })
+            container.fadeIn()
+        })        
     }
 })
 
@@ -689,7 +726,7 @@ $(document).ready(function() {
 <div class='header'>
     <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
-  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash sync_user_cash'><%= Math.floor(user.cash / 1e4) / 10000 %></span>&nbsp;</span></span>
+  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash user_cash_small'>0</span>&nbsp;</span></span>
     <span class='btn' id="btnreferals" >Referals<span id='small_referals'>&nbsp;<span class='referalcount sync_user_referalcount'><%= user.referalcount %></span>&nbsp;</span></span>
 
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->
@@ -744,7 +781,7 @@ $(document).ready(function() {
     Click on the Balance button for deposits and withdrawals.<br>
     Bookmark this page if you'd like to be able to return to your account.
     <br><br>
-    <span id="betbuttons"></span>
+    <span id="betbuttons"><br><b>connecting to server...</b></span>
     <br><br>
     </div>
 
@@ -801,7 +838,7 @@ $(document).ready(function() {
 
 <div class='subtab'> 
 <center>
-    <font color="green"><h2><span class='sync_user_cash'>?</span></h2></font> <img width="50px" src="/img/bitcoin2.png">
+    <font color="green"><h2><span id='user_cash'>?</span></h2></font> <img width="50px" src="/img/bitcoin2.png">
 </center>
 </div>
 
