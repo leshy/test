@@ -350,7 +350,7 @@ $(document).ready(function() {
     
 
     function moneyOut(money) {
-	    return Math.floor(money / 1e3) / 100000
+	    return Math.floor(money / 1e5) / 1000
     }
 
     function moneyOutFull(money) {
@@ -427,7 +427,7 @@ $(document).ready(function() {
 		code +="<td class='transactionhistory'>" +  moneyOutFull(row.amount) + "</td>"
 		if (row.confirmed) { row.confirmations = "<font color='green'>confirmed</font>" }
 		code +="<td class='transactionhistory'>" +  row.confirmations + "</td>"
-		code +="<td class='transactionhistory'>" + "<a href='http://blockexplorer.com/tx/" + row.txid  + "'><img width='20px' src='/img/info.png'></a></td>"
+		code +="<td class='transactionhistory'>" + "<a href='https://blockchain.info/tx/" + row.txid  + "'><img width='20px' src='/img/info.png'></a></td>"
 		code += "</tr>"
 
 
@@ -724,9 +724,9 @@ $(document).ready(function() {
 
 </script>
 <div class='header'>
-    <span>Logged in as <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
+    <span> <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
-  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash user_cash_small'>0</span>&nbsp;</span></span>
+  <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash' id='user_cash_small'>0</span>&nbsp;</span></span>
     <span class='btn' id="btnreferals" >Referals<span id='small_referals'>&nbsp;<span class='referalcount sync_user_referalcount'><%= user.referalcount %></span>&nbsp;</span></span>
 
 <!--  <span class='btn' id="btnsettings" >Settings</span> -->

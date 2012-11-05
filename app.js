@@ -541,6 +541,7 @@ MineField.prototype.step = function(callback,coords) {
 	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', win: false , uid: self.userid, bet: self.bet, balance: user.cash })
 	    if ((self.bet != 0) && (user.parent)) { 
 		var award = (self.bet / 100) * 10
+        //l.log('minefield','awardsurpressed', user.parent + " " + award)
 		getUserById(user.parent,function(parent) {
 		    parent.cash += award
 		    parent.referalearnings += award
