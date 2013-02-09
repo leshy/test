@@ -47,10 +47,10 @@ settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 settings.admin_secret = generateid()
 
-settings.availiablebets = [0,0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
+settings.availiablebets = [0,0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0, 20.0, 50.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "127.0.0.1" }
-if (!settings.staging) { settings.confirmations = 4 } else { settings.confirmations = 1 }
+if (!settings.staging) { settings.confirmations = 2 } else { settings.confirmations = 1 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
 
@@ -902,21 +902,24 @@ User.prototype = new remoteobject.RemoteObject()
 
 
 User.prototype.newminefield = function(callback,size,bet) {
-    if (!bet) { bet = 0 }
-    if (bet.constructor != Number) { bet = 0 }
-    if (!ArrayContains(settings.availiablebets,bet)) { l.log("hackattempt","invalidbet", "invalid bet"); return }
-    if (size.constructor != Number) { size = 10 }
-    if (size < 3) { size =  10 }
-    if (size > 24) { size =  10 }
-    if (!size) { size =  10 }
+    var self = this
+    setTimeout( function () {
+        if (!bet) { bet = 0 }
+        if (bet.constructor != Number) { bet = 0 }
+        if (!ArrayContains(settings.availiablebets,bet)) { l.log("hackattempt","invalidbet", "invalid bet"); return }
+        if (size.constructor != Number) { size = 10 }
+        if (size < 3) { size =  10 }
+        if (size > 24) { size =  10 }
+        if (!size) { size =  10 }
 
-    bet = moneyIn(bet)
-    if (!size) { console.log('err, size not set'); return }
-    if (bet.constructor != Number) { console.log('err, bet not set'); return }
-    if (bet > this.cash) { this.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
-    minefield = new MineField(size,bet,this)
-    minefield.addowner(this)
-    minefield.sync()    
+        bet = moneyIn(bet)
+        if (!size) { console.log('err, size not set'); return }
+        if (bet.constructor != Number) { console.log('err, bet not set'); return }
+        if (bet > self.cash) { self.message("not enough<br><center><img width='40px' src='/img/bitcoin2.png'></center>"); return }
+        minefield = new MineField(size,bet,self)
+        minefield.addowner(self)
+        minefield.sync()
+    },750)
 }
 
 
@@ -1466,8 +1469,8 @@ io.sockets.on('connection', function (socket) {
 	    l.log("admin","loginsuccess","admin logged in.")
 	    admin.sync(socket)
 
-	    admin.test = [1,2,3]
-	    admin.test = ArrayRemove(admin.test,2)
+	    //admin.test = [1,2,3]
+	    //admin.test = ArrayRemove(admin.test,2)
 //	    admin.syncproperty('test')
 	    admin.test = function(bla) { bla = 3} ( admin.test  )
 

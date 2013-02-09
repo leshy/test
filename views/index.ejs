@@ -17,6 +17,23 @@
 
 $(document).ready(function() { 
 
+     function ltrim (str, chars) {
+	    chars = chars || "\\s";
+	    return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+    }
+ 
+    function rtrim (str, chars) {
+	    chars = chars || "\\s";
+	    return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+    }
+
+    function trim (str, chars) {
+	    return ltrim(rtrim(str, chars), chars);
+    }
+ 
+
+
+
     function pickone(a) {
 	return a[Math.floor(Math.random()*a.length)]
     }
@@ -192,8 +209,9 @@ $(document).ready(function() {
 	}
     })
 
-    $("#user_withdrawal_address").bind('edited',function(e,node,data) {	    
-	if (data.length > 33) {
+    $("#user_withdrawal_address").bind('edited',function(e,node,data) {
+        data = trim(data)
+	if ((data.length > 34) || (data.length < 27)) {
 	    message( "invalid address")
 	    return
 	} else {
@@ -856,7 +874,8 @@ $(document).ready(function() {
 <center>
     <h3>Withdrawal</h3>
     I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='user_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='sync_user_address_withdrawal editable'>[ address ]</span></b><br><br>
-all your transactions need to have at least 4 confirmations in order to withdraw
+all your transactions need to have at least 2 confirmations in order to withdraw<br>
+if outgoing transactions are big (10btc+), they might fail, split them into multiple smaller ones.
 </center>
 </div>
 
