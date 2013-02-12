@@ -991,7 +991,8 @@ User.prototype.filter_save = { name: true,
 			       payed: true,
 			       loggedin: true,
 			       useragent: true,
-			       ip: true
+			       ip: true,
+                   tblacklist: true
 			     }
 
 
