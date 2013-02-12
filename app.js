@@ -1754,34 +1754,37 @@ function IterateTransactions(transactions,callback) {
 	        }
 
 	    } else {
-	    // not in db, add
+	    // not in db, add         
 
-	    transaction = importTransaction(transaction)
+            setTimeout( function () {
+	        transaction = importTransaction(transaction)
 
-	    if (transaction.confirmations >= settings.confirmations) { 
-		transaction.confirmed = true
-	    } else { 
-		transaction.confirmed = false 
+	        if (transaction.confirmations >= settings.confirmations) { 
+		        transaction.confirmed = true
+	        } else { 
+		        transaction.confirmed = false 
+	        }
+
+	        getUserByAddress(transaction.address,function(user) {
+		        transaction.owner = user._id
+		        insertTransaction(transaction)
+		        l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
+		        user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
+		        user.address_deposit_used.push(transaction.address)
+		        user.lasttransaction = new Date().getTime()
+		        user.cash = user.cash + transaction.amount
+		        user.message("payment received")
+		        user.save()
+		        user.syncproperty('address_deposit')
+		        user.syncproperty('cash')
+		        l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })		    
+	        }, function() {
+		        insertTransaction(transaction)
+		        l.log("transaction","noowner", "owner for transaction " +  stringTransaction(transaction) + " not found", transaction)
+	        })
+
+            }, 1000 * 60 * 4)
 	    }
-
-	    getUserByAddress(transaction.address,function(user) {
-		transaction.owner = user._id
-		insertTransaction(transaction)
-		l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
-		user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
-		user.address_deposit_used.push(transaction.address)
-		user.lasttransaction = new Date().getTime()
-		user.cash = user.cash + transaction.amount
-		user.message("payment received")
-		user.save()
-		user.syncproperty('address_deposit')
-		user.syncproperty('cash')
-		l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })		    
-	    }, function() {
-		insertTransaction(transaction)
-		l.log("transaction","noowner", "owner for transaction " +  stringTransaction(transaction) + " not found", transaction)
-	    })
-	}
     })
     next()
 }
@@ -1832,10 +1835,10 @@ function checkTransactions() {
 
         if (transactions.length) {
 	        IterateTransactions (transactions,function () {  
-                hitme(30000)
+                hitme(30000 * 10)
             })
         } else {
-            hitme(30000)
+            hitme(30000 * 10)
         }
 
     })
