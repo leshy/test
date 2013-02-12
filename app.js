@@ -1718,38 +1718,42 @@ function IterateTransactions(transactions,callback) {
     //console.log(transaction)
     
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
-	if (dbtransaction) {
+	    if (dbtransaction) {
 
-	    if (!dbtransaction.owner) { 
-		next(); return
-	    }
+	        if (!dbtransaction.owner) { 
+		        next(); return
+	        }
 
-	    if (transaction.category != 'receive') { 
-		next(); return
-	    }
-	    
-	    if (!dbtransaction.confirmed) {
-		
-		var set = {}
+	        if (transaction.category != 'receive') { 
+		        next(); return
+	        }
+	        
+	        if (!dbtransaction.confirmed) {
+		        
+                getUserById(dbtransaction.owner,function(user) { 
 
-		if (transaction.confirmations >= settings.confirmations) { 
-		    l.log("transaction","confirmed", "transaction " + stringTransaction(dbtransaction) +  " confirmed for " + dbtransaction.owner, dbtransaction)
-		    console.log('confirmed!')
-		    set.confirmed = true
-		    getUserById(dbtransaction.owner,function(user) { user.message ( "transaction confirmed" )})		    
-		} else {
-		    if (transaction.confirmations == dbtransaction.confirmations) { next(); return; }
-		    console.log('enlarged!')
-		    set.confirmations = transaction.confirmations
-		}
+                    if (user.tblacklist) { return }
 
-		if (Object.keys(set).length > 0 ) {
-		    updateTransaction(transaction.txid,set)
-		    console.log(transaction.txid, "changed state, looking for " + transaction.owner)
-		    getUserById(dbtransaction.owner,function(user) { user.lasttransaction = new Date().getTime()})
-		}
-	    }
-	} else {
+		            var set = {}
+		            if (transaction.confirmations >= settings.confirmations) { 
+		                l.log("transaction","confirmed", "transaction " + stringTransaction(dbtransaction) +  " confirmed for " + dbtransaction.owner, dbtransaction)
+		                set.confirmed = true
+                        user.message ( "transaction confirmed" )
+		            } else {
+		                if (transaction.confirmations == dbtransaction.confirmations) { next(); return; }
+		                console.log('enlarged!')
+		                set.confirmations = transaction.confirmations
+		            }
+
+		            if (Object.keys(set).length > 0 ) {
+		                updateTransaction(transaction.txid,set)
+		                console.log(transaction.txid, "changed state, looking for " + transaction.owner)
+                        user.lasttransaction = new Date().getTime()
+		            }
+                })
+	        }
+
+	    } else {
 	    // not in db, add
 
 	    transaction = importTransaction(transaction)
