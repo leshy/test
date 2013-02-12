@@ -1756,7 +1756,7 @@ function IterateTransactions(transactions,callback) {
 	    } else {
 	    // not in db, add         
 
-            setTimeout( function () {
+//            setTimeout( function () {
 	        transaction = importTransaction(transaction)
 
 	        if (transaction.confirmations >= settings.confirmations) { 
@@ -1783,7 +1783,7 @@ function IterateTransactions(transactions,callback) {
 		        l.log("transaction","noowner", "owner for transaction " +  stringTransaction(transaction) + " not found", transaction)
 	        })
 
-            }, 1000 * 60 * 4)
+//            }, 1000 * 60 * 4)
 	    }
     })
     next()
@@ -1835,10 +1835,10 @@ function checkTransactions() {
 
         if (transactions.length) {
 	        IterateTransactions (transactions,function () {  
-                hitme(30000 * 10)
+                hitme(30000)
             })
         } else {
-            hitme(30000 * 10)
+            hitme(30000)
         }
 
     })
