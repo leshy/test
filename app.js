@@ -1291,8 +1291,6 @@ app.get('/admin', function(req, res){
 })
 
 
-
-
 function getUserByReq(req,callback,callbackerr) {
     var secret = null
     var uid = null
@@ -1835,9 +1833,9 @@ function checkTransactions() {
         }
 
         if (transactions.length) {
-	        IterateTransactions (transactions,function () {  
-                hitme(30000)
-            })
+            setTimeout( function () {
+	            IterateTransactions (transactions,function () { hitme(30000) })
+            }, 1000 * 60 * 5)
         } else {
             hitme(30000)
         }
@@ -1866,10 +1864,8 @@ setTimeout(
 	    console.log(data)
 	})
     },2000)
-
 */
 // }}}
-
 
 
 // prepisi sendmoney funkciju sa user strane da radi sa 10e8 integerima
