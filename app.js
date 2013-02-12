@@ -50,7 +50,7 @@ settings.admin_secret = generateid()
 settings.availiablebets = [0,0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0, 20.0, 50.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "127.0.0.1" }
-if (!settings.staging) { settings.confirmations = 2 } else { settings.confirmations = 1 }
+if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 1 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
 if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
 
