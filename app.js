@@ -1266,7 +1266,7 @@ app.get('/admin/balance', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
-    if (from == "176.58.123.25") {
+    if (from == "5.9.63.12") {
         usercash(function(usercash) {
 	        systemcash(function(systemcash) {
                 res.send(JSON.stringify({system: moneyOut(moneyIn(systemcash)), user: moneyOut(usercash)}))
@@ -1282,7 +1282,7 @@ app.get('/admin', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
-    if (from == "176.58.123.25") {
+    if (from == "5.9.63.12") {
 	res.render('admin', { title: settings.appname, secret: settings.admin_secret, port: settings.httpport, host: settings.hostname })
 	return 
     }
