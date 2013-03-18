@@ -156,7 +156,7 @@ db.open( function (err) {
 })
 
 //var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
-var btc = new bitcoin.Client('beefcake', 8332, 'bitcoin', 'MRrfhN7sdM3L++FerDMm');
+var btc = new bitcoin.Client('beefcake', 8332, 'minefield', 'wQ6qSkBftbj5O33+wVVE');
 
 // }}}
 
@@ -1833,13 +1833,10 @@ function checkTransactions() {
         }
 
         if (transactions.length) {
-            setTimeout( function () {
-	            IterateTransactions (transactions,function () { hitme(30000) })
-            }, 1000 * 60 * 5)
+	        IterateTransactions (transactions,function () { hitme(30000) })
         } else {
             hitme(30000)
         }
-
     })
 
 
@@ -1847,7 +1844,6 @@ function checkTransactions() {
 
 
 setTimeout(log_cash_snapshot,2000)
-//setTimeout(checkFinances,3000)
 
 setTimeout(checkTransactions,1000)
 
