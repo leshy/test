@@ -25,9 +25,6 @@ var uuid = require('./uuid.js');
 
 var BinaryParser = mongo.BinaryParser
 
-
-
-
 var _ = require('underscore')
 
 //console.log(IdAtTime(Date.now()))
@@ -306,10 +303,9 @@ function sendMoney (address,amount,user,callback,callbackerr) {
     })
 }
 
-function spawnUser(req,aditionaldata,callback) {
+function spawnUser(aditionaldata,callback) {
     l.log("db","debug",'creating new user')
     spawnUserData(spawnSecret(), aditionaldata, function(user) { 
-	req.session.uid = user._id
 	if (callback) { callback(user) } 
     })
 }
@@ -1155,9 +1151,11 @@ User.prototype.generatedepositaddr = function(callback,callbackerr) {
 
 function getUserBySecret(secret,callback,callbackerr) {
     if (router.secretuser[secret]) { callback( router.objects[router.secretuser[secret]] ); return  }
-    l.log('db','debug','loading user from db (by secret)')
+    l.log('db','debug','loading user from db (by secret) ' + secret)
     settings.collection_users.findOne({secret: secret}, function(err,user) {
+
 	if (!user) { if(callbackerr) { callbackerr() }; return }
+
         var id = String(user._id)
         if (router.objects[id]) {
             user = router.objects[id]
@@ -1346,6 +1344,10 @@ app.get ('/paycancel',function(req, res, next){
     res.send("canceled")
 })
 
+app.get('/client', function (req,res) {
+    res.render('client', {title: settings.appname, port: settings.httpport, host: settings.hostname, headers: req.headers})
+})
+
 app.get('/', function(req, res, next){
 
     getUserByReq(req,
@@ -1359,7 +1361,8 @@ app.get('/', function(req, res, next){
 		 function() {
 
 		     function spawn(aditionaldata) {
-			 spawnUser(req,aditionaldata, function(user) {
+			 spawnUser(aditionaldata, function(user) {
+	             req.session.uid = user._id
 			     res.redirect('/?secret=' + user.secret)
 			 })
 		     }
@@ -1495,16 +1498,22 @@ io.sockets.on('connection', function (socket) {
 		}
 	    })
 
-
-
-
-
-
 	})
     })
 
+    socket.on('newuser', function (data) {
+		spawnUser({}, function(user) {
+			socket.emit('newuser', {id: user._id, secret: user.secret})
+		})
+    })
+
+
     socket.on('hello', function (data) {	
 	    getUserBySecret(data.secret,function(user) { 
+            console.log("loaded user",user.id);
+            
+            socket.emit('hello', { login: true })
+
 	        stickid(socket)
 	        router.login(user,socket)
 	        user.sync(socket)
@@ -1565,7 +1574,8 @@ io.sockets.on('connection', function (socket) {
 		            console.log( "ERROR invalid sync data received" )
 		        }
 	        })
-	    })
+	    },
+        function () { socket.emit('hello', { login: false }) })
     })
 })
 
@@ -1574,7 +1584,7 @@ io.sockets.on('connection', function (socket) {
 
 
 app.listen(settings.httpport);
-l.log('general','info',"Express server listening on port " + app.address().port);
+l.log('general','info',"Express server listening on port ")
 
 
 

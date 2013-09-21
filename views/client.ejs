@@ -1,0 +1,41 @@
+<script type="text/javascript">
+
+console.log("hi there");
+
+var socket = io.connect("<%= host %>:<%= port %>")
+
+socket.on("objectsync", function (data) { console.log("-- objectsync",data) }) // serverside object change pushes
+socket.on("answer", function (data) { console.log("-- answer", data) }) // serverside function call responses
+socket.on("msg", function (data) { console.log("-- msg", data) }) // serverside user message pushes (like 'not enough btc' and such)
+socket.on("hello", function (data) { console.log("-- hello", data) }) // login result
+
+console.log("create a new user");
+socket.emit('newuser',{})
+
+console.log("waiting for reply");
+socket.once("newuser", function (newuser) { 
+
+    console.log("new user created:", newuser, "logging in with provided secret...");
+
+    socket.emit('hello', { secret: newuser.secret  })
+
+    socket.once('hello', function (data) {
+        if (!data.login) {
+            console.log("login failed!");
+        } else {
+            console.log("login success!");
+
+            /*
+              after this step you are logged into the service and you can use all the function calls you'd like
+              
+              use chrome debug window (or whatever you'd like) to reverse engineer the function calls, they are fairly simple,
+              (connection will look something like '/socket.io/1/websocket/' in the network inspect, click on frames tab.)
+
+            */
+
+        }
+    })
+})
+    
+</script>
+
