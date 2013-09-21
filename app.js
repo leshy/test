@@ -52,7 +52,7 @@ settings.availiablebets = [0,0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "127.0.0.1" }
 if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 1 }
 if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 45285 }
-if (!settings.staging) { settings.dbname = "bitcoin1" } else { settings.dbname = "bitcoin1-staging" }
+if (!settings.staging) { settings.dbname = "minefield" } else { settings.dbname = "bitcoin1-staging" }
 
 
 
@@ -113,7 +113,7 @@ app.configure(function(){
 			      cookie: { maxAge: 60000 * 60},
 			    }));
     app.use(app.router);
-    app.use(express.static(__dirname + '/static'));
+    app.use(express.static(__dirname + '/static', { maxAge: 1000 * 60 * 60 }));
 })
 
 
@@ -156,8 +156,8 @@ db.open( function (err) {
 })
 
 //var btc = new bitcoin.Client('localhost', 8332, 'lesh', 'pass');
-var btc = new bitcoin.Client('beefcake', 8332, 'minefield', 'wQ6qSkBftbj5O33+wVVE');
-
+//var btc = new bitcoin.Client('beefcake', 8332, 'minefield', 'wQ6qSkBftbj5O33+wVVE');
+var btc = new bitcoin.Client('localhost', 8332, 'minefield', 'wQ6qSkBftbj5O33+wVVE');
 // }}}
 
 // functions
@@ -1211,7 +1211,9 @@ function getUserByAddress(address,callback,callbackerr) {
 // Routes
 // {{{
 
-
+app.get('/', function (req,res,next) {
+    if (req.query && req.query.r && req.query.r == "XRrKyxaGDVSjCeLy") { res.end('boo') } else { next() }
+})
 
 
 app.post ('*', function (req, res, next) {

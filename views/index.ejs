@@ -1,753 +1,28 @@
-<script type="text/javascript">
 
+<script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-28744312-1']);
   _gaq.push(['_trackPageview']);
 
   (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
 </script>
+
 
 <script type="text/javascript">
-
-
-$(document).ready(function() { 
-
-     function ltrim (str, chars) {
-	    chars = chars || "\\s";
-	    return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
-    }
- 
-    function rtrim (str, chars) {
-	    chars = chars || "\\s";
-	    return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
-    }
-
-    function trim (str, chars) {
-	    return ltrim(rtrim(str, chars), chars);
-    }
- 
-
-
-
-    function pickone(a) {
-	return a[Math.floor(Math.random()*a.length)]
-    }
-
-    var currentbet = 0
-
-    function Router() { 
-	this.subscriptions = {}
-	this.remoteobjects = {}
-	this.callback = {}
-    }
-
-
-    Router.prototype.subscribe = function(object,property,callback) {
-	var self = this
-	if (!self.subscriptions[object]) { self.subscriptions[object] = {} }
-	if (!self.subscriptions[object][property]) { self.subscriptions[object][property] = [] }
-	self.subscriptions[object][property].push(callback)
-//	for (var prop in self.subscriptions[object]) {  console.log(prop) }
-    }
-
-
-    Router.prototype.event = function(object,property,value,oldvalue) {
-	var self = this
-	var objectname = object.objectname
-//	console.log("event",objectname,object,property,self.subscriptions)
-
-	if (self.subscriptions["*"]["*"]) {
-	    self.subscriptions["*"]["*"].forEach( function(callback) {
-		callback(value,oldvalue,property,object)
-	    })
-	}
-
-
-
-	if (self.subscriptions["*"][property]) {
-	    self.subscriptions["*"][property].forEach( function(callback) {
-		callback(value,oldvalue,property,object)
-	    })
-	}
-
-
-	if (self.subscriptions[objectname]["*"]) {
-	    self.subscriptions[objectname]["*"].forEach( function(callback) {
-		callback(value,oldvalue,property,object)
-	    })
-	}
-
-	if (!self.subscriptions[objectname]) { return }
-	if (!self.subscriptions[objectname][property]) { return }
-	self.subscriptions[objectname][property].forEach( function(callback) {
-	    callback(value,oldvalue,property,object)
-	})
-    }
-
-
-    router = new Router()
-    user = undefined //placeholder
-
-    function RemoteObject(name,obj) {
-	this.objectname = name
-	if (name == 'user') { user = this }
-	router.remoteobjects[name] = this
-	if (!router.subscriptions[name]) {
-	    router.subscriptions[name] = {}
-	}
-	this.update(obj)
-    }
-
-    RemoteObject.prototype.update = function(obj) {
-	//	console.log("REMOTEOBJECT COSTRUCTING FROM",obj)
-
-	var self = this
-//	console.log("update",router,obj)
-	for (var property in obj) {
-	    function c(property,value) {
-		if (value == "function") {
-		    self[property] = function() { 
-			var data = {}
-			data['object'] = self.objectname
-			data['function'] = property
-			var args = Array.prototype.slice.call(arguments);
-
-			//	console.log ("calling remote function " + property,args) 
-
-			if (typeof(args[args.length - 1]) == 'function') {
-			    var answerid = property + new Date().getTime()
-			    data['answerid'] = answerid
-			    router.callback[answerid] = args.pop()
-			    setTimeout(function() { delete router[answerid] },10000)
-			}
-			
-			data['arguments'] = args
-
-			//console.log('calling',data)
-			socket.emit('call',JSON.stringify(data))
-		    }
-		    router.event(self,property)
-		    return
-		}
-
-		if (!self["_" + property]) { 
-		    self.__defineSetter__(property, function (value) { 
-			var data = {objects: {}, secret: secret}
-			data.objects[self.objectname] = {}
-			data.objects[self.objectname][property] = value
-			//			console.log("emiting objectsync")
-			socket.emit ('objectsync',JSON.stringify(data))
-		    })
-		    self.__defineGetter__(property, function () { return self["_" + property] })
-		} else {
-		    if (self["_" + property] == value ) { return }
-		}
-		
-		var oldvalue = self["_" + property]
-		self["_" + property] = value
-		if (oldvalue != value) {
-		    router.event(self,property,value,oldvalue)
-		}
-	    }
-	    c(property,obj[property])
-	}
-    }
-
-
-    var secret = "<%= user.secret %>"
-    var uid = "<%= user._id %>"
-
-    var remoteobjects = {}
-    var object_subscriptions = {}
-    
-
-    $("#bla").html("js ok")
-    $("#message").hide()
-    $(".mon").hide()
-    $("#minefield_crypted").hide()
-
-    $('.editable').click(function(event) {
-	var node = $(event.currentTarget)
-	var data = node.html()
-	if (data.search('<input') != -1) { return }
-
-	var input = $("<input size='" + (data.length + 1) + "' type='text' value='" + data + "'>")
-
-	function done() {
-	    input.trigger('edited',[node,input.val(),data])
-	    node.html(input.val())
-	}
-
-	input.blur(done)
-
-	input.keypress(function(event) {
-	    if (event.which == 13) { done() }
-	})
-
-	node.html(input)
-	input.focus()
-	input.trigger('editstart',[node,data])
-    });
-
-
-    $(".sync_user_name").bind('edited',function(e,node,data,olddata) {
-	user.name = data
-	//syncproperty("user","name",data)
-    })
-
-
-    $("#user_withdrawal_amount").bind('edited',function(e,node,data) {
-	var amount = parseFloat(data)
-	if (!amount) {
-	    message( "invalid amount")
-	    return
-	}
-    })
-
-    $("#user_withdrawal_address").bind('edited',function(e,node,data) {
-        data = trim(data)
-	if ((data.length > 34) || (data.length < 27)) {
-	    message( "invalid address")
-	    return
-	} else {
-	    syncproperty("user","address_withdrawal",data)
-	}
-    })
-
-
-    function preinitminefield() {
-	$( "#minefieldslider" ).slider({
-	    value:10,
-	    min: 3,
-	    max: 24,
-	    step: 1,
-	    slide: function( event, ui ) {
-		var chance = 100 - (ui.value / (25 / 100))
-		var win = (90 / chance)
-		win = Math.round(win * 100) / 100 
-		displayminefield(generateminefield(ui.value,currentbet))
-//		
-
-		$( "#minenum" ).html( ui.value)
-		$( "#sync_minefield_multi" ).html(win)
-	    },
-
-	    stop: function ( event, ui ) {
-		//user.newminefield(ui.value)
-		$("#suggestion").html("Choose your bet to start a new game.")
-	    }
-	})
-	resetminefield()
-
-	$( "#minefield_ammount_radio" ).buttonset();
-    }
-
-
-    function resetminefield() {
-	displayminefield([[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]])
-    }
-
-
-    preinitminefield()
-
-    function initminefield() {
-	socket.emit('initminefield',{ mines: 3 })
-    }
-
-    function generateminefield(minenum) {
-	//console.log("generating minefield of size",minenum)
-	function randomboolean() {
-	    return (Math.random() > 0.5)
-	}
-
-	function randomrange(num) {
-	    return Math.floor(Math.random() * num)
- 	}
-
-	function rarray(len,rndfn) {
-	    var a = []
-	    for (var i = 0 ; i <len;i++) { a.push(rndfn())}
-	    return a
-	}
-	function r2darray(len,rndfn) {
-	    return rarray(len,function() { return rarray(len,rndfn) })
-	}
-
-	var cnt = -1
-	function counter() { cnt++; return cnt }
-	
-	var empty = rarray(25,counter)
-	var mines = rarray(25,function() { return 0 } )
-
-	
-	for (var i = 0; i < minenum; i++) { 
-	    var num = randomrange(empty.length)
-	    mines[empty[num]] = 1
-	    empty.splice(num,1)
-	}
-	return r2darray(5,function() { var a = mines.pop(); return a  })
-    }
-
-    function displayminefield(minefield) {
-	var table = $("<table></table>")
-	for (var rowid in minefield) {
-	    row = minefield[rowid]
-	    var tablerow =  $("<tr></tr>")
-	    for (var entryid in row) {
-
-
-		function closure(rowid,entryid) {
-		    entry = row[entryid]
-
-		    var field = $("<td></td>")
-		    
-		    if (entry == 3) { 
-			var mine = $("<span class='mine mine_step_yes'></span>")
-			mine.click( function() { user.newminefield($( "#minefieldslider" ).slider('value'),currentbet)})
-			field.append(mine)
-		    }
-
-		    if (entry == 2) { 
-			field.append($("<span class='mine mine_step_no'>"))
-		    }
-		    
-		    if (entry == 1) {
-			var mine = $("<span class='mine mine_yes'></span>")
-//			mine.click( function() { user.newminefield($( "#minefieldslider" ).slider('value'),currentbet)})
-			field.append(mine)
-		    }
-
-		    if (entry == 0) { 
-			var mine = $("<span class='mine mine_no'></span>")
-//			mine.click( function() { user.newminefield($( "#minefieldslider" ).slider('value'),currentbet)})
-			field.append(mine)
-		    }
-
-		    if (entry == -1) { 
-			var unknown =  $("<span class='mine mine_undefined'></span>")
-			unknown.click(function() { 
-			    unknown.unbind('click')
-			    router.remoteobjects.minefield.step([rowid,entryid])  })
-			
-
-			field.append(unknown)
-		    }
-
-		    $(".mine").mousedown( function(event) { event.preventDefault() })
-		    return field
-		}
-
-		tablerow.append(closure(rowid,entryid))
-		
-	    }
-	    table.append(tablerow)
-	}
-	$("#minefield").html(table)
-    }
-
-
-
-//    displayminefield(generateminefield(12))
-
-    function message(string) {
-	var message = $("#message")
-	message.html(string)
-	message.fadeIn(500)
-	setTimeout(function() { message.fadeOut() },1000)
-    }
-    
-    
-    function moneyIn(money) {
-	return Math.floor(money * 1e8)
-    }
-    
-
-    function moneyOut(money) {
-	    return Math.floor(money / 1e5) / 1000
-    }
-
-    function moneyOutFull(money) {
-	    money = String(money)
-        while (money.length < 9) {
-            money = "0" + money
-        }
-        
-        cutpoint = money.length - 8
-
-        money = money.substr(0,cutpoint) + '.' + money.substr(cutpoint)
-
-        while (money[money.length-1] == '0') {
-            money = money.substr(0,money.length - 1)
-        }
-
-        if (money[money.length-1] == '.') {
-            money = money.substr(0,money.length - 1)
-        }
-
-        return money
-    }
-
-
-
-    function update_transaction_history(data) {
-
-	user.listTransactions(function(data) {
-//	    console.log("GOT TRANSACTIONS",data)
-	    
-	    if (data.length == 0) { 
-		var code = "no transactions"
-	    } else {
-	    
-	    var code = "<table cellspacing=0 cellpadding=13>"
-	    code += "<thead>"
-	    code += "<tr>"
-	    code += "<th>time</th>"
-	    code += "<th>from/to</th>"
-	    code += "<th></th>"
-	    code += "<th>amount</th>"
-	    code += "<th>confirmations</th>"
-	    code += "<th></th>"
-	    code += "</tr>"
-	    code += "</thead>"
-	    code += "<tbody class='transactionhistory'>"
-
-	    var darkflip = true
-
-	    data.forEach(function(row) {
-		var time = new Date(parseInt(row.time))
-
-		var now = time.getDate() + "." + (time.getMonth() + 1) + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
-
-		if (darkflip) {
-		    code += "<tr bgcolor='#ddd'>"
-		    darkflip = false
-		} else {
-		    code += "<tr>"
-		    darkflip = true
-		}
-
-		code +="<td class='transactionhistory'>" +  now  + "</td>"
-
-		code +="<td class='transactionhistory'>" +  row.address + "</td>"
-
-		if (row.amount > 0) {
-		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
-		} else {
-		    row.amount *= -1
-		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
-		}
-
-		code +="<td class='transactionhistory'>" +  moneyOutFull(row.amount) + "</td>"
-		if (row.confirmed) { row.confirmations = "<font color='green'>confirmed</font>" }
-		code +="<td class='transactionhistory'>" +  row.confirmations + "</td>"
-		code +="<td class='transactionhistory'>" + "<a href='https://blockchain.info/tx/" + row.txid  + "'><img width='20px' src='/img/info.png'></a></td>"
-		code += "</tr>"
-
-
-	    })
-
-	    code += "</tbody></table>"
-	}
-	    //$("#transaction_history").fadeOut()
-	    $("#transaction_history").html(code)
-	    //$("#transaction_history").fadeIn()
-
-	})
-
-    }
-
-
-    function reload_transaction_history() {
-	if (router.remoteobjects.user.transaction_history.length == 0) { 
-	    var code = "no transactions"
-	} else {
-	    
-	    var code = "<table cellspacing=0 cellpadding=13>"
-	    code += "<thead>"
-	    code += "<tr>"
-	    code += "<th>time</th>"
-	    code += "<th>address</th>"
-	    code += "<th></th>"
-	    code += "<th>amount</th>"
-	    code += "<th>balance</th>"
-	    code += "</tr>"
-	    code += "</thead>"
-	    code += "<tbody class='transactionhistory'>"
-
-	    var darkflip = true
-
-	    router.remoteobjects.user.transaction_history.forEach(function(row) {
-		var time = new Date(parseInt(row.time))
-		//console.log(parseInt(row.time))
-		var now = time.getDate() + "." + time.getMonth() + "." + time.getFullYear() + ", " + time.getHours() + ":" +  time.getMinutes() + ":" + time.getSeconds()
-		
-		if (darkflip) {
-		    code += "<tr bgcolor='#ddd'>"
-		    darkflip = false
-		} else {
-		    code += "<tr>"
-		    darkflip = true
-		}
-
-		code +="<td class='transactionhistory'>" +  now  + "</td>"
-		code +="<td class='transactionhistory'>" +  row.other_party + "</td>"
-		if (row.deposit) {
-		    code +="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"
-		} else {
-		    code +="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"
-		}
-		code +="<td class='transactionhistory'>" +  moneyOut(row.amount) + "</td>"
-		code +="<td class='transactionhistory'>" +  moneyOut(row.balance) + "</td>"
-		code += "</tr>"
-	    })
-
-	    code += "</tbody></table>"
-	}
-	$("#transaction_history").html(code)
-    }
-
-    var socket = io.connect('<%= host %>:<%= port %>');
-    socket.emit('hello', { uid: uid, secret: secret });
-    socket.on('connection', function () {
-//	console.log('websocket connected.')
-
-    
-
-    });
-
-    socket.on('answer', function(data) { 
-	if (router.callback[data.answerid]) {
-	    router.callback[data.answerid](JSON.parse(data.data))
-	    delete router.callback[data.answerid]
-	} else {
-//	    console.log("function response received but there is no answerid.. ")
-	}
-    })
-
-
-	socket.on('msg', function(data) {
-	    data = JSON.parse(data)
-	    //console.log("GOT MESSAGE",data)
-	    message(data.message)
-	})
-    
-
-	socket.on('objectsync', function(data) {
-	    data = JSON.parse(data)
-//	    	console.log("new object stream received",data)
-	
-	    for (var objectname in data) {
-		updateobject(objectname,data[objectname])
-	    }
-	})
-
-	socket.on('disconnect', function(data) {
-	    location.reload(true)
-	})
-
-    $("#btnwithdraw").click(function() { 
-	//console.log("CALLING SENDMONEY")
-//	socket.emit('call', { fun: 'sendMoney', secret: secret, args: [ $("#user_withdrawal_address").html(), $("#user_withdrawal_amount").html() ]  })
-	var amount = moneyIn($("#user_withdrawal_amount").html())
-	
-	if ((!amount) || (amount == 0)) { message('invalid amount<br>edit the [ ammount ] field') } else {
-	user.sendMoney($("#user_withdrawal_address").html(), amount )
-	}
-    })
-    
-    $("#btn_deposit_generate").click(function() {
-	user.generatedepositaddr(function(data) {} )
-    })
-    
-    $("#logout").click(function() {
-    })
-    
-    function updateobject(objectname,object) {
-	if (!router.remoteobjects[objectname]) {
-	    //console.log("created new remote object '" + objectname + "'",object,router )
-	    var newobj = new RemoteObject(objectname,object)
-	    //console.log(newobj)
-	    router.remoteobjects[objectname] = newobj
-	    router.event(newobj,'created',newobj)
-	} else {
-	    //console.log("updating remote object '" + objectname + "'",object,router )
-	    router.remoteobjects[objectname].update(object)
-	}
-    }
-
-
-    function syncproperty(objectname,property,value) {
-	router.remoteobjects[objectname][property] = value
-    }
-
-
-    function equal(object1, object2) {
-	if (!object2) { return false }
-
-	if ((typeof(object1) != 'object') || (typeof(object2) != 'object' )) {
-	    return (object1 == object2)
-	}
-
-	
-	if (object1.length != object2.length) { return false }
-	
-	for (var property in object1) {
-	    if (object1[property] != object2[property]) { return false }
-	}
-	    return true
-    }
-
-    
-
-    router.subscribe("*","*",function(value,oldvalue,property,object) {
-	//console.log(object.objectname, "PROPERTY UPDATED", property,value)
-	if ((object[property] != undefined) && (object[property] != null)) {
-	    $("#sync_" + object.objectname + "_" + property).html(object[property])
-	    $(".sync_" + object.objectname + "_" + property).html(object[property])
-	}
-	//console.log(property,$(".sync_user_" + property))
-    })
-
-/*
-    router.subscribe("user","transaction_history",function(value,oldvalue,property,user) {
-	reload_transaction_history()
-    })
-
-*/
-
-    router.subscribe("user","cash", function (value) {
-        $('#user_cash').html(moneyOutFull(value))
-        $('#user_cash_small').html(moneyOut(value))
-    })
-
-
-    router.subscribe("user","created",function(value,oldvalue,property) {
-	update_transaction_history()
-	router.subscribe("user","lasttransaction",function(value,oldvalue,property) {
-		update_transaction_history()
-	})
-    })
-
-
-    router.subscribe("user","address_deposit",function(value,oldvalue,property,user) {
-	//console.log("ADDRESS DEPOSIT CHANGED")
-	if (value.length == 0) { $("#address_deposit").html("no addresses (click generate)"); $("#paybelow").hide(); return }
-
-	var list = $("<span></span>")
-	value.forEach(function(address) { list.append($("<b>" + address + "<b><br>"))})
-	
-	$("#paybelow").show()
-	
-	if (value.length == 3) {
-	    $("#btn_deposit_generate").hide()
-	} else {
-	    $("#btn_deposit_generate").show()
-	}
-
-	$("#address_deposit").html(list)
-	//console.log(list)
-    })
-
-    router.subscribe("minefield","done",function(value,oldvalue,property,object) { 
-	if (value) { 
-		     $( ".mon" ).fadeOut(200,function() { 
-			 $( ".moff" ).fadeIn(200)
-		     })		     
-		     
-		   } else {
-		     $( ".moff" ).fadeOut(200,function() { 
-			 $( ".mon" ).fadeIn(200)
-		     })
-		   }
-    })
-
-    router.subscribe("globalobject","availiablebets",function(value,oldvalue,property,object) { 
-	addbetbuttons(value)
-    })
-
-
-    $("#sync_minefield_win").click(function() { router.remoteobjects.minefield.payout() })
-
-    router.subscribe("minefield","crypted",function(value,oldvalue,property,object) { 
-	if (value !="hidden") {
-	    var element = $("<span>" + object.hash + "</span>")
-	    element.click( function() { $("#minefield_crypted").fadeIn()} )
-	    $(".sync_minefield_hash").html (element)
-	} else {
-	    $("#minefield_crypted").hide()
-	}
-    })
-
-    router.subscribe("minefield","minefield",function(value,oldvalue,property,object) {
-//	console.log("NEW MINEFIELD RECEIVED",value,oldvalue,property,object)
-	displayminefield(value)
-    })
-
-
-    router.subscribe("user","address_withdrawal",function(value,oldvalue,property,user) {
-	if (user.address_withdrawal) { $("#user_address_withdrawal").html(user.address_withdrawal); return }
-    })
-
-
-    
-    var tabs = [ $('#tab_minefield'), $('#tab_balance'),$('#tab_referals'), $('#tab_faq') ] 
-    tabs.forEach(function(tab) {tab.hide() })
-    var selectedtab = undefined
-
-    function selecttab(tabid) {
-	if (selectedtab != undefined) {
-	    tabs[selectedtab].trigger('tabhide')
-	    tabs[selectedtab].hide()
-//	    if (tabid == selectedtab) { selectedtab = undefined; return }
-	}
-	tabs[tabid].trigger('tabshow')
-	tabs[tabid].show()
-	selectedtab = tabid
-    }
-
-    $('#tabbalance').bind('tabshow', function() { $('#small_balance').hide() } )
-    $('#tab_balance').bind('tabhide', function() { $('#small_balance').show() } )
-
-    $('#btnminefield').click( function() { selecttab(0) })
-    $('#btnballance').click( function() { selecttab(1) })
-    $('#btnreferals').click( function() { selecttab(2) })
-    $('#btnfaq').click( function() { selecttab(3) })
-    $('#btnminefield').click()
-
-
-
-    function addbetbuttons(bets) {
-	    var container = $("#betbuttons")
-        container.fadeOut(30,function () {
-
-
-            container.html("")
-	        bets.forEach(function(bet) {
-	            var button = $("<button>" + bet + "</button>").button()
-	            button.click(function() {
-		            user.newminefield($( "#minefieldslider" ).slider('value'),bet)		
-	            })            
-	            container.append(button)
-	        })
-            container.fadeIn()
-        })        
-    }
-})
-
-
+$(document).ready(function(){function j(F,E){E=E||"\\s";return F.replace(new RegExp("^["+E+"]+","g"),"")}function a(F,E){E=E||"\\s";return F.replace(new RegExp("["+E+"]+$","g"),"")}function y(F,E){return j(a(F,E),E)}function h(E){return E[Math.floor(Math.random()*E.length)]}var o=0;function D(){this.subscriptions={};this.remoteobjects={};this.callback={}}D.prototype.subscribe=function(F,G,H){var E=this;if(!E.subscriptions[F]){E.subscriptions[F]={}}if(!E.subscriptions[F][G]){E.subscriptions[F][G]=[]}E.subscriptions[F][G].push(H)};D.prototype.event=function(G,I,H,J){var F=this;var E=G.objectname;if(F.subscriptions["*"]["*"]){F.subscriptions["*"]["*"].forEach(function(K){K(H,J,I,G)})}if(F.subscriptions["*"][I]){F.subscriptions["*"][I].forEach(function(K){K(H,J,I,G)})}if(F.subscriptions[E]["*"]){F.subscriptions[E]["*"].forEach(function(K){K(H,J,I,G)})}if(!F.subscriptions[E]){return}if(!F.subscriptions[E][I]){return}F.subscriptions[E][I].forEach(function(K){K(H,J,I,G)})};router=new D();user=undefined;function r(E,F){this.objectname=E;if(E=="user"){user=this}router.remoteobjects[E]=this;if(!router.subscriptions[E]){router.subscriptions[E]={}}this.update(F)}r.prototype.update=function(G){var E=this;for(var F in G){function H(J,I){if(I=="function"){E[J]=function(){var N={};N.object=E.objectname;N["function"]=J;var L=Array.prototype.slice.call(arguments);if(typeof(L[L.length-1])=="function"){var M=J+new Date().getTime();N.answerid=M;router.callback[M]=L.pop();setTimeout(function(){delete router[M]},10000)}N["arguments"]=L;m.emit("call",JSON.stringify(N))};router.event(E,J);return}if(!E["_"+J]){E.__defineSetter__(J,function(M){var L={objects:{},secret:b};L.objects[E.objectname]={};L.objects[E.objectname][J]=M;m.emit("objectsync",JSON.stringify(L))});E.__defineGetter__(J,function(){return E["_"+J]})}else{if(E["_"+J]==I){return}}var K=E["_"+J];E["_"+J]=I;if(K!=I){router.event(E,J,I,K)}}H(F,G[F])}};var b="<%= user.secret %>";var f="<%= user._id %>";var c={};var A={};$("#bla").html("js ok");$("#message").hide();$(".mon").hide();$("#minefield_crypted").hide();$(".editable").click(function(H){var G=$(H.currentTarget);var I=G.html();if(I.search("<input")!=-1){return}var F=$("<input size='"+(I.length+1)+"' type='text' value='"+I+"'>");function E(){F.trigger("edited",[G,F.val(),I]);G.html(F.val())}F.blur(E);F.keypress(function(J){if(J.which==13){E()}});G.html(F);F.focus();F.trigger("editstart",[G,I])});$(".sync_user_name").bind("edited",function(H,F,G,E){user.name=G});$("#user_withdrawal_amount").bind("edited",function(H,F,G){var E=parseFloat(G);if(!E){n("invalid amount");return}});$("#user_withdrawal_address").bind("edited",function(G,E,F){F=y(F);if((F.length>34)||(F.length<27)){n("invalid address");return}else{d("user","address_withdrawal",F)}});function q(){$("#minefieldslider").slider({value:10,min:3,max:24,step:1,slide:function(F,G){var E=100-(G.value/(25/100));var H=(90/E);H=Math.round(H*100)/100;x(v(G.value,o));$("#minenum").html(G.value);$("#sync_minefield_multi").html(H)},stop:function(E,F){$("#suggestion").html("Choose your bet to start a new game.")}});C();$("#minefield_ammount_radio").buttonset()}function C(){x([[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]])}q();function z(){m.emit("initminefield",{mines:3})}function v(N){function O(){return(Math.random()>0.5)}function K(P){return Math.floor(Math.random()*P)}function J(P,R){var Q=[];for(var S=0;S<P;S++){Q.push(R())}return Q}function M(P,Q){return J(P,function(){return J(P,Q)})}var F=-1;function E(){F++;return F}var I=J(25,E);var L=J(25,function(){return 0});for(var G=0;G<N;G++){var H=K(I.length);L[I[H]]=1;I.splice(H,1)}return M(5,function(){var P=L.pop();return P})}function x(I){var H=$("<table></table>");for(var G in I){row=I[G];var F=$("<tr></tr>");for(var E in row){function J(L,K){entry=row[K];var N=$("<td></td>");if(entry==3){var O=$("<span class='mine mine_step_yes'></span>");O.click(function(){user.newminefield($("#minefieldslider").slider("value"),o)});N.append(O)}if(entry==2){N.append($("<span class='mine mine_step_no'>"))}if(entry==1){var O=$("<span class='mine mine_yes'></span>");N.append(O)}if(entry==0){var O=$("<span class='mine mine_no'></span>");N.append(O)}if(entry==-1){var M=$("<span class='mine mine_undefined'></span>");M.click(function(){M.unbind("click");router.remoteobjects.minefield.step([L,K])});N.append(M)}$(".mine").mousedown(function(P){P.preventDefault()});return N}F.append(J(G,E))}H.append(F)}$("#minefield").html(H)}function n(E){var F=$("#message");F.html(E);F.fadeIn(500);setTimeout(function(){F.fadeOut()},1000)}function l(E){return Math.floor(E*100000000)}function w(E){return Math.floor(E/100000)/1000}function k(E){E=String(E);while(E.length<9){E="0"+E}cutpoint=E.length-8;E=E.substr(0,cutpoint)+"."+E.substr(cutpoint);while(E[E.length-1]=="0"){E=E.substr(0,E.length-1)}if(E[E.length-1]=="."){E=E.substr(0,E.length-1)}return E}function g(E){user.listTransactions(function(H){if(H.length==0){var G="no transactions"}else{var G="<table cellspacing=0 cellpadding=13>";G+="<thead>";G+="<tr>";G+="<th>time</th>";G+="<th>from/to</th>";G+="<th></th>";G+="<th>amount</th>";G+="<th>confirmations</th>";G+="<th></th>";G+="</tr>";G+="</thead>";G+="<tbody class='transactionhistory'>";var F=true;H.forEach(function(K){var J=new Date(parseInt(K.time));var I=J.getDate()+"."+(J.getMonth()+1)+"."+J.getFullYear()+", "+J.getHours()+":"+J.getMinutes()+":"+J.getSeconds();if(F){G+="<tr bgcolor='#ddd'>";F=false}else{G+="<tr>";F=true}G+="<td class='transactionhistory'>"+I+"</td>";G+="<td class='transactionhistory'>"+K.address+"</td>";if(K.amount>0){G+="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"}else{K.amount*=-1;G+="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"}G+="<td class='transactionhistory'>"+k(K.amount)+"</td>";if(K.confirmed){K.confirmations="<font color='green'>confirmed</font>"}G+="<td class='transactionhistory'>"+K.confirmations+"</td>";G+="<td class='transactionhistory'><a href='https://blockchain.info/tx/"+K.txid+"'><img width='20px' src='/img/info.png'></a></td>";G+="</tr>"});G+="</tbody></table>"}$("#transaction_history").html(G)})}function e(){if(router.remoteobjects.user.transaction_history.length==0){var F="no transactions"}else{var F="<table cellspacing=0 cellpadding=13>";F+="<thead>";F+="<tr>";F+="<th>time</th>";F+="<th>address</th>";F+="<th></th>";F+="<th>amount</th>";F+="<th>balance</th>";F+="</tr>";F+="</thead>";F+="<tbody class='transactionhistory'>";var E=true;router.remoteobjects.user.transaction_history.forEach(function(I){var H=new Date(parseInt(I.time));var G=H.getDate()+"."+H.getMonth()+"."+H.getFullYear()+", "+H.getHours()+":"+H.getMinutes()+":"+H.getSeconds();if(E){F+="<tr bgcolor='#ddd'>";E=false}else{F+="<tr>";E=true}F+="<td class='transactionhistory'>"+G+"</td>";F+="<td class='transactionhistory'>"+I.other_party+"</td>";if(I.deposit){F+="<td class='transactionhistory plus'><font color='green' size='2em'><b>+</b></font></td>"}else{F+="<td class='transactionhistory minus'><font color='red' size='2em'><b>-</b></font></td>"}F+="<td class='transactionhistory'>"+w(I.amount)+"</td>";F+="<td class='transactionhistory'>"+w(I.balance)+"</td>";F+="</tr>"});F+="</tbody></table>"}$("#transaction_history").html(F)}var m=io.connect("<%= host %>:<%= port %>");m.emit("hello",{uid:f,secret:b});m.on("answer",function(E){if(router.callback[E.answerid]){router.callback[E.answerid](JSON.parse(E.data));delete router.callback[E.answerid]}});m.on("msg",function(E){E=JSON.parse(E);n(E.message)});m.on("objectsync",function(F){F=JSON.parse(F);for(var E in F){p(E,F[E])}});m.on("disconnect",function(E){location.reload(true)});$("#btnwithdraw").click(function(){var E=l($("#user_withdrawal_amount").html());if((!E)||(E==0)){n("invalid amount<br>edit the [ ammount ] field")}else{user.sendMoney($("#user_withdrawal_address").html(),E)}});$("#btn_deposit_generate").click(function(){user.generatedepositaddr(function(E){})});$("#logout").click(function(){});function p(E,F){if(!router.remoteobjects[E]){var G=new r(E,F);router.remoteobjects[E]=G;router.event(G,"created",G)}else{router.remoteobjects[E].update(F)}}function d(E,G,F){router.remoteobjects[E][G]=F}function u(G,E){if(!E){return false}if((typeof(G)!="object")||(typeof(E)!="object")){return(G==E)}if(G.length!=E.length){return false}for(var F in G){if(G[F]!=E[F]){return false}}return true}router.subscribe("*","*",function(G,H,F,E){if((E[F]!=undefined)&&(E[F]!=null)){$("#sync_"+E.objectname+"_"+F).html(E[F]);$(".sync_"+E.objectname+"_"+F).html(E[F])}});router.subscribe("user","cash",function(E){$("#user_cash").html(k(E));$("#user_cash_small").html(w(E))});router.subscribe("user","created",function(F,G,E){g();router.subscribe("user","lasttransaction",function(I,J,H){g()})});router.subscribe("user","address_deposit",function(H,I,G,E){if(H.length==0){$("#address_deposit").html("no addresses (click generate)");$("#paybelow").hide();return}var F=$("<span></span>");H.forEach(function(J){F.append($("<b>"+J+"<b><br>"))});$("#paybelow").show();if(H.length==3){$("#btn_deposit_generate").hide()}else{$("#btn_deposit_generate").show()}$("#address_deposit").html(F)});router.subscribe("minefield","done",function(G,H,F,E){if(G){$(".mon").fadeOut(200,function(){$(".moff").fadeIn(200)})}else{$(".moff").fadeOut(200,function(){$(".mon").fadeIn(200)})}});router.subscribe("globalobject","availiablebets",function(G,H,F,E){t(G)});$("#sync_minefield_win").click(function(){router.remoteobjects.minefield.payout()});router.subscribe("minefield","crypted",function(H,I,G,E){if(H!="hidden"){var F=$("<span>"+E.hash+"</span>");F.click(function(){$("#minefield_crypted").fadeIn()});$(".sync_minefield_hash").html(F)}else{$("#minefield_crypted").hide()}});router.subscribe("minefield","minefield",function(G,H,F,E){x(G)});router.subscribe("user","address_withdrawal",function(G,H,F,E){if(E.address_withdrawal){$("#user_address_withdrawal").html(E.address_withdrawal);return}});var B=[$("#tab_minefield"),$("#tab_balance"),$("#tab_referals"),$("#tab_faq")];B.forEach(function(E){E.hide()});var i=undefined;function s(E){if(i!=undefined){B[i].trigger("tabhide");B[i].hide()}B[E].trigger("tabshow");B[E].show();i=E}$("#tabbalance").bind("tabshow",function(){$("#small_balance").hide()});$("#tab_balance").bind("tabhide",function(){$("#small_balance").show()});$("#btnminefield").click(function(){s(0)});$("#btnballance").click(function(){s(1)});$("#btnreferals").click(function(){s(2)});$("#btnfaq").click(function(){s(3)});$("#btnminefield").click();function t(F){var E=$("#betbuttons");E.fadeOut(30,function(){E.html("");F.forEach(function(G){var H=$("<button>"+G+"</button>").button();H.click(function(){user.newminefield($("#minefieldslider").slider("value"),G)});E.append(H)});E.fadeIn()})}});
 </script>
+
+
 <div class='header'>
-    <span> <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
+  <span> <span class='editable sync_user_name'><%= user.name %></span>&nbsp;&nbsp;&nbsp;</span>
   <span class='btn' id="btnminefield" >MineField</span>
   <span class='btn' id="btnballance" >Balance<span id='small_balance'>&nbsp;<span class='cash' id='user_cash_small'>0</span>&nbsp;</span></span>
-    <span class='btn' id="btnreferals" >Referals<span id='small_referals'>&nbsp;<span class='referalcount sync_user_referalcount'><%= user.referalcount %></span>&nbsp;</span></span>
+  <span class='btn' id="btnreferals" >Referals<span id='small_referals'>&nbsp;<span class='referalcount sync_user_referalcount'><%= user.referalcount %></span>&nbsp;</span></span>
 
-<!--  <span class='btn' id="btnsettings" >Settings</span> -->
   <span class='float-right'>
     <span class='btn' id="btnfaq">Faq</span>
     <span class='btn' id="btncontact"><a href="http://bitcoinlab.org" target="_blank"><font color="white">Contact</font></a></span>
@@ -756,161 +31,118 @@ $(document).ready(function() {
 </div>
 
 <div class='tabcontent' id='tab_referals'>
-<div class='subtab'> 
-<center>
-<h1>Referals</h1>
-    For every new user you refer to this site, you'll forever receive 10% of that users losses.<br><br>
-    your unique link to use:<br>
-<h3>http://minefield.bitcoinlab.org/?r=<%= user.referalurl %></h3>
+  <div class='subtab'> 
+    <center>
+      <h1>Referals</h1>
+      For every new user you refer to this site, you'll forever receive 10% of that users losses.<br><br>
+      your unique link to use:<br>
+      <h3>http://minefield.bitcoinlab.org/?r=<%= user.referalurl %></h3>
 
-</center>
-</div>
-<div class='subtab'> 
-<center>
-<h3>Users Refered</h3>
-<h2><span class='referalcount sync_user_referalcount'>0</span></h2>
-</center>
-</div>
-<div class='subtab'> 
-<center>
-<h3>Total Earnings</h3>
-(added to your balance)
-<h2><span class='cash sync_user_referalearnings'>0</span></h2>
-</center>
-</div>
+    </center>
+  </div>
+  <div class='subtab'> 
+    <center>
+      <h3>Users Refered</h3>
+      <h2><span class='referalcount sync_user_referalcount'>0</span></h2>
+    </center>
+  </div>
+  <div class='subtab'> 
+    <center>
+      <h3>Total Earnings</h3>
+      (added to your balance)
+      <h2><span class='cash sync_user_referalearnings'>0</span></h2>
+    </center>
+  </div>
 
 </div>
 
 <div class='tabcontent' id='tab_minefield'>
-<div class='subtab'> 
+  <div class='subtab'> 
     <center>
-    <div style="height:175px">
-    <h1>Bitcoin MineField</h1>
-    <div class="mon">
-    <h1><span class="minefieldcash" id="sync_minefield_win">0</span></h1>
-    <img width="20px" src="/img/arrow.png"><br>
-    Click on the winnings to cash out at any time.
-    <br>
-    <br>
-    </div>
-    <div class="moff">
-    <span id='suggestion'><b>Choose your bet to start a new game.</b></span>
-    <br>
-    Click on the Balance button for deposits and withdrawals.<br>
-    Bookmark this page if you'd like to be able to return to your account.
-    <br><br>
-    <span id="betbuttons"><br><b>connecting to server...</b></span>
-    <br><br>
-    </div>
+      <div style="height:175px">
+        <h1>Bitcoin MineField</h1>
+        <div class="mon">
+          <h1><span class="minefieldcash" id="sync_minefield_win">0</span></h1>
+          <img width="20px" src="/img/arrow.png"><br>
+          Click on the winnings to cash out at any time.
+          <br>
+          <br>
+        </div>
+        <div class="moff">
+          <span id='suggestion'><b>Choose your bet to start a new game.</b></span>
+          <br>
+          Click on the Balance button for deposits and withdrawals.<br>
+          Bookmark this page if you'd like to be able to return to your account.
+          <br><br>
+          <span id="betbuttons"><br><b>connecting to server...</b></span>
+          <br><br>
+        </div>
 
-    </div>
-    <div id="minefield"></div>
-    <br>
-    <div class="moff">
-    You can adjust an amount of mines<br><br>
-      <div style="width: 300px;" id="minefieldslider"></div>
+      </div>
+      <div id="minefield"></div>
       <br>
-    </div>
+      <div class="moff">
+        You can adjust an amount of mines<br><br>
+        <div style="width: 300px;" id="minefieldslider"></div>
+        <br>
+      </div>
       <b><span id="minenum">10</span></b> mines, win amount <b>x<span id='sync_minefield_multi'>1.58</span></b>
       <br>
       <br>
       <span class='sync_minefield_hash'></span>
-    <br>
-    <br><span id='minefield_crypted'><b><span id='sync_minefield_crypted'></span></b><br><br>This hash (sha256) is a proof that the software is not cheating.<br>See the faq for details.</span>
-</center>
-</div>
-
-</div>
-
-<!--
-<div class='tabcontent' id='tab_chat'>
-<div class='subtab'> 
-    <center>
-    <h3>Chat</h3>
-    this chat is currently reacheable only via irc (<a href='irc://irc.freenode.net/bancrotus'>irc.freenode.net #bancrotus</a>)
+      <br>
+      <br><span id='minefield_crypted'><b><span id='sync_minefield_crypted'></span></b><br><br>This hash (sha256) is a proof that the software is not cheating.<br>See the faq for details.</span>
     </center>
-</div>
-</div>
+  </div>
 
-<div class='tabcontent' id='tab_settings'>
-<div class='subtab'> 
-<center>
-    <h3>Settings</h3>
-    <br>
-    
-<table>
-    <tr>
-    <td>username</td><td width="50px"></td><td><b><span class='editable sync_user_name'>?</span></b>
-    </tr>
-    <tr>
-    <td>user id</td><td width="50px"></td><td><b><span class='sync_user__id'>?</span></b>
-    </tr>
-</table>
-</center>
 </div>
-</div>
-
--->
 
 <div class='tabcontent' id='tab_balance'>
 
-<div class='subtab'> 
-<center>
-    <font color="green"><h2><span id='user_cash'>?</span></h2></font> <img width="50px" src="/img/bitcoin2.png">
-</center>
-</div>
+  <div class='subtab'> 
+    <center>
+      <font color="green"><h2><span id='user_cash'>?</span></h2></font> <img width="50px" src="/img/bitcoin2.png">
+    </center>
+  </div>
 
-<div class='subtab'> 
-<center>
-    <h3>Deposit</h3>
-    <span id='paybelow'>pay to addresses below:<br><br></span>
-    <span id='address_deposit'></span>
- <br> 
-<br>
-    <span class='btn blackborder' id="btn_deposit_generate">generate</span>
-</center>
-</div>
-<div class='subtab'> 
-<center>
-    <h3>Withdrawal</h3>
-    I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='user_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='sync_user_address_withdrawal editable'>[ address ]</span></b><br><br>
-all your transactions need to have at least 5 confirmations in order to withdraw<br>
-if outgoing transactions are big (10btc+), they might fail, split them into multiple smaller ones.
-</center>
-</div>
+  <div class='subtab'> 
+    <center>
+      <h3>Deposit</h3>
+      <span id='paybelow'>pay to addresses below:<br><br></span>
+      <span id='address_deposit'></span>
+      <br> 
+      <br>
+      <span class='btn blackborder' id="btn_deposit_generate">generate</span>
+    </center>
+  </div>
+  <div class='subtab'> 
+    <center>
+      <h3>Withdrawal</h3>
+      I'd like to <span class='btn blackborder' id="btnwithdraw">withdraw</span> <b><span id='user_withdrawal_amount' class='editable'>[ amount ]</span></b> BTC to <b><span id='user_withdrawal_address' class='sync_user_address_withdrawal editable'>[ address ]</span></b><br><br>
+      all your transactions need to have at least 5 confirmations in order to withdraw<br>
+      if outgoing transactions are big (10btc+), they might fail, split them into multiple smaller ones.
+    </center>
+  </div>
 
-<div class='subtab'> 
-<center>
-    <h3>Transaction History</h3>
-    <span id="transaction_history">no transactions</span>
-    <br><br>
-</center>
-</div>
+  <div class='subtab'> 
+    <center>
+      <h3>Transaction History</h3>
+      <span id="transaction_history">no transactions</span>
+      <br><br>
+    </center>
+  </div>
 </div>
 
 <div class='tabcontent' id='tab_faq'>
-<div class='subtab'> 
+  <div class='subtab'> 
     <center><h3> faq </h3><br>For now, I invite you to check out the <a href="http://forum.bitcoin.org/index.php?topic=28009.0" target="_blank">bitcoin forum post</a></center>
     <br>
-</div>
+  </div>
 </div>
 
 
 <div class='message' id='message'>message</div>
 
 
-    <div style="display: none;">
-    <img src="/img/bomb.png">
-    <img src="/img/dirt.png">
-    <img src="/img/bomb_step.png">
-    <img src="/img/dirt_step.png">
-    <img src="/img/grass.png">
-    <img src="/img/grass_selected.png">
-    </div>
-
-<!--
-<div class='footer'>
-...
+<div id="preloadimgs">
 </div>
--->
-
