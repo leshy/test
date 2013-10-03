@@ -1262,7 +1262,7 @@ app.get ('*', function (req, res, next) {
     next()
 })
 
-app.get('/admin/balance', function(req, res){
+app.get('/adminlshpass/balance', function(req, res){
     var from = req.socket.remoteAddress
     if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
@@ -1278,15 +1278,15 @@ app.get('/admin/balance', function(req, res){
 })
 
 
-app.get('/admin', function(req, res){
-    var from = req.socket.remoteAddress
-    if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
+app.get('/adminlshpass', function(req, res){
+    //var from = req.socket.remoteAddress
+    //if (from == "127.0.0.1") { if (req.headers['x-forwarded-for']) { from = req.headers['x-forwarded-for'] }}
 
-    if (from == "5.9.63.12") {
+    //if (from == "5.9.63.12") {
 	res.render('admin', { title: settings.appname, secret: settings.admin_secret, port: settings.httpport, host: settings.hostname })
-	return 
-    }
-    res.send("access denied")
+	//return 
+    //}
+    //res.send("access denied")
 
 })
 
