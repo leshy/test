@@ -1061,7 +1061,7 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     //amount = moneyIn(amount)
     //console.log(amount)
 
-    if (amount < 100000) { self.message("amount too small"); return }
+    if (amount < 1000) { self.message("amount too small"); return }
     
     self.transactions_confirmed(function(confirmed) {
 	if (!confirmed) { self.message("transactions unconfirmed"); return }
