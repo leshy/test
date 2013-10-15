@@ -1820,38 +1820,26 @@ function insertTransaction(transaction) {
 
 var checktimeout = undefined
 
+var tfreq = 1000 * 60
+
 function checkTransactions() {
-
-    function hitme(time) {
-        if (checktimeout) (clearTimeout(checktimeout))
-        checktimeout = setTimeout(checkTransactions,time)
-    }
-
-    btc.listTransactions( "", 600, function (err,transactions)  {
-        //  var transactions = _.filter(transactions, function (transaction) { return boolean(transaction) })
-
+    btc.listTransactions( "", 100, function (err,transactions)  {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
                 l.log('bitcoind','staging',"backing out, I'm on staging...")
                 return
             } else {
-                //l.log('bitcoind','restart',"will restart")
+                l.log('bitcoind','restart',"will restart")
                 //throw "bitcoind connection failed"
-                hitme(3000)
+                setTimeout(checkTransactions,tfreq)
                 return
             }
-        
         }
 
-        if (transactions.length) {
-	        IterateTransactions (transactions,function () { hitme(30000) })
-        } else {
-            hitme(30000)
-        }
+        if (transactions.length) { IterateTransactions (transactions, function () { setTimeout(checkTransactions,tfreq) }) } 
+        else { setTimeout(checkTransactions,tfreq) }
     })
-
-
 }
 
 
