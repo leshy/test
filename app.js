@@ -1750,7 +1750,11 @@ function CheckTransaction(transaction,callback) {
 		            }
 
 		            if (Object.keys(set).length > 0 ) {
+                        console.log("updating transaction...");
+
 		                updateTransaction(transaction.txid,set,function () {
+                            console.log("updatetransaction callback received");
+
 		                    console.log(transaction.txid, "changed state, looking for " + transaction.owner)
                             user.lasttransaction = new Date().getTime()
                         })
@@ -1771,7 +1775,11 @@ function CheckTransaction(transaction,callback) {
 
 	        getUserByAddress(transaction.address,function(user) {
 		        transaction.owner = user._id
+                console.log("inserting transaction");
+
 		        insertTransaction(transaction, function () {
+                    console.log("inserttransaction callback received");
+
 		            l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
 		            user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
 		            user.address_deposit_used.push(transaction.address)
