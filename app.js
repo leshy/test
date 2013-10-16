@@ -44,7 +44,7 @@ settings.appname = "MineField - BitcoinLab"
 settings.session_secret = "nA2xqeuW9ODQuQ5BnKe4W2WBWBx4ukE7+vvgtJ9"
 settings.admin_secret = generateid()
 
-settings.availiablebets = [0,0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 ]
+settings.availiablebets = [0,0.0001, 0.0005, 0.001,0.01, 0.05, 0.1, 0.5, 1.0, 2.5, 5.0 ]
 
 if (!settings.staging) { settings.hostname = "minefield.bitcoinlab.org" } else { settings.hostname = "127.0.0.1" }
 if (!settings.staging) { settings.confirmations = 5 } else { settings.confirmations = 1 }
