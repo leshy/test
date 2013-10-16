@@ -1819,7 +1819,7 @@ function insertTransaction(transaction,callback) {
 }
 
 var checktimeout = undefined
-var tfreq = 1000 * 60
+var tfreq = 1000 * 30
 
 function checkTransactions() {
     l.log('bitcoind','transactioncheck',"checktransactions")
