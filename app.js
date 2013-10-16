@@ -1760,7 +1760,7 @@ function CheckTransaction(transaction,callback) {
                         })
 		            }
                 })
-	        }
+	        } else { callback() }
 
 	    } else {
 	        // not in db, add         
