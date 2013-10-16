@@ -1833,12 +1833,14 @@ function checkTransactions() {
             } else {
                 l.log('bitcoind','restart',"will restart")
                 //throw "bitcoind connection failed"
+                console.log("bitcoin error, checktransactions scheduled")
                 setTimeout(checkTransactions,tfreq)
                 return
             }
         }
-        if (transactions.length) { IterateTransactions (transactions, function () { setTimeout(checkTransactions,tfreq) }) } 
-        else { setTimeout(checkTransactions,tfreq) }
+        if (transactions.length) { IterateTransactions (transactions, function () { console.log("iteration done, checktransactions scheduled");
+setTimeout(checkTransactions,tfreq) }) } 
+        else { console.log("no iteration, checktransactions scheduled"); setTimeout(checkTransactions,tfreq) }
     })
 }
 
