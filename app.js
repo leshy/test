@@ -1754,11 +1754,14 @@ function CheckTransaction(transaction,callback) {
 
 		                updateTransaction(transaction.txid,set,function () {
                             console.log("updatetransaction callback received");
-
-		                    console.log(transaction.txid, "changed state, looking for " + transaction.owner)
+		                    console.log(transaction.txid, "changed state, looking for " + dbtransaction.owner)
                             user.lasttransaction = new Date().getTime()
+                            callback()
                         })
 		            }
+
+                    callback()
+
                 })
 	        } else { callback() }
 
