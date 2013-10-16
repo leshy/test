@@ -1714,29 +1714,21 @@ setTimeout(function() {
 
 */
 
-function IterateTransactions(transactions,callback) {
-    var transaction = transactions.pop()
+function IterateTransactions (transactions,callback) {
+    async.series( _.map(transactions, function (transaction) { return function (callback) {  CheckTransaction(transaction,callback) } }), callback)
+}
 
-    function next() {
-	    if (transactions.length > 0) {
-	        IterateTransactions(transactions,callback)
-	    } else {
-            callback()
-        }
-    }
-
-    //if (transaction.category != 'receive') { next(); return }
-    //console.log(transaction)
+function CheckTransaction(transaction,callback) {
     
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
 	    if (dbtransaction) {
 
 	        if (!dbtransaction.owner) { 
-		        next(); return
+		        return callback()
 	        }
 
 	        if (transaction.category != 'receive') { 
-		        next(); return
+		        return callback()
 	        }
 	        
 	        if (!dbtransaction.confirmed) {
@@ -1751,23 +1743,23 @@ function IterateTransactions(transactions,callback) {
 		                set.confirmed = true
                         user.message ( "transaction confirmed" )
 		            } else {
-		                if (transaction.confirmations == dbtransaction.confirmations) { next(); return; }
+		                if (transaction.confirmations == dbtransaction.confirmations) { return callback() }
 		                console.log('enlarged!')
 		                set.confirmations = transaction.confirmations
 		            }
 
 		            if (Object.keys(set).length > 0 ) {
-		                updateTransaction(transaction.txid,set)
-		                console.log(transaction.txid, "changed state, looking for " + transaction.owner)
-                        user.lasttransaction = new Date().getTime()
+		                updateTransaction(transaction.txid,set,function () {
+		                    console.log(transaction.txid, "changed state, looking for " + transaction.owner)
+                            user.lasttransaction = new Date().getTime()
+                        })
 		            }
                 })
 	        }
 
 	    } else {
-	    // not in db, add         
+	        // not in db, add         
 
-//            setTimeout( function () {
 	        transaction = importTransaction(transaction)
 
 	        if (transaction.confirmations >= settings.confirmations) { 
@@ -1778,26 +1770,25 @@ function IterateTransactions(transactions,callback) {
 
 	        getUserByAddress(transaction.address,function(user) {
 		        transaction.owner = user._id
-		        insertTransaction(transaction)
-		        l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
-		        user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
-		        user.address_deposit_used.push(transaction.address)
-		        user.lasttransaction = new Date().getTime()
-		        user.cash = user.cash + transaction.amount
-		        user.message("payment received")
-		        user.save()
-		        user.syncproperty('address_deposit')
-		        user.syncproperty('cash')
-		        l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })		    
+		        insertTransaction(transaction, function () {
+		            l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
+		            user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
+		            user.address_deposit_used.push(transaction.address)
+		            user.lasttransaction = new Date().getTime()
+		            user.cash = user.cash + transaction.amount
+		            user.message("payment received")
+		            user.save()
+		            user.syncproperty('address_deposit')
+		            user.syncproperty('cash')
+		            l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })
+                    callback()
+                })
 	        }, function() {
-		        insertTransaction(transaction)
 		        l.log("transaction","noowner", "owner for transaction " +  stringTransaction(transaction) + " not found", transaction)
+                insertTransaction(transaction,callback)
 	        })
-
-//            }, 1000 * 60 * 4)
 	    }
     })
-    next()
 }
 
 function stringTransaction(transaction) {
@@ -1810,12 +1801,12 @@ function importTransaction(transaction) {
     return transaction
 }
 
-function updateTransaction(txid,set) {
-    settings.collection_transactions.update({txid: txid},{ "$set" : set })
+function updateTransaction(txid,set,callback) {
+    settings.collection_transactions.update({txid: txid},{ "$set" : set },callback)
 }
 
-function insertTransaction(transaction) {
-    settings.collection_transactions.insert(transaction)
+function insertTransaction(transaction,callback) {
+    settings.collection_transactions.insert(transaction,callback)
 }
 
 var checktimeout = undefined
