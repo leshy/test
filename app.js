@@ -1819,10 +1819,11 @@ function insertTransaction(transaction) {
 }
 
 var checktimeout = undefined
-
 var tfreq = 1000 * 60
 
 function checkTransactions() {
+    l.log('bitcoind','transactioncheck',"checktransactions")
+    
     btc.listTransactions( "", 100, function (err,transactions)  {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
@@ -1836,7 +1837,6 @@ function checkTransactions() {
                 return
             }
         }
-
         if (transactions.length) { IterateTransactions (transactions, function () { setTimeout(checkTransactions,tfreq) }) } 
         else { setTimeout(checkTransactions,tfreq) }
     })
@@ -1844,7 +1844,6 @@ function checkTransactions() {
 
 
 setTimeout(log_cash_snapshot,2000)
-
 setTimeout(checkTransactions,1000)
 
 
