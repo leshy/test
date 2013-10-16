@@ -21,7 +21,7 @@ var irc = require('irc')
 var remoteobject = require('./remoteobject2.js')
 var Logger = require('./logger.js');
 var uuid = require('./uuid.js');
-
+var async = require('async')
 
 var BinaryParser = mongo.BinaryParser
 
