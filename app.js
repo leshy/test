@@ -1824,7 +1824,7 @@ var checktimeout = undefined
 var tfreq = 1000 * 30
 
 function checkTransactions() {
-    l.log('bitcoind','transactioncheck',"checktransactions")
+    //l.log('bitcoind','transactioncheck',"checktransactions")
     
     btc.listTransactions( "", 100, function (err,transactions)  {
         if (err) {
@@ -1840,7 +1840,7 @@ function checkTransactions() {
                 return
             }
         }
-        if (transactions.length) { IterateTransactions (transactions, function () { console.log("iteration done, checktransactions scheduled");
+        if (transactions.length) { IterateTransactions (transactions, function () { //console.log("iteration done, checktransactions scheduled");
 setTimeout(checkTransactions,tfreq) }) } 
         else { console.log("no iteration, checktransactions scheduled"); setTimeout(checkTransactions,tfreq) }
     })
