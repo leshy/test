@@ -1719,7 +1719,7 @@ function IterateTransactions (transactions,callback) {
 }
 
 function CheckTransaction(transaction,callback) {
-    console.log("checking", transaction.txid );
+    //console.log("checking", transaction.txid );
 
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
 	    if (dbtransaction) {
