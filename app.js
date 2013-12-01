@@ -60,7 +60,7 @@ patch.test = {
 }
 
 if ((process.argv.length > 1) && (patch[mode = process.argv[2]])) {
-    console.log("running in custom", mode,"mode.!);
+    console.log("running in custom", mode,"mode.");
     _.extend(settings, patch[mode])
 }
 
