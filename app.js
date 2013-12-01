@@ -1890,10 +1890,3 @@ setTimeout(
 
 // prepisi sendmoney funkciju sa user strane da radi sa 10e8 integerima
 
-
-Hi, 
-there was a problem with a server and transactions haven't been acknowledged by the game.
-everything should be in order now, sorry about this (and about the reply delay) let me know if you have any other questions.
-
-regards,
-Holorga
