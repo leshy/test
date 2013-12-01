@@ -1844,7 +1844,7 @@ var checktimeout = undefined
 var tfreq = 1000 * 30
 
 function checkTransactions() {
-    //l.log('bitcoind','transactioncheck',"checktransactions")
+    l.log('bitcoind','transactioncheck',"checktransactions")
     
     btc.listTransactions( "", 100, function (err,transactions)  {
         if (err) {
@@ -1889,3 +1889,11 @@ setTimeout(
 
 
 // prepisi sendmoney funkciju sa user strane da radi sa 10e8 integerima
+
+
+Hi, 
+there was a problem with a server and transactions haven't been acknowledged by the game.
+everything should be in order now, sorry about this (and about the reply delay) let me know if you have any other questions.
+
+regards,
+Holorga
