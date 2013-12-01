@@ -1,5 +1,4 @@
 // settings
-
 // {{{
 
 // require
@@ -38,6 +37,7 @@ if (process.argv.length > 2) {
     }
 }
 
+
 settings.dbhost = "localhost"
 settings.dbport = 27017
 settings.appname = "MineField - BitcoinLab"
@@ -52,6 +52,17 @@ if (!settings.staging) { settings.httpport = 45284 } else { settings.httpport = 
 if (!settings.staging) { settings.dbname = "minefield" } else { settings.dbname = "bitcoin1-staging" }
 
 
+var patch = {}
+var mode;
+
+patch.test = {
+    httpport: 45285
+}
+
+if ((process.argv.length > 1) && (patch[mode = process.argv[2]])) {
+    console.log("running in custom", mode,"mode.!);
+    _.extend(settings, patch[mode])
+}
 
 var myCustomLevels = {
     levels: {

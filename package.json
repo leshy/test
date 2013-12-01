@@ -14,7 +14,8 @@
   "dependencies": {
       "sechash": "0.2.1",
       "connect-mongo": "0.1.7",
-      "bitcoin": "1.3.0"
+      "bitcoin": "1.3.0",
+      "express": "2.5.11"
   },
   "main": "index",
   "engines": {
