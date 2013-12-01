@@ -1217,7 +1217,7 @@ function getUserByAddress(address,callback,callbackerr) {
 
         if(callbackerr) { callbackerr(err) } return
     }
-	if (callback) { getUserById(data.owner,callback) }
+	if (callback) { getUserById(data.owner,callback,callbackerr) }
     })
 }
 
