@@ -1210,7 +1210,7 @@ function getUserById(id,callback,callbackerr,liveonly) {
 function getUserByAddress(address,callback,callbackerr) {
     l.log('db','debug','loading user from db (by address)')
     settings.collection_addresses.findOne({address: address}, function(err,data) {
-        console.log("USERFIND:" err,data);
+        console.log("USERFIND:",err,data);
 
 	if ((err) || (!data)) { 
         console.log("can't found user for that address");
