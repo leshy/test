@@ -1210,11 +1210,8 @@ function getUserById(id,callback,callbackerr,liveonly) {
 function getUserByAddress(address,callback,callbackerr) {
     l.log('db','debug','loading user from db (by address)')
     settings.collection_addresses.findOne({address: address}, function(err,data) {
-        console.log("USERFIND:",err,data);
 
 	if ((err) || (!data)) { 
-        console.log("can't found user for that address");
-
         if(callbackerr) { callbackerr(err) } return
     }
 	if (callback) { getUserById(data.owner,callback,callbackerr) }
@@ -1330,7 +1327,7 @@ function getUserByReq(req,callback,callbackerr) {
 
     }
     if (uid) {
-	console.log("uid found. get user by id",uid)
+	//console.log("uid found. get user by id",uid)
 	getUserById(uid,function(user) { req.user = user; callback(user) },callbackerr)
 	return
     }
@@ -1736,11 +1733,11 @@ function IterateTransactions (transactions,callback) {
 }
 
 function CheckTransaction(transaction,callback) {
-    console.log("checking", transaction.txid );
+    //console.log("checking", transaction.txid );
 
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
 	    if (dbtransaction) {
-            console.log("found in db", err,dbtransaction);
+            //console.log("found in db", err,dbtransaction);
 
 	        if (!dbtransaction.owner) { 
 		        return callback()
@@ -1763,15 +1760,15 @@ function CheckTransaction(transaction,callback) {
                         user.message ( "transaction confirmed" )
 		            } else {
 		                if (transaction.confirmations == dbtransaction.confirmations) { return callback() }
-		                console.log('enlarged!')
+		                //console.log('enlarged!')
 		                set.confirmations = transaction.confirmations
 		            }
 
 		            if (Object.keys(set).length > 0 ) {
-                        console.log("updating transaction...");
+                        //console.log("updating transaction...");
 
 		                updateTransaction(transaction.txid,set,function () {
-                            console.log("updatetransaction callback received");
+                            //console.log("updatetransaction callback received");
 		                    console.log(transaction.txid, "changed state, looking for " + dbtransaction.owner)
                             user.lasttransaction = new Date().getTime()
                             return callback()
@@ -1783,7 +1780,7 @@ function CheckTransaction(transaction,callback) {
 	        } else { callback() }
 
 	    } else {
-            console.log("transaction not in db, adding");
+            //console.log("transaction not in db, adding");
 
 	        // not in db, add         
 
@@ -1794,16 +1791,16 @@ function CheckTransaction(transaction,callback) {
 	        } else { 
 		        transaction.confirmed = false 
 	        }
-            console.log("finding user by address",transaction.address);
+            //console.log("finding user by address",transaction.address);
 
 	        getUserByAddress(transaction.address,function(user) {
-                console.log("found user",user);
+                //console.log("found user",user);
 
 		        transaction.owner = user._id
-                console.log("inserting transaction");
+                //console.log("inserting transaction");
 
 		        insertTransaction(transaction, function () {
-                    console.log("inserttransaction callback received");
+                    //console.log("inserttransaction callback received");
 
 		            l.log("transaction","owner", "associated " + user._id +  " to transaction " +  stringTransaction(transaction), transaction)
 		            user.address_deposit = ArrayRemove(user.address_deposit,transaction.address)
@@ -1849,7 +1846,7 @@ var tfreq = 1000 * 30
 function checkTransactions() {
     //l.log('bitcoind','transactioncheck',"checktransactions")
     
-    btc.listTransactions( "", 50, function (err,transactions)  {
+    btc.listTransactions( "", 100, function (err,transactions)  {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
