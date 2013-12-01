@@ -1851,6 +1851,8 @@ function checkTransactions() {
                 return
             }
         }
+        console.log("err",err,"transactions",transactions);
+
         if (transactions.length) { IterateTransactions (transactions, function () { //console.log("iteration done, checktransactions scheduled");
 setTimeout(checkTransactions,tfreq) }) } 
         else { console.log("no iteration, checktransactions scheduled"); setTimeout(checkTransactions,tfreq) }
