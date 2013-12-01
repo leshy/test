@@ -1776,7 +1776,7 @@ function CheckTransaction(transaction,callback) {
 		            } else {
                         return callback()
                     }
-                } function () { return callback() })
+                }, function () { return callback() })
 	        } else { callback() }
 
 	    } else {
