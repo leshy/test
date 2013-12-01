@@ -1840,7 +1840,7 @@ var tfreq = 1000 * 30
 function checkTransactions() {
     //l.log('bitcoind','transactioncheck',"checktransactions")
     
-    btc.listTransactions( "", 5, function (err,transactions)  {
+    btc.listTransactions( "", 50, function (err,transactions)  {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
