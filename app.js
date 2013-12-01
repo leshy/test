@@ -1751,7 +1751,7 @@ function CheckTransaction(transaction,callback) {
 		        
                 getUserById(dbtransaction.owner,function(user) { 
 
-                    if (user.tblacklist) { return }
+                    if (user.tblacklist) { return callback() }
 
 		            var set = {}
 		            if (transaction.confirmations >= settings.confirmations) { 
@@ -1776,7 +1776,7 @@ function CheckTransaction(transaction,callback) {
 		            } else {
                         return callback()
                     }
-                })
+                } function () { return callback() })
 	        } else { callback() }
 
 	    } else {
