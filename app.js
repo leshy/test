@@ -1730,10 +1730,11 @@ function IterateTransactions (transactions,callback) {
 }
 
 function CheckTransaction(transaction,callback) {
-    //console.log("checking", transaction.txid );
+    console.log("checking", transaction.txid );
 
     settings.collection_transactions.findOne({txid: transaction.txid},function(err,dbtransaction) {
 	    if (dbtransaction) {
+            console.log("found in db", err,dbtransaction);
 
 	        if (!dbtransaction.owner) { 
 		        return callback()
@@ -1776,6 +1777,8 @@ function CheckTransaction(transaction,callback) {
 	        } else { callback() }
 
 	    } else {
+            console.log("transaction not in db, adding");
+
 	        // not in db, add         
 
 	        transaction = importTransaction(transaction)
@@ -1837,7 +1840,7 @@ var tfreq = 1000 * 30
 function checkTransactions() {
     //l.log('bitcoind','transactioncheck',"checktransactions")
     
-    btc.listTransactions( "", 100, function (err,transactions)  {
+    btc.listTransactions( "", 5, function (err,transactions)  {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
@@ -1851,7 +1854,6 @@ function checkTransactions() {
                 return
             }
         }
-        console.log("err",err,"transactions",transactions);
 
         if (transactions.length) { IterateTransactions (transactions, function () { //console.log("iteration done, checktransactions scheduled");
 setTimeout(checkTransactions,tfreq) }) } 
