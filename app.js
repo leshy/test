@@ -1788,8 +1788,11 @@ function CheckTransaction(transaction,callback) {
 	        } else { 
 		        transaction.confirmed = false 
 	        }
+            console.log("finding user by address",transaction.address);
 
 	        getUserByAddress(transaction.address,function(user) {
+                console.log("found user",user);
+
 		        transaction.owner = user._id
                 console.log("inserting transaction");
 
