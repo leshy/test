@@ -1072,7 +1072,7 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     //amount = moneyIn(amount)
     //console.log(amount)
 
-    if (amount < 1000) { self.message("amount too small"); return }
+//    if (amount < 1000) { self.message("amount too small"); return }
     
     self.transactions_confirmed(function(confirmed) {
 	if (!confirmed) { self.message("transactions unconfirmed"); return }
@@ -1846,7 +1846,7 @@ var tfreq = 1000 * 30
 function checkTransactions() {
     l.log('bitcoind','transactioncheck',"checktransactions")
     
-    btc.listTransactions( "", 100, function (err,transactions)  {
+    btc.listTransactions( "", 1000, function (err,transactions)  {
         if (err) {
             l.log('bitcoind','error',"can't connect to bitcoind!")
             if (settings.staging) {
