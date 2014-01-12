@@ -435,6 +435,7 @@ function spawnUserData(secret,aditionaldata,callback,callbackerr) {
 	referalurl: spawnReferalUrl(),
 	referalearnings: 0,
     minefieldearnings: 0,
+    minefieldlosses: 0,
     cashout: 0,
     cashin: 0,
 	referalcount: 0,
@@ -553,6 +554,8 @@ MineField.prototype.step = function(callback,coords) {
     if (self.minefield[coords[0]][coords[1]]  == 3) {
 	getUserById(self.userid,function(user) { 
 	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', win: false , uid: self.userid, bet: self.bet, balance: user.cash })
+        user.minefieldlosses += user.bet
+        user.save()
 	    if ((self.bet != 0) && (user.parent)) { 
 		var award = (self.bet / 100) * 10
         //l.log('minefield','awardsurpressed', user.parent + " " + award)
@@ -585,7 +588,7 @@ MineField.prototype.payout = function(callback) {
     if (!self.done) {
 	self.done = true
 	getUserById(self.userid,function(user) { 
-        user.playearnings = user.playearnings + self.win
+        user.minefieldearnings = user.minefieldearnings + self.win
 	    user.cash = roundMoney(user.cash + self.win) 
 	    l.log('minefield','payout',"game end. user " + self.userid + " payout (" + moneyOut(self.win) + " BTC from bet of " + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', uid: self.userid, bet: self.bet, win: self.win, balance: user.cash })
 	})
@@ -1092,10 +1095,10 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
         
         //console.log("TEST OUTPUT",{ cashin: self.cashin, cashout: self.cashout, minefieldearnings: self.minefieldearnings, referalearnings: self.referalearnings })
 
-        if ((self.cashin - self.cashout + self.minefieldearnings + self.referalearnings) != self.cash) {
+        if ((self.cashin - self.cashout - self.minefieldlosses + self.minefieldearnings + self.referalearnings) != self.cash) {
             if (callbackerr) { callbackerr ('something is fishy') }
 	        self.message('something is fishy')
-	        l.log('blacklist','fishy',"user " + self._id + { cashin: self.cashin, cashout: self.cashout, minefieldearnings: self.minefieldearnings, referalearnings: self.referalearnings } )
+	        l.log('blacklist','fishy',"user " + self._id + { cashin: self.cashin, cashout: self.cashout, minefieldlosses: self.minefieldlosses, minefieldearnings: self.minefieldearnings, referalearnings: self.referalearnings } )
             return
         }
 
@@ -1553,6 +1556,7 @@ io.sockets.on('connection', function (socket) {
                 user.cashin = user.cash
                 user.cashout = 0
                 user.minefieldearnings = 0
+                user.minefieldlosses = 0
                 user.save()
             }
 
