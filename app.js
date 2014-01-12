@@ -89,6 +89,9 @@ var l = new Logger.Logger()
 l.outputs.push(new Logger.ConsoleOutput())
 l.outputs.push(new Logger.FileOutput('main.log'))
 
+var s = new Logger.Logger()
+s.outputs.push(new Logger.FileOutput('socket.log'))
+
 l.log('general','info','starting...');
 if (settings.staging) { l.log('general','important','this is a staging instance') }
 
@@ -302,7 +305,8 @@ function jsonmsg(message,responsecode) {
 
 function sendMoney (address,amount,user,callback,callbackerr) {
     amount = moneyOut(amount)
-    console.log("sending",address,amount)
+    console.log("sending",address,amount)  
+
     btc.sendToAddress ( address,amount, "bitcoin minefield payout","user", function(err,paymentid) { 
 	if (paymentid) {
 	    l.log("payment","sent","SENT " + amount + " BTC to" + address + " success - transaction id " + paymentid,{ address: address, amount: amount, uid: user._id})
@@ -430,6 +434,9 @@ function spawnUserData(secret,aditionaldata,callback,callbackerr) {
 	secret: secret,
 	referalurl: spawnReferalUrl(),
 	referalearnings: 0,
+    minefieldearnings: 0,
+    cashout: 0,
+    cashin: 0,
 	referalcount: 0,
 	address_deposit_used: [],
 	address_deposit: [],
@@ -578,6 +585,7 @@ MineField.prototype.payout = function(callback) {
     if (!self.done) {
 	self.done = true
 	getUserById(self.userid,function(user) { 
+        user.playearnings = user.playearnings + self.win
 	    user.cash = roundMoney(user.cash + self.win) 
 	    l.log('minefield','payout',"game end. user " + self.userid + " payout (" + moneyOut(self.win) + " BTC from bet of " + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', uid: self.userid, bet: self.bet, win: self.win, balance: user.cash })
 	})
@@ -993,6 +1001,9 @@ User.prototype.filter_save = { name: true,
 			       referalurl: true,
 			       referalcount: true,
 			       referalearnings: true,
+                   playearnings: true,
+                   cashin: true,
+                   cashout: true,
 			       parent: true,
 			       played: true,
 			       payed: true,
@@ -1053,11 +1064,13 @@ User.prototype.transactions_confirmed = function(callback) {
 	    if (!data) { callback(false); return }
 
 	    for (var i in data) { 
-		if (!data[i].confirmed) { 
-		    callback(false)
-		    return
-		}
+		    if (!data[i].confirmed) { 
+		        callback(false)
+		        return
+		    }
 	    }
+
+        if (data.length == 0) { return callback(1) }
 	    
 	    callback(true)
 	})
@@ -1066,70 +1079,78 @@ User.prototype.transactions_confirmed = function(callback) {
 
 User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
     self = this
-//    l.log("payment","attempt",amount + " and user has ",self.cash,"userid",self._id)
+    //    l.log("payment","attempt",amount + " and user has ",self.cash,"userid",self._id)
     if (!amount) { return }
 
     //amount = moneyIn(amount)
     //console.log(amount)
 
-//    if (amount < 1000) { self.message("amount too small"); return }
+    //    if (amount < 1000) { self.message("amount too small"); return }
     
     self.transactions_confirmed(function(confirmed) {
-	if (!confirmed) { self.message("transactions unconfirmed"); return }
+	    if (!confirmed) { self.message("transactions unconfirmed"); return }
         
-        
-	if ((self.cash.constructor == Number) && (self.cash - amount) >= 0) {
+        //console.log("TEST OUTPUT",{ cashin: self.cashin, cashout: self.cashout, minefieldearnings: self.minefieldearnings, referalearnings: self.referalearnings })
 
-	var oldcash = self.cash
-	self.cash -= amount
-	self.cash = Math.round(self.cash * 1000) / 1000
-	self.save()
+        if ((self.cashin - self.cashout + self.minefieldearnings + self.referalearnings) != self.cash) {
+            if (callbackerr) { callbackerr ('something is fishy') }
+	        self.message('something is fishy')
+            return
+        }
 
-	if (self.blacklist == true) { 
-	    l.log('blacklist','sendmoney',"user " + self._id + " tryed to send some money, but I stopped him.", { amount: amount })
-	    self.message("BTC Sent.")	    
-	    return 
-	}
+	    if ((self.cash.constructor != Number) || (self.cash - amount) < 0) {
+            if (callbackerr) { callbackerr ('Not enough money on account') }
+	        self.message("Not enough money on account")
+            return
+        }
+
+	    var oldcash = self.cash
+	    self.cash -= amount
+	    self.cash = Math.round(self.cash * 1000) / 1000
+	    self.save()
+
+	    if (self.blacklist == true) { 
+	        l.log('blacklist','sendmoney',"user " + self._id + " tryed to send some money, but I stopped him.", { amount: amount })
+	        self.message("BTC Sent.")	    
+	        return 
+	    }
 
 
-	sendMoney(address,amount,self,
-		  function(transactionid) { 
-		      btc.getTransaction(transactionid,function(err,transaction) {
-			  function fixData(trans) {
-			      for (var detail in trans.details[0]) {
-				  console.log(detail)
-				  trans[detail] = trans.details[0][detail]
-			      }   
-			      delete trans['details']
-			      return trans
-			  }
+	    sendMoney(address,amount,self,
+		          function(transactionid) { 
+		              btc.getTransaction(transactionid,function(err,transaction) {
+			              function fixData(trans) {
+			                  for (var detail in trans.details[0]) {
+				                  console.log(detail)
+				                  trans[detail] = trans.details[0][detail]
+			                  }   
+			                  delete trans['details']
+			                  return trans
+			              }
 
-			  transaction = fixData(transaction)
-			  transaction = importTransaction(transaction)
-			  transaction.confirmed = true
-			  transaction.owner = self._id
-			  insertTransaction(transaction)
-			  if (callback) {callback(transactionid)}
+			              transaction = fixData(transaction)
+			              transaction = importTransaction(transaction)
+			              transaction.confirmed = true
+			              transaction.owner = self._id
+			              insertTransaction(transaction)
+			              if (callback) {callback(transactionid)}
 
-			  l.log("payment","sent","AMOUNT " + moneyOutFull(amount) + " user has " + moneyOutFull(self.cash) + " userid " + self._id,{ uid: self._id, amount: amount, balance: self.cash, to: address } )
-			  
-			  self.message("BTC Sent.")
-			  self.lasttransaction = new Date().getTime()
-			  self.address_withdrawal = address
-			  self.save()
-		      })
-		  },
-		  function(err) {
-		      self.cash = oldcash
-		      self.save()
-		      self.message("Error: " + err.message )
-		      l.log("payment","error", err.message, { uid: self._id })
-		      if (callbackerr) {callbackerr(err)}
-		  })
-    } else {
-	if (callbackerr) { callbackerr ('Not enough money on account') }
-	self.message("Not enough money on account")
-    }
+			              l.log("payment","sent","AMOUNT " + moneyOutFull(amount) + " user has " + moneyOutFull(self.cash) + " userid " + self._id,{ uid: self._id, amount: amount, balance: self.cash, to: address } )
+			              
+			              self.message("BTC Sent.")
+			              self.lasttransaction = new Date().getTime()
+			              self.address_withdrawal = address
+                          self.cashout = self.cashout + amount
+			              self.save()
+		              })
+		          },
+		          function(err) {
+		              self.cash = oldcash
+		              self.save()
+		              self.message("Error: " + err.message )
+		              l.log("payment","error", err.message, { uid: self._id })
+		              if (callbackerr) {callbackerr(err)}
+		          })
     })
 }
 
@@ -1525,7 +1546,15 @@ io.sockets.on('connection', function (socket) {
     socket.on('hello', function (data) {	
 	    getUserBySecret(data.secret,function(user) { 
             console.log("loaded user",user.id);
-            
+            s.log(user._id,socket.id,'connect' )
+
+            if (user.cashin == undefined) {
+                user.cashin = user.cash
+                user.cashout = 0
+                user.minefieldearnings = 0
+                user.save()
+            }
+
             socket.emit('hello', { login: true })
 
 	        stickid(socket)
@@ -1536,19 +1565,15 @@ io.sockets.on('connection', function (socket) {
             
 	        globalobject.users = Object.keys(router.secretuser).length
             
-	        //	    setTimeout(function() { console.log("message!"); user.message('test message') },2000)
-	        //	    setTimeout(function() { console.log("dolur!"); console.log(user); user.cash = 10 },2300)
-            
-	        //	    setTimeout(function() { console.log("new payment!"); user.cash = 60 },4000)
-	        
-
 	        socket.on('disconnect', function () { 
-		        globalobject.users = Object.keys(router.secretuser).length		
+	            s.log(user._id,socket.id,'disconnect' )
+		        globalobject.users = Object.keys(router.secretuser).length
 		        router.logout(user,socket)
 	        })
 
 
 	        socket.on('call',function (data) {
+                s.log(user._id,socket.id,'call', data )
 		        data = JSON.parse(data)
 
 		        var object = router.getObjectFromUser(user,data.object)
@@ -1572,6 +1597,7 @@ io.sockets.on('connection', function (socket) {
 
 
 	        socket.on('objectsync',function (data) {
+                s.log(user._id,socket.id,'objectsync',data )
 		        data = JSON.parse(data)
 		        if (data.objects) {
 		            //getUserBySecret(data.secret, function(user) {
@@ -1807,10 +1833,12 @@ function CheckTransaction(transaction,callback) {
 		            user.address_deposit_used.push(transaction.address)
 		            user.lasttransaction = new Date().getTime()
 		            user.cash = user.cash + transaction.amount
+                    user.cashin = user.cashin + transaction.amount
 		            user.message("payment received")
 		            user.save()
 		            user.syncproperty('address_deposit')
 		            user.syncproperty('cash')
+                    user.syncproperty('transactionsearnings')
 		            l.log("payment","received","RECEIVED for user " + user._id  + " " + moneyOutFull(transaction.amount) + " BTC users cash is now " + moneyOutFull(user.cash) + " BTC", { uid: user._id, amount: transaction.amount, balance: user.cash })
                     callback()
                 })
