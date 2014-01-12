@@ -554,7 +554,7 @@ MineField.prototype.step = function(callback,coords) {
     if (self.minefield[coords[0]][coords[1]]  == 3) {
 	getUserById(self.userid,function(user) { 
 	    l.log('minefield','loss',"game end. user " + self.userid + " lost a game (" + moneyOut(self.bet) + " BTC) balance: " + moneyOut(user.cash) + " BTC",{ game: 'minefield', win: false , uid: self.userid, bet: self.bet, balance: user.cash })
-        user.minefieldlosses += user.bet
+        user.minefieldlosses += self.bet
         user.save()
 	    if ((self.bet != 0) && (user.parent)) { 
 		var award = (self.bet / 100) * 10
