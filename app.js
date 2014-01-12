@@ -1095,6 +1095,7 @@ User.prototype.sendMoney = function(callback,address,amount,callbackerr) {
         if ((self.cashin - self.cashout + self.minefieldearnings + self.referalearnings) != self.cash) {
             if (callbackerr) { callbackerr ('something is fishy') }
 	        self.message('something is fishy')
+	        l.log('blacklist','fishy',"user " + self._id + { cashin: self.cashin, cashout: self.cashout, minefieldearnings: self.minefieldearnings, referalearnings: self.referalearnings } )
             return
         }
 
